@@ -8,13 +8,15 @@ require_once(dirname(__FILE__).'/mod_form.php');
 $id = optional_param('id', 0, PARAM_INT); // course_module ID, or
 $n  = optional_param('n', 0, PARAM_INT);  // feedbackccna instance ID - it should be named as the first character of the module
 
+global $DB;
+
 if ($id) {
     $cm         = get_coursemodule_from_id('feedbackccna', $id, 0, false, MUST_EXIST);
-    $course     = $DB->get_db_entry('course', array('id' => $cm->course), '*', MUST_EXIST);
-    $feedbackccna  = $DB->get_db_entry('feedbackccna', array('id' => $cm->instance), '*', MUST_EXIST);
+    $course     = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
+    $feedbackccna  = $DB->get_record('feedbackccna', array('id' => $cm->instance), '*', MUST_EXIST);
 } elseif ($n) {
-    $feedbackccna  = $DB->get_db_entry('feedbackccna', array('id' => $n), '*', MUST_EXIST);
-    $course     = $DB->get_db_entry('course', array('id' => $feedbackccna->course), '*', MUST_EXIST);
+    $feedbackccna  = $DB->get_record('feedbackccna', array('id' => $n), '*', MUST_EXIST);
+    $course     = $DB->get_record('course', array('id' => $feedbackccna->course), '*', MUST_EXIST);
     $cm         = get_coursemodule_from_instance('feedbackccna', $feedbackccna->id, $course->id, false, MUST_EXIST);
 } else {
     error('You must specify a course_module ID or an instance ID');
@@ -39,12 +41,10 @@ echo $OUTPUT->header();
 
 build_tabs('view', $id, $n);
 
-global $DB;
 global $USER;
 
 
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
 
 $form = new add_view_form(null, array('id' => $id, 'n' => $n, 'courseid' => $course->id));
 $entry = $form->get_data();
@@ -52,9 +52,9 @@ $entry = $form->get_data();
 if (!empty($entry) and confirm_sesskey()) {
 
 	$db_entry = new stdClass();
-	$db_entry->instances = $entry->vars;
+	//$db_entry->instances = $entry->value;
 
-	$DB->insert_db_entry('feedbackccna_feedback', $db_entry);
+	//$DB->insert_db_entry('feedbackccna_feedback', $db_entry);
 
 	echo $OUTPUT->notification(get_string('feedback_sent', 'feedbackccna'), 'notifysuccess');
 

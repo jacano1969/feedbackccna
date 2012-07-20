@@ -9,7 +9,6 @@ $string['modulename_help'] = 'Use the feedbackccna module for... | The feedbackc
 $string['feedbackccnafieldset'] = 'Custom example fieldset';
 $string['feedbackccnaname'] = 'Name';
 $string['feedbackccnaname_help'] = 'This is the content of the help tooltip associated with the feedbackccnaname field. Markdown syntax is supported.';
-$string['feedbackccna'] = 'feedbackccna';
 $string['pluginadministration'] = 'feedbackccna administration';
 $string['pluginname'] = 'feedbackccna';
 
@@ -22,19 +21,17 @@ $string['wrongcourse']='Course is misconfigured';
 $string['wrongmodule']='Course module is incorrect';
 $string['wrongparams']='You must specify a course_module ID or an instance ID';
 
-$string['view'] = 'View feedback';
-$string['viewdesc'] = 'View feedback';
-$string['add'] = 'Add feedback';
+$string['view'] = 'Feedback';
+$string['viewdesc'] = 'Rate your teacher!';
+$string['add'] = 'Add new feedback';
 $string['adddesc'] = 'Add feedback';
-$string['t_view'] = 'Teacher feedback';
-$string['t_viewdesc'] = 'Teacher feedback';
-
-
+$string['t_view'] = 'Student feedback';
+$string['t_viewdesc'] = 'Rate your students!';
+$string['feedback_values'] = 'Your rating:';
+$string['feedback_sent'] = 'Your feedback has been successfully sent! Thank you!';
 
 $string['viewtitle'] = 'View feedbackccna';
-$string['viewdesc'] = 'View existing feedbackccna';
-$string['headerlabel'] = 'Add an feedbackccna';
-$string['headerlabel2']= 'Assign an feedbackccna';
+$string['headerlabel'] = 'Please submit your feedback:';
 $string['namelabel'] = 'Name';
 $string['imagelabel'] = 'Image';
 $string['submitlabel'] = 'Add';

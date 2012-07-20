@@ -43,26 +43,6 @@ build_tabs('t_view', $id, $n);
 global $DB;
 global $USER;
 
-if (has_capability('mod/feedbackccna:t_view', $context)) {
-
-	$form = new user_form(null, array('id'=>$id, 'n'=>$n, 'context'=>$context));
-	$fromform = $form->get_data();
-
-	$form->display();
-
-	if (!empty($fromform) and confirm_sesskey()) {
-		$userid = $fromform->user;
-
-	} else {
-		$userid = $USER->id;
-	}
-
-} else {
-
-	$userid = $USER->id;
-
-}
-
 
 // Finish the page
 echo $OUTPUT->footer();

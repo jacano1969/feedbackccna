@@ -2,6 +2,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+require_once("$CFG->libdir/formslib.php");
+
 function build_tabs($active, $id = '', $n = '') {
 
 	global $CFG;
@@ -41,7 +43,7 @@ function build_tabs($active, $id = '', $n = '') {
 
 }
 
-class add_form extends moodleform {
+class add_view_form extends moodleform {
 
 	function definition() {
 
@@ -57,29 +59,28 @@ class add_form extends moodleform {
 		$mform->setType('id', PARAM_INT);
 
 		$mform->addElement('header', 'editorheader',
-				get_string('headerlabel', 'achievement'));
+				get_string('headerlabel', 'feedbackccna'));
 
-		$mform->addElement('text', 'name', get_string('namelabel', 'achievement'), 
-				array('size' => 40));
-		$mform->setType('name', PARAM_TEXT);
-		$mform->addrule('name', null, 'required', null, 'client');
+		$mform->addElement('select', 'value', get_string('feedback_values', 'feedbackccna'), 
+				array('1' => '1', '2' => '2', '3' => '3', '4' => '4', '5' => '5'));
+		
+		//$mform->setType('name', PARAM_TEXT);
+		//$mform->addrule('name', null, 'required', null, 'client');
 
-		$mform->addElement('choosecoursefile', 'image', get_string('imagelabel', 'achievement'), 
-				array('courseid' => 1));
-
-		$mform->addElement('textarea', 'desc', get_string('desclabel', 'achievement'), 
-				array('rows' => 3, 'cols' => 45));
-		$mform->setType('desc', PARAM_TEXT);
+		//$mform->addElement('textarea', 'desc', get_string('desclabel', 'feedbackccna'), 
+		//		array('rows' => 3, 'cols' => 45));
+		//$mform->setType('desc', PARAM_TEXT);
 
 		print_container_start(false, 'singlebutton'); 
-		$this->add_action_buttons(false, get_string('submitlabel', 'achievement')); 
+		$this->add_action_buttons(false, get_string('submitlabel', 'feedbackccna')); 
 		print_container_end();
 
 	}
 
 }
 
-class add_view_form extends add_form {
+
+class add_add_form extends moodleform {
 
 	function definition() {
 
@@ -90,18 +91,7 @@ class add_view_form extends add_form {
 }
 
 
-class add_add_form extends add_form {
-
-	function definition() {
-
-		//bla
-
-	}
-
-}
-
-
-class add_t_view_form extends add_form {
+class add_t_view_form extends moodleform {
 
 	function definition() {
 
