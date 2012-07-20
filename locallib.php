@@ -28,21 +28,41 @@
  */
 
 defined('MOODLE_INTERNAL') || die();
-function get_enrolment_id($student_id, $course_id) {
-	global $DB;
-	
-	return $DB->get_records_sql("SELECT ue.id FROM {user_enrolments} ue WHERE ue.userid = ? AND ue.enrolid IN (SELECT e.id FROM {enrol} e WHERE e.courseid = ?)",array($user_id, $course_id));
-}
 
-function insert_feedback($enrolment_id, $week, $role, $type, $rating) {
-	gobal $DB;
+
+function insert_feedback($user_id, $course_id, $week, $role, $type, $rating) {
+	global $DB;
 	$record = new stdClass();
 
-	$record->enrolment_id = $enrolment_id;
-	$record->week 		  = $week;
-	$record->role 		  = $role;
-	$record->type 		  = $type;
-	$record->rating 	  = $rating;
+	$record->user_id	= $user_id;
+	$record->course_id  = $course_id;
+	$record->week 		= $week;
+	$record->role 		= $role;
+	$record->type 		= $type;
+	$record->rating 	= $rating;
 
 	$DB->insert_records('feedbackccna_data',$record);
 }
+
+function get_week_feedback_for_user($user_id, $course_id, $week, $role, $type) {
+	global $DB;
+	
+	return $DB->get_records_sql("SELECT type, value FROM {feedbackccna_data} WHERE 
+			user_id 	= $user_id AND
+			course_id	= $course_id AND
+			week 		= $week AND
+			role		= $role AND
+			type 		= $type");
+}
+
+function get_week_feedback_for_teacher($course_id, $week, $type, $role) {
+	global $DB;
+
+	return $DB->get_records_sql("SELECT type, value FROM {feedbackccna_data} WHERE
+			course_id	= $course_id AND
+			week 		= $week AND
+			role 		= $role AND
+			type		= $type");
+}
+
+

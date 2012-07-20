@@ -23,16 +23,14 @@
     </TABLE>
     <TABLE NAME="feedbackccna_data" COMMENT="Memoreaza efectiv feedback-urile. Leaga tabelul de enrloment." PREVIOUS="feedbackccna">
       <FIELDS>
-        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" NEXT="enrolment_id"/>
-        <FIELD NAME="enrolment_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" PREVIOUS="id" NEXT="week"/>
-        <FIELD NAME="week" TYPE="int" LENGTH="2" NOTNULL="true" SEQUENCE="false" PREVIOUS="enrolment_id" NEXT="role"/>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" NEXT="week"/>
+        <FIELD NAME="week" TYPE="int" LENGTH="2" NOTNULL="true" SEQUENCE="false" PREVIOUS="id" NEXT="role"/>
         <FIELD NAME="role" TYPE="int" LENGTH="2" NOTNULL="true" SEQUENCE="false" COMMENT="Cine a dat feedback Profesor (1) sau Student (2)" PREVIOUS="week" NEXT="type"/>
         <FIELD NAME="type" TYPE="int" LENGTH="2" NOTNULL="true" SEQUENCE="false" COMMENT="Tipul feedback-ului, deocamdata Prezentare(1) si Laborator (2)" PREVIOUS="role" NEXT="rating"/>
         <FIELD NAME="rating" TYPE="int" LENGTH="4" NOTNULL="true" SEQUENCE="false" COMMENT="Valoarea efectiva a rating-ului" PREVIOUS="type"/>
       </FIELDS>
       <KEYS>
-        <KEY NAME="primary" TYPE="primary" FIELDS="id" NEXT="fk_enrloment"/>
-        <KEY NAME="fk_enrloment" TYPE="foreign" FIELDS="enrolment_id" REFTABLE="user_enrolments" REFFIELDS="id" PREVIOUS="primary"/>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
       </KEYS>
     </TABLE>
   </TABLES>
