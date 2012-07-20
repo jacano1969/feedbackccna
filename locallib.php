@@ -111,42 +111,62 @@ class add_t_view_form extends add_form {
 
 }
 
-function insert_feedback($user_id, $course_id, $week, $role, $type, $rating) {
+/* Deoarece deocamdata sunt planuite doar 2 tipuri de feedback pt studenti 
+   si 2 tipuri pt profesori:
+
+	feedback feedback_type = 1 pt studenti si 2 pt profesori
+	ufo/tfo type = 1 pt prezentari si 2 pt laboratoare
+*/
+
+
+function insert_user_feedback($user_id, $feedback_id,  $value) {
 	global $DB;
+
 	$record = new stdClass();
-
-	$record->user_id	= $user_id;
-	$record->course_id  = $course_id;
-	$record->week 		= $week;
-	$record->role 		= $role;
-	$record->type 		= $type;
-	$record->rating 	= $rating;
 	
+	$record->user_id = $user_id;
+	$record->feedback_id = $feedback_id;
+	$record->feedback_type = 1;
+	$record->value = $value;
 
-	$DB->insert_records('feedbackccna_data',$record);
+	$DB->insert_record('feedbackccna_feedback',$record, false);
 }
 
-function get_week_feedback_for_user($user_id, $course_id, $week, $role, $type) {
-	global $DB;
-	
-	return $DB->get_records_sql("SELECT type, value FROM {feedbackccna_data} WHERE 
-			user_id 	= $user_id AND
-			course_id	= $course_id AND
-			week 		= $week AND
-			role		= $role AND
-			type 		= $type");
-}
-
-function get_week_feedback_for_teacher($course_id, $week, $type, $role) {
+function get_user_feedback($user_id, $week) {
 	global $DB;
 
-	return $DB->get_records_sql("SELECT type, value FROM {feedbackccna_data} WHERE
-			course_id	= $course_id AND
-			week 		= $week AND
-			role 		= $role AND
-			type		= $type");
+	return $DB->get_records_sql("SELECT * FROM {feedbackccna_feedback} WHERE feedback_type = 1 AND user_id = ? AND feedback_id IN (SELECT id FROM {feedbackccna_ufo} WHERE week = ?) ", array($user_id, $week));
 }
 
-?>
+
+function insert_teacher_feedback($user_id, $feedback_id, $value) {
+	global $DB;
+
+	$record = new stdClass();
+	
+	$record->$user_id = $user_id;
+	$record->feedback_id = $feedback_id;
+	$record->feedback_type = 2;
+	$record->value = $value;
+
+	$DB->insert_record('feedbackccna_feedback', $record, false);
+}
+
+function get_teacher_feedback($user_id, $week) {
+	global $DB;
+
+	return $DB->get_records_sql("SELECT * FROM {feedbackccna_feedback} WHERE feedback_type = 2 AND user_id = ? AND feedback_id IN (SELECT id FROM {feedbackccna_tfo} WHERE week = ?) ", array($user_id, $week));
+}
 
 
+function get_ufos_feedback($week, $type) {
+	global $DB;
+
+	return $DB->get_records_sql("SELECT * FROM {feedbackccna_feedback} WHERE feedback_type = 1 AND feedback_id IN (SELECT id FROM {feedbackccna_ufo} WHERE week = ?  AND type = ?)", array($week, $type));
+}
+
+function set_allow_ufo_feedback($week, $type, $value) {
+	global $DB;
+
+	$DB->set_field('feedbackccna_tfo','allow', $value,array("week"=>$week, "type"=>$type))
+}
