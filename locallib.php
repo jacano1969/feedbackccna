@@ -31,6 +31,7 @@ defined('MOODLE_INTERNAL') || die();
 function get_enrolment_id($student_id, $course_id) {
 	global $DB;
 	
+	return $DB->get_records_sql("SELECT ue.id FROM {user_enrolments} ue WHERE ue.userid = ? AND ue.enrolid IN (SELECT e.id FROM {enrol} e WHERE e.courseid = ?)",array($user_id, $course_id));
 }
 
 function insert_feedback($enrolment_id, $week, $role, $type, $rating) {
