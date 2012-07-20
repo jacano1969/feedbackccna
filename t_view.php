@@ -25,7 +25,7 @@ require_login($course, true, $cm);
 
 $context = get_context_instance(CONTEXT_MODULE, $cm->id);
 
-add_to_log($course->id, 'feedbackccna', 'view', "view.php?id={$cm->id}", $feedbackccna->name, $cm->id);
+add_to_log($course->id, 'feedbackccna', 't_view', "view.php?id={$cm->id}", $feedbackccna->name, $cm->id);
 
 /// Print the page header
 
@@ -38,7 +38,7 @@ $PAGE->set_context($context);
 // Output starts here
 echo $OUTPUT->header();
 
-build_tabs('view', $id, $n);
+build_tabs('t_view', $id, $n);
 
 global $DB;
 global $USER;
