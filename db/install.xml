@@ -4,7 +4,7 @@
     xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
 >
   <TABLES>
-    <TABLE NAME="feedbackccna" COMMENT="Default comment for feedbackccna, please edit me" NEXT="feedbackccna_data">
+    <TABLE NAME="feedbackccna" COMMENT="Default comment for feedbackccna, please edit me" NEXT="feedbackccna_ufo">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" NEXT="course"/>
         <FIELD NAME="course" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Course feedbackccna activity belongs to" PREVIOUS="id" NEXT="name"/>
@@ -21,16 +21,39 @@
         <INDEX NAME="course" UNIQUE="false" FIELDS="course"/>
       </INDEXES>
     </TABLE>
-    <TABLE NAME="feedbackccna_data" COMMENT="Memoreaza efectiv feedback-urile. Leaga tabelul de enrloment." PREVIOUS="feedbackccna">
+    <TABLE NAME="feedbackccna_ufo" COMMENT="User Feedback Object Table, Contains Feedback Objects that an user can rate" PREVIOUS="feedbackccna" NEXT="feedbackccna_tfo">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" NEXT="week"/>
-        <FIELD NAME="week" TYPE="int" LENGTH="2" NOTNULL="true" SEQUENCE="false" PREVIOUS="id" NEXT="role"/>
-        <FIELD NAME="role" TYPE="int" LENGTH="2" NOTNULL="true" SEQUENCE="false" COMMENT="Cine a dat feedback Profesor (1) sau Student (2)" PREVIOUS="week" NEXT="type"/>
-        <FIELD NAME="type" TYPE="int" LENGTH="2" NOTNULL="true" SEQUENCE="false" COMMENT="Tipul feedback-ului, deocamdata Prezentare(1) si Laborator (2)" PREVIOUS="role" NEXT="rating"/>
-        <FIELD NAME="rating" TYPE="int" LENGTH="4" NOTNULL="true" SEQUENCE="false" COMMENT="Valoarea efectiva a rating-ului" PREVIOUS="type"/>
+        <FIELD NAME="week" TYPE="int" LENGTH="2" NOTNULL="true" SEQUENCE="false" PREVIOUS="id" NEXT="course_id"/>
+        <FIELD NAME="course_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" PREVIOUS="week" NEXT="type"/>
+        <FIELD NAME="type" TYPE="int" LENGTH="2" NOTNULL="true" SEQUENCE="false" PREVIOUS="course_id"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id" NEXT="fk_course_id"/>
+        <KEY NAME="fk_course_id" TYPE="foreign" FIELDS="course_id" REFTABLE="course" REFFIELDS="id" PREVIOUS="primary"/>
+      </KEYS>
+    </TABLE>
+    <TABLE NAME="feedbackccna_tfo" COMMENT="Teacher Feedback Object, The Feedback Object and value a Techer assigns a User" PREVIOUS="feedbackccna_ufo" NEXT="feedbackccna_feedback">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" NEXT="allow"/>
+        <FIELD NAME="allow" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="id" NEXT="type"/>
+        <FIELD NAME="type" TYPE="int" LENGTH="2" NOTNULL="true" SEQUENCE="false" PREVIOUS="allow"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+    </TABLE>
+    <TABLE NAME="feedbackccna_feedback" COMMENT="Tabelul de feedback" PREVIOUS="feedbackccna_tfo">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" NEXT="feedback_id"/>
+        <FIELD NAME="feedback_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" PREVIOUS="id" NEXT="user_id"/>
+        <FIELD NAME="user_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" PREVIOUS="feedback_id" NEXT="feedback_type"/>
+        <FIELD NAME="feedback_type" TYPE="int" LENGTH="2" NOTNULL="true" SEQUENCE="false" PREVIOUS="user_id" NEXT="value"/>
+        <FIELD NAME="value" TYPE="int" LENGTH="4" NOTNULL="true" SEQUENCE="false" PREVIOUS="feedback_type"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id" NEXT="fk_user_id"/>
+        <KEY NAME="fk_user_id" TYPE="foreign" FIELDS="user_id" REFTABLE="user" REFFIELDS="id" PREVIOUS="primary"/>
       </KEYS>
     </TABLE>
   </TABLES>
