@@ -10,11 +10,11 @@ $n  = optional_param('n', 0, PARAM_INT);  // feedbackccna instance ID - it shoul
 
 if ($id) {
     $cm         = get_coursemodule_from_id('feedbackccna', $id, 0, false, MUST_EXIST);
-    $course     = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
-    $feedbackccna  = $DB->get_record('feedbackccna', array('id' => $cm->instance), '*', MUST_EXIST);
+    $course     = $DB->get_db_entry('course', array('id' => $cm->course), '*', MUST_EXIST);
+    $feedbackccna  = $DB->get_db_entry('feedbackccna', array('id' => $cm->instance), '*', MUST_EXIST);
 } elseif ($n) {
-    $feedbackccna  = $DB->get_record('feedbackccna', array('id' => $n), '*', MUST_EXIST);
-    $course     = $DB->get_record('course', array('id' => $feedbackccna->course), '*', MUST_EXIST);
+    $feedbackccna  = $DB->get_db_entry('feedbackccna', array('id' => $n), '*', MUST_EXIST);
+    $course     = $DB->get_db_entry('course', array('id' => $feedbackccna->course), '*', MUST_EXIST);
     $cm         = get_coursemodule_from_instance('feedbackccna', $feedbackccna->id, $course->id, false, MUST_EXIST);
 } else {
     error('You must specify a course_module ID or an instance ID');
@@ -42,25 +42,28 @@ build_tabs('view', $id, $n);
 global $DB;
 global $USER;
 
-if (has_capability('mod/feedbackccna:view', $context)) {
 
-	$form = new user_form(null, array('id'=>$id, 'n'=>$n, 'context'=>$context));
-	$fromform = $form->get_data();
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-	$form->display();
 
-	if (!empty($fromform) and confirm_sesskey()) {
-		$userid = $fromform->user;
+$form = new add_view_form(null, array('id' => $id, 'n' => $n, 'courseid' => $course->id));
+$entry = $form->get_data();
 
-	} else {
-		$userid = $USER->id;
-	}
+if (!empty($entry) and confirm_sesskey()) {
 
-} else {
+	$db_entry = new stdClass();
+	$db_entry->instances = $entry->vars;
 
-	$userid = $USER->id;
+	$DB->insert_db_entry('feedbackccna_feedback', $db_entry);
+
+	echo $OUTPUT->notification(get_string('feedback_sent', 'feedbackccna'), 'notifysuccess');
 
 }
+
+$form->display();
+
+
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
 // Finish the page

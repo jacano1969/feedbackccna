@@ -41,6 +41,76 @@ function build_tabs($active, $id = '', $n = '') {
 
 }
 
+class add_form extends moodleform {
+
+	function definition() {
+
+		global $CFG;
+		global $usr;
+
+		$mform =& $this->_form;
+
+		$mform->addElement('hidden', 'action');
+		$mform->setType('action', PARAM_TEXT);
+
+		$mform->addElement('hidden', 'id', $this->_customdata['id']);
+		$mform->setType('id', PARAM_INT);
+
+		$mform->addElement('header', 'editorheader',
+				get_string('headerlabel', 'achievement'));
+
+		$mform->addElement('text', 'name', get_string('namelabel', 'achievement'), 
+				array('size' => 40));
+		$mform->setType('name', PARAM_TEXT);
+		$mform->addrule('name', null, 'required', null, 'client');
+
+		$mform->addElement('choosecoursefile', 'image', get_string('imagelabel', 'achievement'), 
+				array('courseid' => 1));
+
+		$mform->addElement('textarea', 'desc', get_string('desclabel', 'achievement'), 
+				array('rows' => 3, 'cols' => 45));
+		$mform->setType('desc', PARAM_TEXT);
+
+		print_container_start(false, 'singlebutton'); 
+		$this->add_action_buttons(false, get_string('submitlabel', 'achievement')); 
+		print_container_end();
+
+	}
+
+}
+
+class add_view_form extends add_form {
+
+	function definition() {
+
+		//bla
+
+	}
+
+}
+
+
+class add_add_form extends add_form {
+
+	function definition() {
+
+		//bla
+
+	}
+
+}
+
+
+class add_t_view_form extends add_form {
+
+	function definition() {
+
+		//bla
+
+	}
+
+}
+
 function insert_feedback($user_id, $course_id, $week, $role, $type, $rating) {
 	global $DB;
 	$record = new stdClass();
