@@ -1,3 +1,4 @@
+
 <?php
 
 require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
@@ -28,7 +29,7 @@ add_to_log($course->id, 'feedbackccna', 'view', "view.php?id={$cm->id}", $feedba
 
 /// Print the page header
 
-$PAGE->set_url('/mod/feedbackccna/view.php', array('id' => $cm->id));
+$PAGE->set_url('/mod/feedbackccna/t_view.php', array('id' => $cm->id));
 $PAGE->set_title(format_string($feedbackccna->name));
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($context);
@@ -42,7 +43,7 @@ build_tabs('view', $id, $n);
 global $DB;
 global $USER;
 
-if (has_capability('mod/feedbackccna:view', $context)) {
+if (has_capability('mod/feedbackccna:t_view', $context)) {
 
 	$form = new user_form(null, array('id'=>$id, 'n'=>$n, 'context'=>$context));
 	$fromform = $form->get_data();

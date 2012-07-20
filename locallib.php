@@ -1,34 +1,11 @@
 <?php
 
-// This file is part of Moodle - http://moodle.org/
-//
-// Moodle is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// Moodle is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-
-/**
- * Internal library of functions for module feedbackccna
- *
- * All the feedbackccna specific functions, needed to implement the module
- * logic, should go here. Never include this file from your lib.php!
- *
- * @package    mod
- * @subpackage feedbackccna
- * @copyright  2011 Your Name
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
 
 defined('MOODLE_INTERNAL') || die();
 
+function build_tabs($active, $id = '', $n = '') {
+
+global $CFG;
 
 function insert_feedback($user_id, $course_id, $week, $role, $type, $rating) {
 	global $DB;
@@ -40,9 +17,14 @@ function insert_feedback($user_id, $course_id, $week, $role, $type, $rating) {
 	$record->role 		= $role;
 	$record->type 		= $type;
 	$record->rating 	= $rating;
+	
 
 	$DB->insert_records('feedbackccna_data',$record);
 }
+	$options = array();
+	$inactive = array();
+	$activetwo = array();
+	$currenttab = $active;
 
 function get_week_feedback_for_user($user_id, $course_id, $week, $role, $type) {
 	global $DB;
@@ -54,6 +36,13 @@ function get_week_feedback_for_user($user_id, $course_id, $week, $role, $type) {
 			role		= $role AND
 			type 		= $type");
 }
+if ($id) {
+	$param1 = 'id';
+	$param2 = $id;
+} else {
+	$param1 = 'n';
+	$param2 = $n;
+}
 
 function get_week_feedback_for_teacher($course_id, $week, $type, $role) {
 	global $DB;
@@ -64,5 +53,25 @@ function get_week_feedback_for_teacher($course_id, $week, $type, $role) {
 			role 		= $role AND
 			type		= $type");
 }
+
+$options[] = new tabobject('view',
+		$CFG->wwwroot . '/mod/feedbackccna/view.php?' . $param1 . '=' . $param2,
+		get_string('view', 'feedbackccna'),
+		get_string('viewdesc', 'feedbackccna'), true);
+
+$options[] = new tabobject('add',
+		$CFG->wwwroot . '/mod/feedbackccna/add.php?' . $param1 . '=' . $param2,
+		get_string('add', 'feedbackccna'),
+		get_string('adddesc', 'feedbackccna'), true);
+
+$options[] = new tabobject('t_view',
+		$CFG->wwwroot . '/mod/feedbackccna/t_view.php?' . $param1 . '=' . $param2,
+		get_string('t_view', 'feedbackccna'),
+		get_string('t_viewdesc', 'feedbackccna'), true);
+
+$tabs = array($options);
+print_tabs($tabs, $currenttab, $inactive, $activetwo);
+}
+
 
 

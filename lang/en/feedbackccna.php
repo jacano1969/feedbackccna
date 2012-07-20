@@ -1,41 +1,48 @@
 <?php
 
-// This file is part of Moodle - http://moodle.org/
-//
-// Moodle is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// Moodle is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+$string['feedbackccna'] = 'Feedbackccna';
 
+$string['modulename'] = 'Feedbackccna';
+$string['modulenameplural'] = 'Feedbackccna modules';
 
-/**
- * English strings for feedbackccna
- *
- * You can have a rather longer description of the file as well,
- * if you like, and it can span multiple lines.
- *
- * @package    mod
- * @subpackage feedbackccna
- * @copyright  2011 Your Name
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-
-defined('MOODLE_INTERNAL') || die();
-
-$string['modulename'] = 'feedbackccna';
-$string['modulenameplural'] = 'feedbackccnas';
 $string['modulename_help'] = 'Use the feedbackccna module for... | The feedbackccna module allows...';
 $string['feedbackccnafieldset'] = 'Custom example fieldset';
-$string['feedbackccnaname'] = 'feedbackccna name';
+$string['feedbackccnaname'] = 'Name';
 $string['feedbackccnaname_help'] = 'This is the content of the help tooltip associated with the feedbackccnaname field. Markdown syntax is supported.';
 $string['feedbackccna'] = 'feedbackccna';
 $string['pluginadministration'] = 'feedbackccna administration';
 $string['pluginname'] = 'feedbackccna';
+
+$string['feedbackccnafieldset'] = 'Custom example fieldset';
+$string['feedbackccnaintro'] = 'feedbackccna Intro';
+$string['feedbackccnaname'] = 'Feedbackccna Name';
+
+$string['wrongid']='Course Module ID was incorrect';
+$string['wrongcourse']='Course is misconfigured';
+$string['wrongmodule']='Course module is incorrect';
+$string['wrongparams']='You must specify a course_module ID or an instance ID';
+
+$string['view'] = 'View feedback';
+$string['viewdesc'] = 'View feedback';
+$string['add'] = 'Add feedback';
+$string['adddesc'] = 'Add feedback';
+$string['t_view'] = 'Teacher feedback';
+$string['t_viewdesc'] = 'Teacher feedback';
+
+
+
+$string['viewtitle'] = 'View feedbackccna';
+$string['viewdesc'] = 'View existing feedbackccna';
+$string['headerlabel'] = 'Add an feedbackccna';
+$string['headerlabel2']= 'Assign an feedbackccna';
+$string['namelabel'] = 'Name';
+$string['imagelabel'] = 'Image';
+$string['submitlabel'] = 'Add';
+$string['desclabel'] = 'Description';
+$string['achadded'] = 'The feedbackccna was added successfully';
+$string['assadded'] = 'The feedbackccna was asigned successfully';
+
+$string['nofeedbackccna'] = 'No feedbackccna has been entered in the database';
+
+$string['imagelabel'] = 'Poza';
+?>
