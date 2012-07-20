@@ -33,37 +33,16 @@ $PAGE->set_title(format_string($feedbackccna->name));
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($context);
 
-
 // Output starts here
 echo $OUTPUT->header();
 
-build_tabs('view', $id, $n);
-
-global $DB;
-global $USER;
-
-if (has_capability('mod/feedbackccna:view', $context)) {
-
-	$form = new user_form(null, array('id'=>$id, 'n'=>$n, 'context'=>$context));
-	$fromform = $form->get_data();
-
-	$form->display();
-
-	if (!empty($fromform) and confirm_sesskey()) {
-		$userid = $fromform->user;
-
-	} else {
-		$userid = $USER->id;
-	}
-
-} else {
-
-	$userid = $USER->id;
-
-}
+build_tabs('add', $id, $n);
 
 
 // Finish the page
 echo $OUTPUT->footer();
 
+echo 'Hello!';
+
 ?>
+
