@@ -28,13 +28,20 @@
  */
 
 defined('MOODLE_INTERNAL') || die();
+function get_enrolment_id($student_id, $course_id) {
+	global $DB;
+	
+}
 
-/**
- * Does something really useful with the passed things
- *
- * @param array $things
- * @return object
- */
-//function feedbackccna_do_something_useful(array $things) {
-//    return new stdClass();
-//}
+function insert_feedback($enrolment_id, $week, $role, $type, $rating) {
+	gobal $DB;
+	$record = new stdClass();
+
+	$record->enrolment_id = $enrolment_id;
+	$record->week 		  = $week;
+	$record->role 		  = $role;
+	$record->type 		  = $type;
+	$record->rating 	  = $rating;
+
+	$DB->insert_records('feedbackccna_data',$record);
+}
