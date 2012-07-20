@@ -158,5 +158,5 @@ function get_ufos_feedback($week, $type) {
 function set_allow_ufo_feedback($week, $type, $value) {
 	global $DB;
 
-	$DB->set_field('feedbackccna_tfo','allow', $value,array("week"=>$week, "type"=>$type))
+	$DB->set_field('feedbackccna_tfo','allow', $value,array("week"=>$week, "type"=>$type));
 }
