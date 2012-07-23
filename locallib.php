@@ -2,12 +2,6 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-/* Deoarece deocamdata sunt planuite doar 2 tipuri de feedback pt studenti 
-   si 2 tipuri pt profesori:
-
-	feedback feedback_type = 1 pt studenti si 2 pt profesori
-	ufo/tfo type = 1 pt prezentari si 2 pt laboratoare
-*/
 define('USER_FEEDBACK', 1);
 define('TEACHER_FEEDBACK', 2);
 
@@ -111,12 +105,11 @@ class add_t_view_form extends moodleform {
 }
 
 
-
+// adauga feedback-ul dat de un student in baza de date
 function insert_user_feedback($user_id, $feedback_id,  $value) {
 	global $DB;
 
 	$record = new stdClass();
-	
 	$record->user_id = $user_id;
 	$record->feedback_id = $feedback_id;
 	$record->feedback_type = USER_FEEDBACK;
@@ -125,18 +118,18 @@ function insert_user_feedback($user_id, $feedback_id,  $value) {
 	$DB->insert_record('feedbackccna_feedback',$record, false);
 }
 
-function get_user_feedback($user_id, $week) {
+//obtine feedback-ul obtinut de un student intr-o saptamana
+function get_user_feedback($user_id, $course_id, $week) {
 	global $DB;
 
-	return $DB->get_records_sql("SELECT * FROM {feedbackccna_feedback} WHERE feedback_type = " . USER_FEEDBACK ." AND user_id = ? AND feedback_id IN (SELECT id FROM {feedbackccna_ufo} WHERE week = ?) ", array($user_id, $week));
+	return $DB->get_records_sql("SELECT * FROM {feedbackccna_feedback} WHERE feedback_type = " . USER_FEEDBACK ." AND user_id = ? AND feedback_id IN (SELECT id FROM {feedbackccna_ufo} WHERE course_id = ? AND week = ?) ", array($user_id, $course_id, $week));
 }
 
-
-function insert_teacher_feedback($user_id, $feedback_id, $value) {
+//adauga feedback-ul dat de un profesor unui student
+function insert_teacher_given_feedback($user_id, $feedback_id, $value) {
 	global $DB;
 
 	$record = new stdClass();
-	
 	$record->$user_id = $user_id;
 	$record->feedback_id = $feedback_id;
 	$record->feedback_type = TEACHER_FEEDBACK;
@@ -145,21 +138,23 @@ function insert_teacher_feedback($user_id, $feedback_id, $value) {
 	$DB->insert_record('feedbackccna_feedback', $record, false);
 }
 
-function get_teacher_feedback($user_id, $week) {
+//obtine feedback-ul obtinut de un profesor intr-o saptamana
+function get_teacher_feedback($course_id, $week) {
 	global $DB;
 
-	return $DB->get_records_sql("SELECT * FROM {feedbackccna_feedback} WHERE feedback_type = " . TEACHER_FEEDBACK . " AND user_id = ? AND feedback_id IN (SELECT id FROM {feedbackccna_tfo} WHERE week = ?) ", array($user_id, $week));
+	return $DB->get_records_sql("SELECT * FROM {feedbackccna_feedback} WHERE feedback_type = " . TEACHER_FEEDBACK . " AND feedback_id IN (SELECT id FROM {feedbackccna_tfo} WHERE week = ? AND course_id = ?) ", array( $week, $course_id));
 }
 
-
+//obtine toate obiectele la care studentul poate primi feedback
 function get_ufos_feedback($week, $type) {
 	global $DB;
 
 	return $DB->get_records_sql("SELECT * FROM {feedbackccna_feedback} WHERE feedback_type = " . USER_FEEDBACK . " AND feedback_id IN (SELECT id FROM {feedbackccna_ufo} WHERE week = ?  AND type = ?)", array($week, $type));
 }
 
-function set_allow_ufo_feedback($week, $type, $value) {
+// permite sau interzice un item de feedback care sa fie acordat profesorului
+function set_allow_tfo_feedback($feedback_id, $week, $type, $value) {
 	global $DB;
 
-	$DB->set_field('feedbackccna_tfo','allow', $value,array("week"=>$week, "type"=>$type));
+	$DB->set_field('feedbackccna_tfo','allow', $value,array("feedback_id"=>$feedback_id,"week"=>$week, "type"=>$type));
 }
