@@ -2,6 +2,15 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+/* Deoarece deocamdata sunt planuite doar 2 tipuri de feedback pt studenti 
+   si 2 tipuri pt profesori:
+
+	feedback feedback_type = 1 pt studenti si 2 pt profesori
+	ufo/tfo type = 1 pt prezentari si 2 pt laboratoare
+*/
+define('USER_FEEDBACK', 1);
+define('TEACHER_FEEDBACK', 2);
+
 require_once("$CFG->libdir/formslib.php");
 
 function build_tabs($active, $id = '', $n = '') {
@@ -101,12 +110,6 @@ class add_t_view_form extends moodleform {
 
 }
 
-/* Deoarece deocamdata sunt planuite doar 2 tipuri de feedback pt studenti 
-   si 2 tipuri pt profesori:
-
-	feedback feedback_type = 1 pt studenti si 2 pt profesori
-	ufo/tfo type = 1 pt prezentari si 2 pt laboratoare
-*/
 
 
 function insert_user_feedback($user_id, $feedback_id,  $value) {
@@ -116,7 +119,7 @@ function insert_user_feedback($user_id, $feedback_id,  $value) {
 	
 	$record->user_id = $user_id;
 	$record->feedback_id = $feedback_id;
-	$record->feedback_type = 1;
+	$record->feedback_type = USER_FEEDBACK;
 	$record->value = $value;
 
 	$DB->insert_record('feedbackccna_feedback',$record, false);
@@ -125,7 +128,7 @@ function insert_user_feedback($user_id, $feedback_id,  $value) {
 function get_user_feedback($user_id, $week) {
 	global $DB;
 
-	return $DB->get_records_sql("SELECT * FROM {feedbackccna_feedback} WHERE feedback_type = 1 AND user_id = ? AND feedback_id IN (SELECT id FROM {feedbackccna_ufo} WHERE week = ?) ", array($user_id, $week));
+	return $DB->get_records_sql("SELECT * FROM {feedbackccna_feedback} WHERE feedback_type = " . USER_FEEDBACK ." AND user_id = ? AND feedback_id IN (SELECT id FROM {feedbackccna_ufo} WHERE week = ?) ", array($user_id, $week));
 }
 
 
@@ -136,7 +139,7 @@ function insert_teacher_feedback($user_id, $feedback_id, $value) {
 	
 	$record->$user_id = $user_id;
 	$record->feedback_id = $feedback_id;
-	$record->feedback_type = 2;
+	$record->feedback_type = TEACHER_FEEDBACK;
 	$record->value = $value;
 
 	$DB->insert_record('feedbackccna_feedback', $record, false);
@@ -145,14 +148,14 @@ function insert_teacher_feedback($user_id, $feedback_id, $value) {
 function get_teacher_feedback($user_id, $week) {
 	global $DB;
 
-	return $DB->get_records_sql("SELECT * FROM {feedbackccna_feedback} WHERE feedback_type = 2 AND user_id = ? AND feedback_id IN (SELECT id FROM {feedbackccna_tfo} WHERE week = ?) ", array($user_id, $week));
+	return $DB->get_records_sql("SELECT * FROM {feedbackccna_feedback} WHERE feedback_type = " . TEACHER_FEEDBACK . " AND user_id = ? AND feedback_id IN (SELECT id FROM {feedbackccna_tfo} WHERE week = ?) ", array($user_id, $week));
 }
 
 
 function get_ufos_feedback($week, $type) {
 	global $DB;
 
-	return $DB->get_records_sql("SELECT * FROM {feedbackccna_feedback} WHERE feedback_type = 1 AND feedback_id IN (SELECT id FROM {feedbackccna_ufo} WHERE week = ?  AND type = ?)", array($week, $type));
+	return $DB->get_records_sql("SELECT * FROM {feedbackccna_feedback} WHERE feedback_type = " . USER_FEEDBACK . " AND feedback_id IN (SELECT id FROM {feedbackccna_ufo} WHERE week = ?  AND type = ?)", array($week, $type));
 }
 
 function set_allow_ufo_feedback($week, $type, $value) {
