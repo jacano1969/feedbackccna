@@ -39,7 +39,7 @@ $string['desclabel'] = 'Description';
 $string['achadded'] = 'The feedbackccna was added successfully';
 $string['assadded'] = 'The feedbackccna was asigned successfully';
 
-$string['nofeedbackccna'] = 'No feedbackccna has been entered in the database';
+$string['nofeedback'] = 'No feedback has been entered in the database';
 
 $string['imagelabel'] = 'Poza';
 ?>

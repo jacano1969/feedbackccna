@@ -25,6 +25,9 @@ require_login($course, true, $cm);
 
 $context = get_context_instance(CONTEXT_MODULE, $cm->id);
 
+$contextid = $context->id;
+$courseid = $course->id;
+
 add_to_log($course->id, 'feedbackccna', 't_view', "view.php?id={$cm->id}", $feedbackccna->name, $cm->id);
 
 /// Print the page header
@@ -43,6 +46,70 @@ build_tabs('t_view', $id, $n);
 global $DB;
 global $USER;
 
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+echo '<link type="text/css" rel="stylesheet" href="achievement.css"/>';
+
+$vach = array();
+foreach($_POST as $key=>$post){
+	if(strpos($key,'color')!==FALSE){
+		$dd=explode('_',$key);
+		if($post==1){
+			array_push($vach, $dd[1]);
+		}
+	}
+}
+
+
+
+include('participants.php');
+
+
+
+foreach($vach as $key){
+	$delid=$key;
+
+	$students = get_students_by_course($course->id);
+	foreach($students as $student){
+		$name='user'.$student->id;
+		if (array_key_exists($name,$_POST)){
+
+			$post=new object();
+			$post->discussion = 0;
+			$post->parent = 0;
+			$post->userid = $USER->id;
+			$t = time();
+			$post->created = $t;
+			$post->modified = $t;
+			$post->mailed = 0;
+			$post->subject = "";
+			$post->message = "";
+			//$fid = $DB->insert_record('forum_posts', $post);
+
+			$f=new object();
+			$f->achid=$delid;
+			$f->postid=$fid;
+			$usr=$student->id;
+			$pc=get_profile_course_by_course_user($course->id,$usr);
+			//$profile = $DB->get_record('academy_profile',array('userid'=>$usr));
+			if ($pc!=NULL) {
+				// add the new feedback inside the course
+				$f->apcid=$pc[$course->id]->pcid;
+				//$DB->insert_record('academy_profile_feedback',$f);
+			}else{
+				$tmpcourse = new object();
+				//$tmpcourse->apid = $profile->id;
+				$tmpcourse->courseid = $course->id;
+				$tmpcourse->hidden = 0;
+				//$f->apcid = $DB->insert_record('academy_profile_course',$tmpcourse);
+				//$DB->insert_record('academy_profile_feedback',$f);
+			}
+
+		}
+	}
+}
+
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 // Finish the page
 echo $OUTPUT->footer();
