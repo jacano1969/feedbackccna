@@ -185,14 +185,6 @@
             $tableheaders[] = get_user_field_name($field);
         }
     }
-    if ($mode === MODE_BRIEF && !isset($hiddenfields['city'])) {
-        $tablecolumns[] = 'city';
-        $tableheaders[] = get_string('city');
-    }
-    if ($mode === MODE_BRIEF && !isset($hiddenfields['country'])) {
-        $tablecolumns[] = 'country';
-        $tableheaders[] = get_string('country');
-    }
     if (!isset($hiddenfields['lastaccess'])) {
         $tablecolumns[] = 'lastaccess';
         $tableheaders[] = get_string('lastaccess');
@@ -201,6 +193,8 @@
     if ($bulkoperations) {
         $tablecolumns[] = 'feedback';
         $tableheaders[] = get_string('feedback');
+	$tablecolumns[] = 'laborator';
+	$tableheaders[] = get_string('laborator', 'feedbackccna');
 	$tablecolumns[] = 'no_select';
 	$tableheaders[] = get_string('no_select', 'feedbackccna');
     }
@@ -238,6 +232,7 @@ $form->display();
     $table->no_sorting('groups');
     $table->no_sorting('groupings');
     $table->no_sorting('feedback');
+    $table->no_sorting('laborator');
     $table->no_sorting('no_select');
 
     $table->set_attribute('cellspacing', '0');
@@ -407,6 +402,22 @@ $form->display();
 		}
 		return checked;
 	}
+
+	function unclick(type, id) {
+		id += \'\';
+		if (type == "user") {
+			if (document.getElementById("user".concat(id)).checked) {
+				document.getElementById("lab".concat(id)).checked = false;
+			}
+		} else {
+			if (document.getElementById("lab".concat(id)).checked) {
+				document.getElementById("user".concat(id)).checked = false;
+			}
+		}
+
+		return false;
+	}
+
 	//]]>
 	</script>
 		';
@@ -520,15 +531,15 @@ $form->display();
                                 get_string('labelsep', 'langconfig') . s($user->{$field}) . '<br />';
                     }
                     if (($user->city or $user->country) and (!isset($hiddenfields['city']) or !isset($hiddenfields['country']))) {
-                        $row->cells[1]->text .= get_string('city').get_string('labelsep', 'langconfig');
+                        //$row->cells[1]->text .= get_string('city').get_string('labelsep', 'langconfig');
                         if ($user->city && !isset($hiddenfields['city'])) {
-                            $row->cells[1]->text .= $user->city;
+                            //$row->cells[1]->text .= $user->city;
                         }
                         if (!empty($countries[$user->country]) && !isset($hiddenfields['country'])) {
                             if ($user->city && !isset($hiddenfields['city'])) {
-                                $row->cells[1]->text .= ', ';
+                                //$row->cells[1]->text .= ', ';
                             }
-                            $row->cells[1]->text .= $countries[$user->country];
+                            //$row->cells[1]->text .= $countries[$user->country];
                         }
                         $row->cells[1]->text .= '<br />';
                     }
@@ -579,7 +590,8 @@ $form->display();
 			$row->cells[2]->text .= '<option value = "4">4</option>';
 			$row->cells[2]->text .= '<option value = "5">5</option>';
 			$row->cells[2]->text .= '</select>';
-			$row->cells[2]->text = '<br /><input type = "checkbox" class = "usercheckbox" name = "user' . $user->id . '" />';
+			$row->cells[2]->text .= '<br /><input type = "checkbox" class = "labcheckbox" id = "lab' . $user->id . '" name = "lab' . $user->id . '" onclick = unclick("lab",' . $user->id . ') />';
+			$row->cells[2]->text .= '<br /><input type = "checkbox" class = "usercheckbox" id = "user' . $user->id . '" name = "user' . $user->id . '" onclick = unclick("user",' . $user->id . ') />';
                     }
                     $table->data = array($row);
                     echo html_writer::table($table);
@@ -640,10 +652,10 @@ $form->display();
                     }
                 }
                 if ($mode === MODE_BRIEF && !isset($hiddenfields['city'])) {
-                    $data[] = $user->city;
+                    //$data[] = $user->city;
                 }
                 if ($mode === MODE_BRIEF && !isset($hiddenfields['country'])) {
-                    $data[] = $country;
+                    //$data[] = $country;
                 }
                 if (!isset($hiddenfields['lastaccess'])) {
                     $data[] = $lastaccess;
@@ -673,7 +685,8 @@ $form->display();
                 if ($bulkoperations) {
 
 		    $data[] = '<select class = "feedback" name = "feed' . $user->id . '"><option value = "1">1</option><option value = "2">2</option><option value = "3">3</option><option value = "4">4</option><option value = "5">5</option></select>';
-		    $data[] .= '<input type="checkbox" class="usercheckbox" name="user'.$user->id.'" />';
+		    $data[] .= '<input type="checkbox" class="labcheckbox" name="lab'.$user->id.'" id = "lab'.$user->id.'" onclick = unclick("lab",' . $user->id . ') />';
+		    $data[] .= '<input type="checkbox" class="usercheckbox" name="user'.$user->id.'" id = "user'.$user->id.'" onclick = unclick("user",' . $user->id . ') />';
                 }
                 $table->add_data($data);
             }
