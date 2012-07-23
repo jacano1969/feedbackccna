@@ -146,12 +146,18 @@ function get_teacher_feedback($course_id, $week) {
 }
 
 //obtine toate obiectele la care studentul poate primi feedback
-function get_ufos_feedback($week, $type) {
+function get_ufos_feedback($week) {
 	global $DB;
 
-	return $DB->get_records_sql("SELECT * FROM {feedbackccna_feedback} WHERE feedback_type = " . USER_FEEDBACK . " AND feedback_id IN (SELECT id FROM {feedbackccna_ufo} WHERE week = ?  AND type = ?)", array($week, $type));
+	return $DB->get_records_sql("SELECT * FROM {feedbackccna_ufo} WHERE week = ?)", array($week));
 }
 
+//obtine toate obiectele la care profesorul poate primi feedback
+function get_tfos_feedback($week) {
+	global $DB;
+
+	return $DB->get_records_sql("SELECT *  FROM {feedbackccna_tfo} WHERE week = ?)", array($week));
+}
 // permite sau interzice un item de feedback care sa fie acordat profesorului
 function set_allow_tfo_feedback($feedback_id, $week, $type, $value) {
 	global $DB;
