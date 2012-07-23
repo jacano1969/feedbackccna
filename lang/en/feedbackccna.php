@@ -29,7 +29,8 @@ $string['t_view'] = 'Student feedback';
 $string['t_viewdesc'] = 'Rate your students!';
 $string['feedback_values'] = 'Your rating:';
 $string['feedback_sent'] = 'Your feedback has been successfully sent! Thank you!';
-$string['no_select'] = 'Skip';
+$string['no_select'] = 'Absent';
+$string['laborator'] = 'Laborator<br/>complet';
 
 $string['viewtitle'] = 'View feedbackccna';
 $string['headerlabel'] = 'Please submit your feedback:';
