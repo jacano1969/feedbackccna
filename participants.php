@@ -199,9 +199,29 @@
     }
 
     if ($bulkoperations) {
-        $tablecolumns[] = 'select';
-        $tableheaders[] = get_string('select');
+        $tablecolumns[] = 'feedback';
+        $tableheaders[] = get_string('feedback');
+	$tablecolumns[] = 'no_select';
+	$tableheaders[] = get_string('no_select', 'feedbackccna');
     }
+
+/*
+$form = new add_view_form(null, array('id' => $id, 'n' => $n, 'courseid' => $course->id));
+$entry = $form->get_data();
+
+if (!empty($entry) and confirm_sesskey()) {
+
+	$db_entry = new stdClass();
+	//$db_entry->instances = $entry->value;
+
+	//$DB->insert_db_entry('feedbackccna_feedback', $db_entry);
+
+	echo $OUTPUT->notification(get_string('feedback_sent', 'feedbackccna'), 'notifysuccess');
+
+}
+
+$form->display();
+*/
 
     $table = new flexible_table('user-index-participants-'.$course->id);
     $table->define_columns($tablecolumns);
@@ -217,7 +237,8 @@
     $table->no_sorting('roles');
     $table->no_sorting('groups');
     $table->no_sorting('groupings');
-    $table->no_sorting('select');
+    $table->no_sorting('feedback');
+    $table->no_sorting('no_select');
 
     $table->set_attribute('cellspacing', '0');
     $table->set_attribute('id', 'participants');
@@ -550,7 +571,15 @@
                     $row->cells[2]->text .= implode('', $links);
 
                     if ($bulkoperations) {
-                        $row->cells[2]->text .= '<br /><input type="checkbox" class="usercheckbox" name="user'.$user->id.'" /> ';
+                        $row->cells[2]->text .= '<br />';
+			$row->cells[2]->text .= '<select class = "feedback" name = "feed' . $user->id . '">';
+			$row->cells[2]->text .= '<option value = "1">1</option>';
+			$row->cells[2]->text .= '<option value = "2">2</option>';
+			$row->cells[2]->text .= '<option value = "3">3</option>';
+			$row->cells[2]->text .= '<option value = "4">4</option>';
+			$row->cells[2]->text .= '<option value = "5">5</option>';
+			$row->cells[2]->text .= '</select>';
+			$row->cells[2]->text = '<br /><input type = "checkbox" class = "usercheckbox" name = "user' . $user->id . '" />';
                     }
                     $table->data = array($row);
                     echo html_writer::table($table);
@@ -642,7 +671,9 @@
                 }
 
                 if ($bulkoperations) {
-                    $data[] = '<input type="checkbox" class="usercheckbox" name="user'.$user->id.'" />';
+
+		    $data[] = '<select class = "feedback" name = "feed' . $user->id . '"><option value = "1">1</option><option value = "2">2</option><option value = "3">3</option><option value = "4">4</option><option value = "5">5</option></select>';
+		    $data[] .= '<input type="checkbox" class="usercheckbox" name="user'.$user->id.'" />';
                 }
                 $table->add_data($data);
             }

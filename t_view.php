@@ -1,4 +1,3 @@
-
 <?php
 
 require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
@@ -57,7 +56,7 @@ foreach($_POST as $key=>$post){
 		if($post==1){
 			array_push($vach, $dd[1]);
 		}
-	}
+	}	
 }
 
 
