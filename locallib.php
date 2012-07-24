@@ -4,7 +4,7 @@ defined('MOODLE_INTERNAL') || die();
 
 define('USER_FEEDBACK', 1);
 define('TEACHER_FEEDBACK', 2);
-define('ALLO_FEEDBACK', 0);
+define('ALLOW_FEEDBACK', 0);
 
 require_once("$CFG->libdir/formslib.php");
 
@@ -159,6 +159,7 @@ function get_tfos_feedback($section) {
 
 	return $DB->get_records_sql("SELECT *  FROM {feedbackccna_tfo} WHERE section = ?)", array($section));
 }
+
 // permite sau interzice un item de feedback care sa fie acordat profesorului
 function set_allow_tfo_feedback($feedback_id, $section, $type, $value) {
 	global $DB;
