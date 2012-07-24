@@ -33,7 +33,8 @@ $string['no_select'] = 'Absent';
 $string['laborator'] = 'Laborator<br/>complet';
 
 $string['viewtitle'] = 'View feedbackccna';
-$string['headerlabel'] = 'Please submit your feedback:';
+$string['headerlabel_presentation'] = 'Please submit your feedback for the presentation:';
+$string['headerlabel_lab'] = 'Please submit your feedback for the laboratory:';
 $string['namelabel'] = 'Name';
 $string['imagelabel'] = 'Image';
 $string['submitlabel'] = 'Add';
