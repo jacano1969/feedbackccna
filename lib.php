@@ -31,6 +31,8 @@
  */
 
 defined('MOODLE_INTERNAL') || die();
+require_once("locallib.php");
+
 
 /** example constant */
 //define('NEWMODULE_ULTIMATE_ANSWER', 42);
@@ -67,17 +69,15 @@ function feedbackccna_supports($feature) {
  */
 function feedbackccna_add_instance(stdClass $feedbackccna, mod_feedbackccna_mod_form $mform = null) {
     global $DB;
+	global $hardc_type_tfo;
+	global $hardc_type_ufo;
 
     $feedbackccna->timecreated = time();
+	# You may have to add extra stuff in here #
 
-    # You may have to add extra stuff in here #
-/*
-	$record->allow = 0;
-	$record->type = 1;
-	$record->course_id = $feedbackccna->course;
-	$record->section = $feedbackccna->section;
-	$DB->insert_record('feedbackccna_tfo', $record, false);
-*/
+	mod_setup_insert_tfo_objects($feedbackccna, $hardc_type_tfo);	
+	mod_setup_insert_ufo_objects($feedbackccna, $hardc_type_ufo);	
+
     return $DB->insert_record('feedbackccna', $feedbackccna);
 }
 

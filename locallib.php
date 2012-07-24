@@ -168,9 +168,9 @@ function set_allow_tfo_feedback($feedback_id, $section, $type, $value) {
 }
 
 // inserare obiect feedback teacher
-function insert_tfo_feedback($course_id, $section, $type) {
+function insert_tfo_object($course_id, $section, $type) {
 	global $DB;
-	
+
 	$record->allow = ALLOW_FEEDBACK;
 	$record->course_id = $course_id;
 	$record->section = $section;
@@ -180,7 +180,7 @@ function insert_tfo_feedback($course_id, $section, $type) {
 }
 
 // inserare obiect feedback utilizator
-function insert_ufo_feedback($course_id, $section, $type) {
+function insert_ufo_object($course_id, $section, $type) {
     global $DB;
 
     $record->course_id = $course_id;
@@ -188,4 +188,21 @@ function insert_ufo_feedback($course_id, $section, $type) {
     $record->type = $type;
 
     $DB->insert_record('feedbackccna_ufo', $record, false);
+}
+
+public $hardc_type_tfo = array( 1, 2); // Tip feedback profesor 1 = Prezentare, 2 = Laborator
+public $hardc_type_ufo = array( 1, 2); // Tip feedback student 1 = Prezentare, 2 = Laborator
+
+// inserare obiecte feedback profesor
+function mod_setup_insert_tfo_objects(stdClass $feedback, $fobjects_type) {
+	foreach($fobjects_type as $type) {
+		insert_tfo_object($feedback->course, $feedback->section, $type);
+	}
+}
+
+// inserare obiecte feedback student 
+function mod_setup_insert_ufo_objects(stdClass $feedback, $fobjects_type) {
+	foreach($fobjects_type as $type) {
+		insert_ufo_object($feedback->course, $feedback->section, $type);
+	}
 }
