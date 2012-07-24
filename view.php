@@ -46,7 +46,7 @@ global $USER;
 
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-$form = new add_view_form(null, array('id' => $id, 'n' => $n, 'courseid' => $course->id));
+$form = new add_view_form(null, array('id' => $id, 'n' => $n, 'courseid' => $course->id, 'cm' => $cm));
 $entry = $form->get_data();
 
 if (!empty($entry) and confirm_sesskey()) {
@@ -61,6 +61,16 @@ if (!empty($entry) and confirm_sesskey()) {
 }
 
 $form->display();
+
+/*
+$new_array = get_tfos_feedback($cm->section);
+foreach ($data as $new_array) {
+	if ($data->type == '1') {
+		$my_feedback_id = $data->id;
+		break;
+	}
+}
+*/
 
 
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

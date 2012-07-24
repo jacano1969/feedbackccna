@@ -62,22 +62,32 @@ class add_view_form extends moodleform {
 		$mform->addElement('hidden', 'id', $this->_customdata['id']);
 		$mform->setType('id', PARAM_INT);
 
-		$mform->addElement('header', 'editorheader',
-				get_string('headerlabel', 'feedbackccna'));
+		$new_array = get_tfos_feedback($this->_customdata['cm']->section);
+		foreach ($new_array as $data) {
+			if ($data->type == '1') {
+				$mform->addElement('header', 'editorheader', get_string('headerlabel_presentation', 'feedbackccna'));
 
-		$mform->addElement('select', 'value', get_string('feedback_values', 'feedbackccna'), 
-				array('1' => '1', '2' => '2', '3' => '3', '4' => '4', '5' => '5'));
+				$mform->addElement('select', 'value', get_string('feedback_values', 'feedbackccna'), 
+					array('1' => '1', '2' => '2', '3' => '3', '4' => '4', '5' => '5'));
 		
-		//$mform->setType('name', PARAM_TEXT);
-		//$mform->addrule('name', null, 'required', null, 'client');
+				print_container_start(false, 'singlebutton'); 
+				$this->add_action_buttons(false, get_string('submitlabel', 'feedbackccna')); 
+				print_container_end();
 
-		//$mform->addElement('textarea', 'desc', get_string('desclabel', 'feedbackccna'), 
-		//		array('rows' => 3, 'cols' => 45));
-		//$mform->setType('desc', PARAM_TEXT);
+			} elseif ($data->type == '2') {
+				$mform->addElement('header', 'editorheader', get_string('headerlabel_lab', 'feedbackccna'));
 
-		print_container_start(false, 'singlebutton'); 
-		$this->add_action_buttons(false, get_string('submitlabel', 'feedbackccna')); 
-		print_container_end();
+				$mform->addElement('select', 'value', get_string('feedback_values', 'feedbackccna'), 
+					array('1' => '1', '2' => '2', '3' => '3', '4' => '4', '5' => '5'));
+		
+				print_container_start(false, 'singlebutton'); 
+				$this->add_action_buttons(false, get_string('submitlabel', 'feedbackccna')); 
+				print_container_end();
+
+			} else {
+				print_error('Type not defined');
+			}	
+		}
 
 	}
 
@@ -143,28 +153,28 @@ function insert_teacher_given_feedback($user_id, $feedback_id, $value) {
 function get_teacher_feedback($course_id, $section) {
 	global $DB;
 
-	return $DB->get_records_sql("SELECT * FROM {feedbackccna_feedback} WHERE feedback_type = " . TEACHER_FEEDBACK . " AND feedback_id IN (SELECT id FROM {feedbackccna_tfo} WHERE section = ? AND course_id = ?) ", array( $section, $course_id));
+	return $DB->get_records_sql("SELECT * FROM {feedbackccna_feedback} WHERE feedback_type = " . TEACHER_FEEDBACK . " AND feedback_id IN (SELECT id FROM {feedbackccna_tfo} WHERE section = ? AND course_id = ? AND allow = ) ", array( $section, $course_id));
 }
 
 //obtine toate obiectele la care studentul poate primi feedback
 function get_ufos_feedback($section) {
 	global $DB;
 
-	return $DB->get_records_sql("SELECT * FROM {feedbackccna_ufo} WHERE section = ?)", array($section));
+	return $DB->get_records_sql("SELECT * FROM {feedbackccna_ufo} WHERE section = ?", array($section));
 }
 
 //obtine toate obiectele la care profesorul poate primi feedback
 function get_tfos_feedback($section) {
 	global $DB;
 
-	return $DB->get_records_sql("SELECT *  FROM {feedbackccna_tfo} WHERE section = ?)", array($section));
+	return $DB->get_records_sql("SELECT *  FROM {feedbackccna_tfo} WHERE section = ?", array($section));
 }
 
 // permite sau interzice un item de feedback care sa fie acordat profesorului
 function set_allow_tfo_feedback($feedback_id, $section, $type, $value) {
 	global $DB;
 
-	$DB->set_field('feedbackccna_tfo','allow', $value,array("feedback_id"=>$feedback_id,"section"=>$section, "type"=>$type));
+	$DB->set_field('feedbackccna_tfo','allow', $value, array("feedback_id"=>$feedback_id,"section"=>$section, "type"=>$type));
 }
 
 // inserare obiect feedback teacher

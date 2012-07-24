@@ -199,24 +199,6 @@
 	$tableheaders[] = get_string('no_select', 'feedbackccna');
     }
 
-/*
-$form = new add_view_form(null, array('id' => $id, 'n' => $n, 'courseid' => $course->id));
-$entry = $form->get_data();
-
-if (!empty($entry) and confirm_sesskey()) {
-
-	$db_entry = new stdClass();
-	//$db_entry->instances = $entry->value;
-
-	//$DB->insert_db_entry('feedbackccna_feedback', $db_entry);
-
-	echo $OUTPUT->notification(get_string('feedback_sent', 'feedbackccna'), 'notifysuccess');
-
-}
-
-$form->display();
-*/
-
     $table = new flexible_table('user-index-participants-'.$course->id);
     $table->define_columns($tablecolumns);
     $table->define_headers($tableheaders);
@@ -421,10 +403,14 @@ $form->display();
 	//]]>
 	</script>
 		';
+
+
 	echo '<form action="view.php?id='.$cm->id.'" method="post" id="participantsform" onsubmit="return checksubmit(this);">';
 	echo '<div>';
 	echo '<input type="hidden" name="sesskey" value="'.$USER->sesskey.'" />';
 	echo '<input type="hidden" name="returnto" value="'.s(me()).'" />';
+
+
     }
 
     if ($mode === MODE_USERDETAILS) {    // Print simple listing
@@ -704,6 +690,11 @@ $form->display();
 		'document.getElementById("noscriptparticipantsform").style.display = "none";'.
 		"\n//]]>\n".'</script>';
 	echo '</div>';
+
+    	echo '<br /><div class="buttons">';
+    	echo '<input type="button" onclick="checkall()" value="'.get_string('selectall').'" /> ';
+	echo '</div>';
+
 	echo '</form>';
 
         $module = array('name'=>'core_user', 'fullpath'=>'/user/module.js');
