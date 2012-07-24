@@ -62,54 +62,58 @@ class add_view_form extends moodleform {
 		$mform->addElement('hidden', 'id', $this->_customdata['id']);
 		$mform->setType('id', PARAM_INT);
 
-		$new_array = get_tfos_feedback($this->_customdata['cm']->section);
+		$new_array = get_tfos_feedback(($this->_customdata['cm']->section) - 1);
+
+		$nothing = 1;
+		$something = 0;
+
 		foreach ($new_array as $data) {
-			if ($data->type == '1') {
-				$mform->addElement('header', 'editorheader', get_string('headerlabel_presentation', 'feedbackccna'));
+			if ($data->allow == '1') {
+				$nothing = 0;
 
-				$mform->addElement('select', 'value', get_string('feedback_values', 'feedbackccna'), 
-					array('1' => '1', '2' => '2', '3' => '3', '4' => '4', '5' => '5'));
-		
-				print_container_start(false, 'singlebutton'); 
-				$this->add_action_buttons(false, get_string('submitlabel', 'feedbackccna')); 
-				print_container_end();
+				if ($data->type == '1' and $data->allow == '1') {
+					$mform->addElement('header', 'editorheader', get_string('headerlabel_presentation', 'feedbackccna'));
 
-			} elseif ($data->type == '2') {
-				$mform->addElement('header', 'editorheader', get_string('headerlabel_lab', 'feedbackccna'));
+					$mform->addElement('select', 'value', get_string('feedback_values', 'feedbackccna'), 
+						array('1' => '1', '2' => '2', '3' => '3', '4' => '4', '5' => '5'));
+			
+					print_container_start(false, 'singlebutton'); 
+					$this->add_action_buttons(false, get_string('submitlabel', 'feedbackccna')); 
+					print_container_end();
 
-				$mform->addElement('select', 'value', get_string('feedback_values', 'feedbackccna'), 
-					array('1' => '1', '2' => '2', '3' => '3', '4' => '4', '5' => '5'));
-		
-				print_container_start(false, 'singlebutton'); 
-				$this->add_action_buttons(false, get_string('submitlabel', 'feedbackccna')); 
-				print_container_end();
+					$something = 1;
+					break;
 
-			} else {
-				print_error('Type not defined');
-			}	
+				} elseif ($data->type == '2' and $data->allow == '1') {
+					$mform->addElement('header', 'editorheader', get_string('headerlabel_lab', 'feedbackccna'));
+
+					$mform->addElement('select', 'value', get_string('feedback_values', 'feedbackccna'), 
+						array('1' => '1', '2' => '2', '3' => '3', '4' => '4', '5' => '5'));
+			
+					print_container_start(false, 'singlebutton'); 
+					$this->add_action_buttons(false, get_string('submitlabel', 'feedbackccna')); 
+					print_container_end();
+
+					$something = 1;
+					break;
+
+				}
+			}
 		}
 
-	}
+		if (!$something) {
 
-}
+			if($nothing) {
 
+				$mform->addElement('header', 'editorheader', get_string('headerlabel_nothing', 'feedbackccna'));
 
-class add_add_form extends moodleform {
+			} else {
 
-	function definition() {
+				print_error('Feedback category is non-existent!');
 
-		//bla
+			}
 
-	}
-
-}
-
-
-class add_t_view_form extends moodleform {
-
-	function definition() {
-
-		//bla
+		}
 
 	}
 

@@ -35,6 +35,7 @@ $string['laborator'] = 'Laborator<br/>complet';
 $string['viewtitle'] = 'View feedbackccna';
 $string['headerlabel_presentation'] = 'Please submit your feedback for the presentation:';
 $string['headerlabel_lab'] = 'Please submit your feedback for the laboratory:';
+$string['headerlabel_nothing'] = 'Your teacher did not allow any feedback yet. Please be patient :)';
 $string['namelabel'] = 'Name';
 $string['imagelabel'] = 'Image';
 $string['submitlabel'] = 'Add';
