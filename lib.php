@@ -71,7 +71,13 @@ function feedbackccna_add_instance(stdClass $feedbackccna, mod_feedbackccna_mod_
     $feedbackccna->timecreated = time();
 
     # You may have to add extra stuff in here #
-
+/*
+	$record->allow = 0;
+	$record->type = 1;
+	$record->course_id = $feedbackccna->course;
+	$record->section = $feedbackccna->section;
+	$DB->insert_record('feedbackccna_tfo', $record, false);
+*/
     return $DB->insert_record('feedbackccna', $feedbackccna);
 }
 
