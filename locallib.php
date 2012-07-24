@@ -200,8 +200,11 @@ function insert_ufo_object($course_id, $section, $type) {
     $DB->insert_record('feedbackccna_ufo', $record, false);
 }
 
-public $hardc_type_tfo = array( 1, 2); // Tip feedback profesor 1 = Prezentare, 2 = Laborator
-public $hardc_type_ufo = array( 1, 2); // Tip feedback student 1 = Prezentare, 2 = Laborator
+global $hardc_type_tfo;
+global $hardc_type_ufo;
+
+$hardc_type_tfo = array( 1, 2); // Tip feedback profesor 1 = Prezentare, 2 = Laborator
+$hardc_type_ufo = array( 1, 2); // Tip feedback student 1 = Prezentare, 2 = Laborator
 
 // inserare obiecte feedback profesor
 function mod_setup_insert_tfo_objects(stdClass $feedback, $fobjects_type) {

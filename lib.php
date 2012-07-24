@@ -68,9 +68,11 @@ function feedbackccna_supports($feature) {
  * @return int The id of the newly inserted feedbackccna record
  */
 function feedbackccna_add_instance(stdClass $feedbackccna, mod_feedbackccna_mod_form $mform = null) {
-    global $DB;
+	global $DB;
 	global $hardc_type_tfo;
 	global $hardc_type_ufo;
+
+print_r($hardc_type_tfo);
 
     $feedbackccna->timecreated = time();
 	# You may have to add extra stuff in here #
