@@ -18,7 +18,7 @@ function insert_feedback_module($course_id, $section_id) {
 
 	$record = new stdClass();
 	$record->course_id = $course_id;
-	$record->section_id = $section_id;
+	$record->section = $section_id;
 
 	$DB->insert_record("feedbackccna_module",$record);
 }
@@ -65,14 +65,18 @@ $which_way) {
 function get_feedback_ccna_objects_teacher($course_id, $section) {
 	global $DB;
 
-	return $DB->get_records_sql("SELECT * FROM {feedbackccna_feedback} WHERE module_id IN (SELECT id FROM {feedbackccna_module} WHERE course_id = ? AND section = ?)", array($course_id, $section));
+	return $DB->get_records_sql("SELECT * FROM {feedbackccna_feedback} 
+					WHERE module_id IN (SELECT id FROM {feedbackccna_module} 
+					WHERE course_id = ? AND section = ?)", array($course_id, $section));
 }
 
 // functie de obtinut obiectele (laboratoare/prezenari) de feedback pt student
 function get_feedback_ccna_objects_student($course_id, $section) {
 	global $DB;
 
-	return $DB->get_records_sql("SELECT * FROM {feedbackccna_feedback} WHERE allow = ".FEEDBACK_ALLOWED." AND module_id IN (SELECT id FROM {feedbackccna_module} WHERE course_id = ? AND section = ?)", array($course_id, $section));
+	return $DB->get_records_sql("SELECT * FROM {feedbackccna_feedback} 
+					WHERE allow = ".FEEDBACK_ALLOWED." AND module_id IN (SELECT id FROM {feedbackccna_module}
+					WHERE course_id = ? AND section = ?)", array($course_id, $section));
 }
 
 // functie care obtine intrebarile la care trebuie sa raspunda studenti
@@ -92,14 +96,13 @@ function get_questions_for_teachers() {
 // functie care obtine nr de feedbackuri date la un obiect de feedback
 function get_responses_count($course_id, $section) {
     global $DB;
-    $bla = STUDENT_FOR_TEACHER;
     $params = null;
 
     return $DB->count_records_sql("SELECT feedback_id, COUNT(*)  FROM {feedbackccna_answer}
-        WHERE question_id IN (SELECT id FROM {feedbackccna_questions}
-        WHERE which_way = ".$bla.") AND feedback_id IN (SELECT id FROM {feedbackccna_feedback}
-        WHERE module_id IN (SELECT id FROM feedbackccna_module WHERE course_id = ".$course_id." AND section = ".$section."))
-        GROUP BY feedback_id", /*array*/ $params/*=null*/);
+        			WHERE question_id IN (SELECT id FROM {feedbackccna_questions}
+        			WHERE which_way = ".STUDENT_FOR_TEACHER.") AND feedback_id IN (SELECT id FROM {feedbackccna_feedback}
+        			WHERE module_id IN (SELECT id FROM feedbackccna_module WHERE course_id = ".$course_id." AND section = ".$section."))
+        			GROUP BY feedback_id",  $params);
 }
 
 //functie de modificat starea unui feedback
@@ -117,6 +120,15 @@ function set_feedback_allow($id, $allow) {
 function student_present($student_id, $course_id, $section) {
 	global $DB;
 
-	return $DB->count_records_sql("SELECT * FROM {feedbackccna_answer} WHERE student_id =".$student_id." AND feedback_id IN (SELECT id FROM {feedbackccna_feedback} WHERE module_id IN (SELECT id FROM {feedbackccna_module} WHERE course_id=".$course_id." AND section=".$section.")) AND question_id IN (SELECT id FROM {feedbackccna_questions} WHERE which_way=".STUDENT_FOR_TEACHER.")") > 0;
+	return $DB->count_records_sql("SELECT * FROM {feedbackccna_answer}
+					WHERE student_id =".$student_id." AND feedback_id IN (SELECT id FROM {feedbackccna_feedback}
+					WHERE module_id IN (SELECT id FROM {feedbackccna_module} 
+					WHERE course_id=".$course_id." AND section=".$section.")) AND question_id IN (SELECT id FROM {feedbackccna_questions} 
+					WHERE which_way=".STUDENT_FOR_TEACHER.")") > 0;
+}
+
+// functie care insereaza in baza de date modulul de feedback atunci cand este adaugat in curs
+function mod_setup_insert_module(stdClass $feedback) {
+	insert_feedback_module($feedback->course, $feedback->section);
 }
 ?>
