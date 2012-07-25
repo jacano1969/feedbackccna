@@ -56,10 +56,16 @@ $entry = $form->get_data();
 
 if (!empty($entry) and confirm_sesskey()) {
 
-	$db_entry = new stdClass();
-	//$db_entry->instances = $entry->value;
+    $db_entry = new stdClass();
 
-	//$DB->insert_db_entry('feedbackccna_feedback', $db_entry);
+    foreach ($new_array as $data) {
+
+        $db_entry->('feedback_value'.$data->id) = $entry->('value'.$data->id);
+        $db_entry->('allow'.$data->id) = $entry->('check'.$data->id);
+
+        insert_feedback_answer($USER->id, $data->id, , $value);
+
+    }
 
 	echo $OUTPUT->notification(get_string('feedback_sent', 'feedbackccna'), 'notifysuccess');
 
