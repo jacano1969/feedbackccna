@@ -4,7 +4,7 @@
     xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
 >
   <TABLES>
-    <TABLE NAME="feedbackccna" COMMENT="Default comment for feedbackccna, please edit me" NEXT="feedback_module">
+    <TABLE NAME="feedbackccna" COMMENT="Default comment for feedbackccna, please edit me" NEXT="feedbackccna_module">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" NEXT="course"/>
         <FIELD NAME="course" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Course feedbackccna activity belongs to" PREVIOUS="id" NEXT="name"/>
@@ -21,7 +21,7 @@
         <INDEX NAME="course" UNIQUE="false" FIELDS="course"/>
       </INDEXES>
     </TABLE>
-    <TABLE NAME="feedback_module" COMMENT="Organizare pe saptamana" PREVIOUS="feedbackccna" NEXT="questions">
+    <TABLE NAME="feedbackccna_module" COMMENT="Organizare pe saptamana" PREVIOUS="feedbackccna" NEXT="feedbackccna_questions">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" NEXT="course_id"/>
         <FIELD NAME="course_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" PREVIOUS="id" NEXT="section"/>
@@ -31,7 +31,7 @@
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
       </KEYS>
     </TABLE>
-    <TABLE NAME="questions" COMMENT="Default comment for the table, please edit me" PREVIOUS="feedback_module" NEXT="feedback_ccna">
+    <TABLE NAME="feedbackccna_questions" COMMENT="Default comment for the table, please edit me" PREVIOUS="feedbackccna_module" NEXT="feedbackccna_feedback">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" NEXT="name"/>
         <FIELD NAME="name" TYPE="char" LENGTH="45" NOTNULL="true" SEQUENCE="false" PREVIOUS="id" NEXT="type"/>
@@ -42,7 +42,7 @@
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
       </KEYS>
     </TABLE>
-    <TABLE NAME="feedback_ccna" COMMENT="Default comment for the table, please edit me" PREVIOUS="questions" NEXT="answer">
+    <TABLE NAME="feedbackccna_feedback" COMMENT="Default comment for the table, please edit me" PREVIOUS="feedbackccna_questions" NEXT="feedbackccna_answer">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" NEXT="type"/>
         <FIELD NAME="type" TYPE="int" LENGTH="2" NOTNULL="true" SEQUENCE="false" PREVIOUS="id" NEXT="name"/>
@@ -53,10 +53,10 @@
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id" NEXT="fk_module_id"/>
-        <KEY NAME="fk_module_id" TYPE="foreign" FIELDS="module_id" REFTABLE="feedback_module" REFFIELDS="id" PREVIOUS="primary"/>
+        <KEY NAME="fk_module_id" TYPE="foreign" FIELDS="module_id" REFTABLE="feedbackccna_module" REFFIELDS="id" PREVIOUS="primary"/>
       </KEYS>
     </TABLE>
-    <TABLE NAME="answer" COMMENT="Default comment for the table, please edit me" PREVIOUS="feedback_ccna">
+    <TABLE NAME="feedbackccna_answer" COMMENT="Default comment for the table, please edit me" PREVIOUS="feedbackccna_feedback">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" NEXT="student_id"/>
         <FIELD NAME="student_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" PREVIOUS="id" NEXT="feedback_id"/>
@@ -66,8 +66,8 @@
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id" NEXT="fk_feedback_id"/>
-        <KEY NAME="fk_feedback_id" TYPE="foreign" FIELDS="feedback_id" REFTABLE="feedback_ccna" REFFIELDS="id" PREVIOUS="primary" NEXT="fk_questions_id"/>
-        <KEY NAME="fk_questions_id" TYPE="foreign" FIELDS="question_id" REFTABLE="questions" REFFIELDS="id" PREVIOUS="fk_feedback_id"/>
+        <KEY NAME="fk_feedback_id" TYPE="foreign" FIELDS="feedback_id" REFTABLE="feedbackccna_feedback" REFFIELDS="id" PREVIOUS="primary" NEXT="fk_questions_id"/>
+        <KEY NAME="fk_questions_id" TYPE="foreign" FIELDS="question_id" REFTABLE="feedbackccna_questions" REFFIELDS="id" PREVIOUS="fk_feedback_id"/>
       </KEYS>
     </TABLE>
   </TABLES>
