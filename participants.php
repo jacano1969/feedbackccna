@@ -391,6 +391,8 @@
 			if (document.getElementById("user".concat(id)).checked) {
 				document.getElementById("lab".concat(id)).checked = false;
 			}
+			document.getElementById("feed".concat(id)).hidden = !(document.getElementById("feed".concat(id)).hidden);
+			document.getElementById("lab".concat(id)).hidden = !(document.getElementById("lab".concat(id)).hidden);
 		} else {
 			if (document.getElementById("lab".concat(id)).checked) {
 				document.getElementById("user".concat(id)).checked = false;
@@ -569,7 +571,7 @@
 
                     if ($bulkoperations) {
                         $row->cells[2]->text .= '<br />';
-			$row->cells[2]->text .= '<select class = "feedback" name = "feed' . $user->id . '">';
+			$row->cells[2]->text .= '<select class = "feedback" name = "feed' . $user->id . '" id = "feed' . $user->id . '">';
 			$row->cells[2]->text .= '<option value = "1">1</option>';
 			$row->cells[2]->text .= '<option value = "2">2</option>';
 			$row->cells[2]->text .= '<option value = "3">3</option>';
@@ -670,7 +672,7 @@
 
                 if ($bulkoperations) {
 
-		    $data[] = '<select class = "feedback" name = "feed' . $user->id . '"><option value = "1">1</option><option value = "2">2</option><option value = "3">3</option><option value = "4">4</option><option value = "5">5</option></select>';
+		    $data[] = '<select class = "feedback" name = "feed' . $user->id . '" id = "feed' . $user->id . '"><option value = "1">1</option><option value = "2">2</option><option value = "3">3</option><option value = "4">4</option><option value = "5">5</option></select>';
 		    $data[] .= '<input type="checkbox" class="labcheckbox" name="lab'.$user->id.'" id = "lab'.$user->id.'" onclick = unclick("lab",' . $user->id . ') />';
 		    $data[] .= '<input type="checkbox" class="usercheckbox" name="user'.$user->id.'" id = "user'.$user->id.'" onclick = unclick("user",' . $user->id . ') />';
                 }
