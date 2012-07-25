@@ -3,8 +3,10 @@
 defined('MOODLE_INTERNAL') || die();
 
 require_once("$CFG->libdir/formslib.php");
+require_once($CFG->dirroot.'/lib/accesslib.php');
+require_once(dirname(__FILE__).'/db_functions.php');
 
-function build_tabs($active, $id = '', $n = '') {
+function build_tabs($active, $id, $n, $context) {
 
 	global $CFG;
 
@@ -21,18 +23,13 @@ function build_tabs($active, $id = '', $n = '') {
 	$activetwo = array();
 	$currenttab = $active;
 
-	
+
 	$options[] = new tabobject('view',
 		$CFG->wwwroot . '/mod/feedbackccna/view.php?' . $param1 . '=' . $param2,
 		get_string('view', 'feedbackccna'),
 		get_string('viewdesc', 'feedbackccna'), true);
-/*
-	$options[] = new tabobject('add',
-		$CFG->wwwroot . '/mod/feedbackccna/add.php?' . $param1 . '=' . $param2,
-		get_string('add', 'feedbackccna'),
-		get_string('adddesc', 'feedbackccna'), true);
-*/
-	$options[] = new tabobject('t_view',
+
+        $options[] = new tabobject('t_view',
 		$CFG->wwwroot . '/mod/feedbackccna/t_view.php?' . $param1 . '=' . $param2,
 		get_string('t_view', 'feedbackccna'),
 		get_string('t_viewdesc', 'feedbackccna'), true);
@@ -50,7 +47,7 @@ class add_view_form extends moodleform {
 		global $CFG;
 		global $usr;
 
-		$mform =& $this->_form;
+	        $mform =& $this->_form;
 
 		$mform->addElement('hidden', 'action');
 		$mform->setType('action', PARAM_TEXT);
@@ -58,43 +55,67 @@ class add_view_form extends moodleform {
 		$mform->addElement('hidden', 'id', $this->_customdata['id']);
 		$mform->setType('id', PARAM_INT);
 
-		$new_array = get_tfos_feedback(($this->_customdata['cm']->section) - 1);
+           	$context = get_context_instance(CONTEXT_MODULE, $this->_customdata['cm']->id);
+
+                $new_array = get_feedback_ccna_objects_teacher($this->_customdata['id'], ($this->_customdata['cm']->section) - 1);
 
 		$nothing = 1;
 		$something = 0;
 
 		foreach ($new_array as $data) {
-			if ($data->allow == '1') {
-				$nothing = 0;
 
-				if ($data->type == '1' and $data->allow == '1') {
-					$mform->addElement('header', 'editorheader', get_string('headerlabel_presentation', 'feedbackccna'));
+                    if ($data->type == '1') {
 
-					$mform->addElement('select', 'value', get_string('feedback_values', 'feedbackccna'), 
-						array('1' => '1', '2' => '2', '3' => '3', '4' => '4', '5' => '5'));
-			
-					print_container_start(false, 'singlebutton'); 
-					$this->add_action_buttons(false, get_string('submitlabel', 'feedbackccna')); 
-					print_container_end();
+                        if (has_capability('mod/feedbackccna:rateteacher', $context)) {
+                            if ($data->allow == '1' || hascapability('mod/feedbackccna:feededit', $context)) {
+                                $nothing = 0;
 
-					$something = 1;
-					break;
+                                $mform->addElement('header', 'editorheader', get_string('headerlabel_presentation', 'feedbackccna'));
 
-				} elseif ($data->type == '2' and $data->allow == '1') {
-					$mform->addElement('header', 'editorheader', get_string('headerlabel_lab', 'feedbackccna'));
+                                $mform->addElement('select', 'value', get_string('feedback_values', 'feedbackccna'),
+                                        array('1' => '1', '2' => '2', '3' => '3', '4' => '4', '5' => '5'));
+                            }
+                        }
 
-					$mform->addElement('select', 'value', get_string('feedback_values', 'feedbackccna'), 
-						array('1' => '1', '2' => '2', '3' => '3', '4' => '4', '5' => '5'));
-			
-					print_container_start(false, 'singlebutton'); 
-					$this->add_action_buttons(false, get_string('submitlabel', 'feedbackccna')); 
-					print_container_end();
+                        if (has_capability('mod/feedbackccna:feedallow', $context)) {
+                            $mform->addElement('checkbox', 'check'.$data->id, get_string('checkbox', 'feedbackccna'), null,
+                                                    array('id' => 'check'.$data->id));
+                        }
 
-					$something = 1;
-					break;
+                        print_container_start(false, 'singlebutton');
+                        $this->add_action_buttons(false, get_string('submitlabel', 'feedbackccna'));
+                        print_container_end();
 
-				}
-			}
+                        $something = 1;
+                        break;
+
+                    } elseif ($data->type == '2') {
+
+                        if (has_capability('mod/feedbackccna:rateteacher', $context)) {
+                            if ($data->allow == '1' || hascapability('mod/feedbackccna:feededit', $context)) {
+                                $nothing = 0;
+
+                                $mform->addElement('header', 'editorheader', get_string('headerlabel_lab', 'feedbackccna'));
+
+                                $mform->addElement('select', 'value', get_string('feedback_values', 'feedbackccna'),
+                                        array('1' => '1', '2' => '2', '3' => '3', '4' => '4', '5' => '5'));
+
+                            }
+                        }
+
+                        if (has_capability('mod/feedbackccna:feedallow', $context)) {
+                            $mform->addElement('checkbox', 'check'.$data->id, get_string('checkbox', 'feedbackccna'), null,
+                                                    array('id' => 'check'.$data->id));
+                        }
+
+                        print_container_start(false, 'singlebutton');
+                        $this->add_action_buttons(false, get_string('submitlabel', 'feedbackccna'));
+                        print_container_end();
+
+                        $something = 1;
+                        break;
+
+                    }
 		}
 
 		if (!$something) {
@@ -109,8 +130,7 @@ class add_view_form extends moodleform {
 
 			}
 
-		}
-
+                }
 	}
 
 }

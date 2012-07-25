@@ -46,31 +46,62 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+
 defined('MOODLE_INTERNAL') || die();
 
 $capabilities = array(
 
-/***************************** remove these comment marks and modify the code as needed
-    'mod/feedbackccna:view' => array(
-        'captype' => 'read',
-        'contextlevel' => CONTEXT_MODULE,
-        'legacy' => array(
-            'guest' => CAP_ALLOW,
-            'student' => CAP_ALLOW,
-            'teacher' => CAP_ALLOW,
-            'editingteacher' => CAP_ALLOW,
-            'admin' => CAP_ALLOW
-        )
-    ),
 
-    'mod/feedbackccna:submit' => array(
-        'riskbitmask' => RISK_SPAM,
+    'mod/feedbackccna:addinstance' => array(
+
         'captype' => 'write',
         'contextlevel' => CONTEXT_MODULE,
         'legacy' => array(
-            'student' => CAP_ALLOW
+	    'editingteacher' => CAP_ALLOW,
+            'teacher' => CAP_ALLOW,
+	    'manager' => CAP_ALLOW
+	)
+    ),
+
+    'mod/feedbackccna:feedallow' => array(
+
+        'captype' => 'write',
+        'contextlevel' => CONTEXT_MODULE,
+        'legacy' => array(
+            'editingteacher' => CAP_ALLOW,
+            'teacher' => CAP_ALLOW,
+            'manager' => CAP_ALLOW
         )
     ),
-******************************/
+
+    'mod/feedbackccna:feededit' => array(
+
+        'captype' => 'write',
+        'contextlevel' => CONTEXT_MODULE,
+        'legacy' => array(
+            'manager' => CAP_ALLOW
+        )
+    ),
+
+    'mod/feedbackccna:rateteacher' => array(
+
+        'captype' => 'write',
+        'contextlevel' => CONTEXT_MODULE,
+        'legacy' => array(
+            'student' => CAP_ALLOW,
+            'manager' => CAP_ALLOW
+        )
+    ),
+
+    'mod/feedbackccna:ratestudent' => array(
+
+        'captype' => 'write',
+        'contextlevel' => CONTEXT_MODULE,
+        'legacy' => array(
+            'editingteacher' => CAP_ALLOW,
+            'teacher' => CAP_ALLOW,
+            'manager' => CAP_ALLOW
+        )
+    )
 );
 

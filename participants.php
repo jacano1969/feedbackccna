@@ -20,7 +20,7 @@
     $search       = optional_param('search','',PARAM_RAW);                    // make sure it is processed with p() or s() when sending to output!
     $roleid       = optional_param('roleid', 0, PARAM_INT);                   // optional roleid, 0 means all enrolled users (or all on the frontpage)
 
-   
+
     $PAGE->set_url('/mod/feedbackccna/participants.php', array(
             'page' => $page,
             'perpage' => $perpage,
@@ -31,11 +31,11 @@
             'contextid' => $contextid,
             'id' => $courseid));
 
-    
+
         $course = $DB->get_record('course', array('id'=>$courseid), '*', MUST_EXIST);
         $context = get_context_instance(CONTEXT_COURSE, $course->id, MUST_EXIST);
-    
-  
+
+
 
 
     $systemcontext = get_context_instance(CONTEXT_SYSTEM);
@@ -117,7 +117,7 @@
         }
         $select = new single_select($popupurl, 'id', $courselist, $course->id, array(''=>'choosedots'), 'courseform');
         $select->set_label(get_string('mycourses'));
-        
+
     }
 
     if (!isset($hiddenfields['lastaccess'])) {
@@ -361,17 +361,17 @@
 
     if ($bulkoperations) {
         echo '
-		<script type="text/javascript">
-		//<![CDATA[
-		function checksubmit(form) {
-			var destination = form.formaction.options[form.formaction.selectedIndex].value;
-			if (destination == "" || !checkchecked(form)) {
-				form.formaction.selectedIndex = 0;
-				return false;
-			} else {
-				return true;
-			}
+	<script type="text/javascript">
+        //<![CDATA[
+	function checksubmit(form) {
+		var destination = form.formaction.options[form.formaction.selectedIndex].value;
+		if (destination == "" || !checkchecked(form)) {
+			form.formaction.selectedIndex = 0;
+			return false;
+		} else {
+			return true;
 		}
+	}
 
 	function checkchecked(form) {
 		var inputs = document.getElementsByTagName(\'INPUT\');
@@ -400,7 +400,7 @@
 		}
 
 		return false;
-	}
+        }
 
 	//]]>
 	</script>
@@ -561,11 +561,15 @@
                         $links[] = html_writer::link(new moodle_url('/course/user.php?id='. $course->id .'&user='. $user->id), get_string('activity'));
                     }
 
-                    if ($USER->id != $user->id && !session_is_loggedinas() && has_capability('moodle/user:loginas', $context) && !is_siteadmin($user->id)) {
-                        $links[] = html_writer::link(new moodle_url('/course/loginas.php?id='. $course->id .'&user='. $user->id .'&sesskey='. sesskey()), get_string('loginas'));
+                    if ($USER->id != $user->id && !session_is_loggedinas() && has_capability('moodle/user:loginas', $context) &&
+                        !is_siteadmin($user->id)) {
+
+                        $links[] = html_writer::link(new moodle_url('/course/loginas.php?id='. $course->id .'&user='. $user->id .
+                            '&sesskey='. sesskey()), get_string('loginas'));
                     }
 
-                    $links[] = html_writer::link(new moodle_url('/user/view.php?id='. $user->id .'&course='. $course->id), get_string('fullprofile') . '...');
+                    $links[] = html_writer::link(new moodle_url('/user/view.php?id='. $user->id .'&course='. $course->id),
+                                get_string('fullprofile') . '...');
 
                     $row->cells[2]->text .= implode('', $links);
 
@@ -578,8 +582,10 @@
 			$row->cells[2]->text .= '<option value = "4">4</option>';
 			$row->cells[2]->text .= '<option value = "5">5</option>';
 			$row->cells[2]->text .= '</select>';
-			$row->cells[2]->text .= '<br /><input type = "checkbox" class = "labcheckbox" id = "lab' . $user->id . '" name = "lab' . $user->id . '" onclick = unclick("lab",' . $user->id . ') />';
-			$row->cells[2]->text .= '<br /><input type = "checkbox" class = "usercheckbox" id = "user' . $user->id . '" name = "user' . $user->id . '" onclick = unclick("user",' . $user->id . ') />';
+                        $row->cells[2]->text .= '<br /><input type = "checkbox" class = "labcheckbox" id = "lab' . $user->id .
+                                                        '" name = "lab' . $user->id . '" onclick = unclick("lab",' . $user->id . ') />';
+                        $row->cells[2]->text .= '<br /><input type = "checkbox" class = "usercheckbox" id = "user' . $user->id .
+                                                        '" name = "user' . $user->id . '" onclick = unclick("user",' . $user->id . ') />';
                     }
                     $table->data = array($row);
                     echo html_writer::table($table);
@@ -626,8 +632,14 @@
 
                 $usercontext = get_context_instance(CONTEXT_USER, $user->id);
 
-                if ($piclink = ($USER->id == $user->id || has_capability('moodle/user:viewdetails', $context) || has_capability('moodle/user:viewdetails', $usercontext))) {
-                    $profilelink = '<strong><a href="'.$CFG->wwwroot.'/user/view.php?id='.$user->id.'&amp;course='.$course->id.'">'.fullname($user).'</a></strong>';
+                if (
+                    $piclink = ($USER->id == $user->id ||
+                    has_capability('moodle/user:viewdetails', $context) ||
+                    has_capability('moodle/user:viewdetails', $usercontext))
+                   )
+                {
+                        $profilelink = '<strong><a href="'.
+                            $CFG->wwwroot.'/user/view.php?id='.$user->id.'&amp;course='.$course->id.'">'.fullname($user).'</a></strong>';
                 } else {
                     $profilelink = '<strong>'.fullname($user).'</strong>';
                 }
@@ -655,7 +667,8 @@
                     foreach ($ras AS $key=>$ra) {
                         $rolename = $allrolenames[$ra['roleid']] ;
                         if ($ra['ctxlevel'] == CONTEXT_COURSECAT) {
-                            $rastring .= $rolename. ' @ ' . '<a href="'.$CFG->wwwroot.'/course/category.php?id='.$ra['ctxinstanceid'].'">'.s($ra['ccname']).'</a>';
+                            $rastring .= $rolename. ' @ ' . '<a href="' .
+                                $CFG->wwwroot.'/course/category.php?id='.$ra['ctxinstanceid'].'">'.s($ra['ccname']).'</a>';
                         } elseif ($ra['ctxlevel'] == CONTEXT_SYSTEM) {
                             $rastring .= $rolename. ' - ' . get_string('globalrole','role');
                         } else {
@@ -672,14 +685,18 @@
 
                 if ($bulkoperations) {
 
-		    $data[] = '<select class = "feedback" name = "feed' . $user->id . '" id = "feed' . $user->id . '"><option value = "1">1</option><option value = "2">2</option><option value = "3">3</option><option value = "4">4</option><option value = "5">5</option></select>';
-		    $data[] .= '<input type="checkbox" class="labcheckbox" name="lab'.$user->id.'" id = "lab'.$user->id.'" onclick = unclick("lab",' . $user->id . ') />';
-		    $data[] .= '<input type="checkbox" class="usercheckbox" name="user'.$user->id.'" id = "user'.$user->id.'" onclick = unclick("user",' . $user->id . ') />';
+                    $data[] = '<select class = "feedback" name = "feed' . $user->id . '" id = "feed' . $user->id . '">' .
+                        '<option value = "1">1</option><option value = "2">2</option><option value = "3">3</option>' .
+                        '<option value = "4">4</option><option value = "5">5</option></select>';
+                    $data[] .= '<input type="checkbox" class="labcheckbox" name="lab'.$user->id.'" id = "lab'.$user->id .
+                        '" onclick = unclick("lab",' . $user->id . ') />';
+                    $data[] .= '<input type="checkbox" class="usercheckbox" name="user'.$user->id.'" id = "user'.$user->id .
+                        '" onclick = unclick("user",' . $user->id . ') />';
                 }
                 $table->add_data($data);
             }
         }
-        
+
         $table->print_html();
 
     }
