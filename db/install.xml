@@ -35,7 +35,8 @@
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" NEXT="name"/>
         <FIELD NAME="name" TYPE="char" LENGTH="45" NOTNULL="true" SEQUENCE="false" PREVIOUS="id" NEXT="type"/>
-        <FIELD NAME="type" TYPE="int" LENGTH="2" NOTNULL="true" SEQUENCE="false" PREVIOUS="name"/>
+        <FIELD NAME="type" TYPE="int" LENGTH="2" NOTNULL="true" SEQUENCE="false" PREVIOUS="name" NEXT="which_way"/>
+        <FIELD NAME="which_way" TYPE="int" LENGTH="2" NOTNULL="true" SEQUENCE="false" PREVIOUS="type"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
@@ -61,8 +62,7 @@
         <FIELD NAME="student_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" PREVIOUS="id" NEXT="feedback_id"/>
         <FIELD NAME="feedback_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" PREVIOUS="student_id" NEXT="question_id"/>
         <FIELD NAME="question_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" PREVIOUS="feedback_id" NEXT="answer"/>
-        <FIELD NAME="answer" TYPE="int" LENGTH="2" NOTNULL="true" SEQUENCE="false" PREVIOUS="question_id" NEXT="which_way"/>
-        <FIELD NAME="which_way" TYPE="int" LENGTH="2" NOTNULL="true" SEQUENCE="false" PREVIOUS="answer"/>
+        <FIELD NAME="answer" TYPE="int" LENGTH="2" NOTNULL="true" SEQUENCE="false" PREVIOUS="question_id"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id" NEXT="fk_feedback_id"/>

@@ -2,12 +2,14 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-// 0/1 nu se poate/se poate raspunde la feedback imediat ce este adaugat
-define('DEFAULT_ALLOW_FEEDBACK', 0);
+// 0/1 nu se poate/se poate raspunde la feedback
+define('FEEDBACK_ALLOWED', 1); // valoare care permite feedback
+define('FEEDBACK_NOT_ALLOWED', 0); // valoare care nu permite feedback
+define('DEFAULT_FEEDBACK_ALLOWED', FEEDBACK_NOT_ALLOWED); // valoarea implicita la adaugarea in DB
 // define-uri pt which_way
-// feedback-ul este dat de profesor pentru elev
+// feedback-ul se da de profesor pentru elev
 define('TEACHER_FOR_STUDENT', 1);
-// feedback-ul este dat de elev pentru profesor
+// feedback-ul se da de elev pentru profesor
 define('STUDENT_FOR_TEACHER', 2);
 
 // functie de inserat modul saptamanal/per topic
@@ -30,7 +32,7 @@ function insert_feedback_object($type, $name, $instructor_id, $module_id) {
 	$record->name = $name;
 	$record->instructor_id = $instructor_id;
 	$record->module_id = $module_id;
-	$record->allow = DEFAULT_ALLOW_FEEDBACK;
+	$record->allow = DEFAULT_FEEDBACK_ALLOWED;
 
 	$DB->insert_record("feedback_ccna",$record);
 }
@@ -42,12 +44,13 @@ function insert_feedback_question($name, $type) {
 	$record = new stdClass();
 	$record->name = $name;
 	$record->type = $type;
+	$record->which_way = $which_way;
 
 	$DB->insert_record("questions", $record);
 }
 
 // functie de inserat raspunsul
-function insert_feedback_answer($student_id, $feedback_id, $question_id, $answer,
+function insert_feedback_answer($student_id, $feedback_id, $question_id, $answer, 
 $which_way) {
 	global $DB;
 
@@ -56,5 +59,31 @@ $which_way) {
 	$record->feedback_id = $feedback_id;
 	$record->question_id = $question_id;
 	$record->answer = $answer;
-	$record->which_way = $which_way;
+}
+
+// functie de obtinut obiectele (laboratoare/prezenari) de feedback pt profesor
+function get_feedback_ccna_objects_teacher($course_id, $section) {
+	global $DB;
+	
+	return $DB->get_records_sql("SELECT * FROM {feedback_ccna} WHERE module_id IN (SELECT id FROM {feedback_module} WHERE course_id = ? AND section = ?)", array($course_id, $section));
+}
+
+function get_feedback_ccna_objects_student($course_id, $section) {
+	global $DB;
+	
+	return $DB->get_records_sql("SELECT * FROM {feedback_ccna} WHERE allow = ".FEEDBACK_ALLOWED." AND module_id IN (SELECT id FROM {feedback_module} WHERE course_id = ? AND section = ?)", array($course_id, $section));
+}
+
+// functie care obtine intrebarile la care trebuie sa raspunda studentii
+function get_questions_for_students() {
+	global $DB;
+	
+	return $DB->get_records("questions", array('which_way'=> STUDENT_FOR_TEACHER));
+}
+
+// functie care obtine intrebarile la care trebuie sa raspunda profesori
+function get_questions_for_teachers() {
+	global $DB;
+	
+	return $DB->get_records("questions", array('which_way'=> TEACHER_FOR_STUDENT));
 }
