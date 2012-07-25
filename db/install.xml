@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="mod/feedbackccna/db" VERSION="20120724" COMMENT="XMLDB file for Moodle mod/feedbackccna"
+<XMLDB PATH="mod/feedbackccna/db" VERSION="20120725" COMMENT="XMLDB file for Moodle mod/feedbackccna"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
 >
   <TABLES>
-    <TABLE NAME="feedbackccna" COMMENT="Default comment for feedbackccna, please edit me" NEXT="feedbackccna_ufo">
+    <TABLE NAME="feedbackccna" COMMENT="Default comment for feedbackccna, please edit me" NEXT="feedback_module">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" NEXT="course"/>
         <FIELD NAME="course" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Course feedbackccna activity belongs to" PREVIOUS="id" NEXT="name"/>
@@ -21,41 +21,53 @@
         <INDEX NAME="course" UNIQUE="false" FIELDS="course"/>
       </INDEXES>
     </TABLE>
-    <TABLE NAME="feedbackccna_ufo" COMMENT="User Feedback Object Table, Contains Feedback Objects that an user can rate" PREVIOUS="feedbackccna" NEXT="feedbackccna_tfo">
+    <TABLE NAME="feedback_module" COMMENT="Organizare pe saptamana" PREVIOUS="feedbackccna" NEXT="questions">
       <FIELDS>
-        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" NEXT="section"/>
-        <FIELD NAME="section" TYPE="int" LENGTH="2" NOTNULL="true" SEQUENCE="false" PREVIOUS="id" NEXT="course_id"/>
-        <FIELD NAME="course_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" PREVIOUS="section" NEXT="type"/>
-        <FIELD NAME="type" TYPE="int" LENGTH="2" NOTNULL="true" SEQUENCE="false" PREVIOUS="course_id"/>
-      </FIELDS>
-      <KEYS>
-        <KEY NAME="primary" TYPE="primary" FIELDS="id" NEXT="fk_course_id"/>
-        <KEY NAME="fk_course_id" TYPE="foreign" FIELDS="course_id" REFTABLE="course" REFFIELDS="id" PREVIOUS="primary"/>
-      </KEYS>
-    </TABLE>
-    <TABLE NAME="feedbackccna_tfo" COMMENT="Teacher Feedback Object, The Feedback Object and value a Techer assigns a User" PREVIOUS="feedbackccna_ufo" NEXT="feedbackccna_feedback">
-      <FIELDS>
-        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" NEXT="allow"/>
-        <FIELD NAME="allow" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="id" NEXT="type"/>
-        <FIELD NAME="type" TYPE="int" LENGTH="2" NOTNULL="true" SEQUENCE="false" PREVIOUS="allow" NEXT="section"/>
-        <FIELD NAME="section" TYPE="int" LENGTH="2" NOTNULL="true" SEQUENCE="false" PREVIOUS="type" NEXT="course_id"/>
-        <FIELD NAME="course_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" PREVIOUS="section"/>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" NEXT="course_id"/>
+        <FIELD NAME="course_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" PREVIOUS="id" NEXT="section"/>
+        <FIELD NAME="section" TYPE="int" LENGTH="2" NOTNULL="true" SEQUENCE="false" PREVIOUS="course_id"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
       </KEYS>
     </TABLE>
-    <TABLE NAME="feedbackccna_feedback" COMMENT="Tabelul de feedback" PREVIOUS="feedbackccna_tfo">
+    <TABLE NAME="questions" COMMENT="Default comment for the table, please edit me" PREVIOUS="feedback_module" NEXT="feedback_ccna">
       <FIELDS>
-        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" NEXT="feedback_id"/>
-        <FIELD NAME="feedback_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" PREVIOUS="id" NEXT="user_id"/>
-        <FIELD NAME="user_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" PREVIOUS="feedback_id" NEXT="feedback_type"/>
-        <FIELD NAME="feedback_type" TYPE="int" LENGTH="2" NOTNULL="true" SEQUENCE="false" PREVIOUS="user_id" NEXT="value"/>
-        <FIELD NAME="value" TYPE="int" LENGTH="4" NOTNULL="true" SEQUENCE="false" PREVIOUS="feedback_type"/>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" NEXT="name"/>
+        <FIELD NAME="name" TYPE="char" LENGTH="45" NOTNULL="true" SEQUENCE="false" PREVIOUS="id" NEXT="type"/>
+        <FIELD NAME="type" TYPE="int" LENGTH="2" NOTNULL="true" SEQUENCE="false" PREVIOUS="name"/>
       </FIELDS>
       <KEYS>
-        <KEY NAME="primary" TYPE="primary" FIELDS="id" NEXT="fk_user_id"/>
-        <KEY NAME="fk_user_id" TYPE="foreign" FIELDS="user_id" REFTABLE="user" REFFIELDS="id" PREVIOUS="primary"/>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+    </TABLE>
+    <TABLE NAME="feedback_ccna" COMMENT="Default comment for the table, please edit me" PREVIOUS="questions" NEXT="answer">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" NEXT="type"/>
+        <FIELD NAME="type" TYPE="int" LENGTH="2" NOTNULL="true" SEQUENCE="false" PREVIOUS="id" NEXT="name"/>
+        <FIELD NAME="name" TYPE="char" LENGTH="45" NOTNULL="true" SEQUENCE="false" PREVIOUS="type" NEXT="instructor_id"/>
+        <FIELD NAME="instructor_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" PREVIOUS="name" NEXT="module_id"/>
+        <FIELD NAME="module_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" PREVIOUS="instructor_id" NEXT="allow"/>
+        <FIELD NAME="allow" TYPE="int" LENGTH="1" NOTNULL="true" SEQUENCE="false" PREVIOUS="module_id"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id" NEXT="fk_module_id"/>
+        <KEY NAME="fk_module_id" TYPE="foreign" FIELDS="module_id" REFTABLE="feedback_module" REFFIELDS="id" PREVIOUS="primary"/>
+      </KEYS>
+    </TABLE>
+    <TABLE NAME="answer" COMMENT="Default comment for the table, please edit me" PREVIOUS="feedback_ccna">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" NEXT="student_id"/>
+        <FIELD NAME="student_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" PREVIOUS="id" NEXT="feedback_id"/>
+        <FIELD NAME="feedback_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" PREVIOUS="student_id" NEXT="question_id"/>
+        <FIELD NAME="question_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" PREVIOUS="feedback_id" NEXT="answer"/>
+        <FIELD NAME="answer" TYPE="int" LENGTH="2" NOTNULL="true" SEQUENCE="false" PREVIOUS="question_id" NEXT="which_way"/>
+        <FIELD NAME="which_way" TYPE="int" LENGTH="2" NOTNULL="true" SEQUENCE="false" PREVIOUS="answer"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id" NEXT="fk_feedback_id"/>
+        <KEY NAME="fk_feedback_id" TYPE="foreign" FIELDS="feedback_id" REFTABLE="feedback_ccna" REFFIELDS="id" PREVIOUS="primary" NEXT="fk_questions_id"/>
+        <KEY NAME="fk_questions_id" TYPE="foreign" FIELDS="question_id" REFTABLE="questions" REFFIELDS="id" PREVIOUS="fk_feedback_id"/>
       </KEYS>
     </TABLE>
   </TABLES>
