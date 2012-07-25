@@ -93,7 +93,7 @@ function get_questions_for_teachers() {
 function get_responses_count($course_id, $section) {
 	global $DB;
 
-	return $DB->count_records_sql("SELECT feedback_id, COUNT(*)  FROM {feedbackccna_answer} WHERE question_id IN (SELECT id FROM {feedbackccna_questions} WHERE which_way = ".STUDENT_FOR_TEACHER.") AND feedback_id IN (SELECT id FROM {feedbackccna_feedback} WHERE module_id IN (SELECT id FROM feedbackccna_module WHERE course_id = $course_id AND section = $section)) GROUP BY feedback_id", array $params=null);
+	return $DB->count_records_sql("SELECT feedback_id, COUNT(*)  FROM {feedbackccna_answer} WHERE question_id IN (SELECT id FROM {feedbackccna_questions} WHERE which_way = '".STUDENT_FOR_TEACHER."') AND feedback_id IN (SELECT id FROM {feedbackccna_feedback} WHERE module_id IN (SELECT id FROM feedbackccna_module WHERE course_id =". $course_id." AND section = ".$section.")) GROUP BY feedback_id", array $params=null);
 }
 
 //functie de modificat starea unui feedback
@@ -103,8 +103,14 @@ function set_feedback_allow($id, $allow) {
 	$record = new stdClass();
 	$record->id = $id;
 	$record->allow = $allow;
-
 	$DB->update_record("feedbackccna_feedback",$record );
 }
 
+// functie care verifica daca un student fost absent verificand 
+// daca a dat feedback
+function student_present($student_id, $course_id, $section) {
+	global $DB;
+	
+	return $DB->count_records_sql("SELECT * FROM {feedbackccna_answer} WHERE student_id =".$student_id." AND feedback_id IN (SELECT id FROM {feedbackccna_feedback} WHERE module_id IN (SELECT id FROM {feedbackccna_module} WHERE course_id=".$course_id." AND section=".$section.")) AND question_id IN (SELECT id FROM {feedbackccna_questions} WHERE which_way=".STUDENT_FOR_TEACHER.")") > 0
+}
 ?>
