@@ -407,7 +407,7 @@
 		';
 
 
-	echo '<form action="view.php?id='.$cm->id.'" method="post" id="participantsform" onsubmit="return checksubmit(this);">';
+	echo '<form action="t_view.php?id='.$cm->id.'" method="post" id="participantsform">';// onsubmit="return checksubmit(this);">';
 	echo '<div>';
 	echo '<input type="hidden" name="sesskey" value="'.$USER->sesskey.'" />';
 	echo '<input type="hidden" name="returnto" value="'.s(me()).'" />';
@@ -468,6 +468,7 @@
             if ($matchcount > 0) {
                 $usersprinted = array();
                 foreach ($userlist as $user) {
+
                     if (in_array($user->id, $usersprinted)) { /// Prevent duplicates by r.hidden - MDL-13935
                         continue;
                     }
@@ -486,8 +487,12 @@
                     } else {
                         $hiddenfields = array_flip(explode(',', $CFG->hiddenuserfields));
                     }
+                    global $table;
+
                     $table = new html_table();
                     $table->attributes['class'] = 'userinfobox';
+
+                    global $row;
 
                     $row = new html_table_row();
                     $row->cells[0] = new html_table_cell();
@@ -573,21 +578,26 @@
 
                     $row->cells[2]->text .= implode('', $links);
 
+                    $row->cells[3] = new html_table_cell();
+                    $row->cells[3]->attributes['class'] = 'content';
+
                     if ($bulkoperations) {
-                        $row->cells[2]->text .= '<br />';
-			$row->cells[2]->text .= '<select class = "feedback" name = "feed' . $user->id . '" id = "feed' . $user->id . '">';
-			$row->cells[2]->text .= '<option value = "1">1</option>';
-			$row->cells[2]->text .= '<option value = "2">2</option>';
-			$row->cells[2]->text .= '<option value = "3">3</option>';
-			$row->cells[2]->text .= '<option value = "4">4</option>';
-			$row->cells[2]->text .= '<option value = "5">5</option>';
-			$row->cells[2]->text .= '</select>';
-                        $row->cells[2]->text .= '<br /><input type = "checkbox" class = "labcheckbox" id = "lab' . $user->id .
+                        $row->cells[3]->text = '<br />';
+			$row->cells[3]->text .= '<select class = "feedback" name = "feed' . $user->id . '" id = "feed' . $user->id . '">';
+			$row->cells[3]->text .= '<option value = "1">1</option>';
+			$row->cells[3]->text .= '<option value = "2">2</option>';
+			$row->cells[3]->text .= '<option value = "3">3</option>';
+			$row->cells[3]->text .= '<option value = "4">4</option>';
+			$row->cells[3]->text .= '<option value = "5">5</option>';
+			$row->cells[3]->text .= '</select>';
+                        $row->cells[3]->text .= '<br /><input type = "checkbox" class = "labcheckbox" id = "lab' . $user->id .
                                                         '" name = "lab' . $user->id . '" onclick = unclick("lab",' . $user->id . ') />';
-                        $row->cells[2]->text .= '<br /><input type = "checkbox" class = "usercheckbox" id = "user' . $user->id .
+                        $row->cells[3]->text .= '<br /><input type = "checkbox" class = "usercheckbox" id = "user' . $user->id .
                                                         '" name = "user' . $user->id . '" onclick = unclick("user",' . $user->id . ') />';
                     }
+
                     $table->data = array($row);
+                    print($row->cells[3]->text);
                     echo html_writer::table($table);
                 }
 
@@ -602,6 +612,8 @@
 
 
         if ($userlist)  {
+
+            global $bundle;
 
             $usersprinted = array();
             foreach ($userlist as $user) {
@@ -685,15 +697,17 @@
 
                 if ($bulkoperations) {
 
-                    $data[] = '<select class = "feedback" name = "feed' . $user->id . '" id = "feed' . $user->id . '">' .
+                    $data[] .= '<select class = "feedback" name = "feed' . $user->id . '" id = "feed' . $user->id . '">' .
                         '<option value = "1">1</option><option value = "2">2</option><option value = "3">3</option>' .
                         '<option value = "4">4</option><option value = "5">5</option></select>';
                     $data[] .= '<input type="checkbox" class="labcheckbox" name="lab'.$user->id.'" id = "lab'.$user->id .
                         '" onclick = unclick("lab",' . $user->id . ') />';
                     $data[] .= '<input type="checkbox" class="usercheckbox" name="user'.$user->id.'" id = "user'.$user->id .
                         '" onclick = unclick("user",' . $user->id . ') />';
+
                 }
                 $table->add_data($data);
+                $bundle[] = $user->id;
             }
         }
 
@@ -710,8 +724,8 @@
 		"\n//]]>\n".'</script>';
 	echo '</div>';
 
-    	echo '<br /><div class="buttons">';
-    	echo '<input type="button" onclick="checkall()" value="'.get_string('selectall').'" /> ';
+        echo '<br /><div class="buttons">';
+        echo '<input type="submit" id = "formsubmit" value = "'.get_string('submit').'" /> ';
 	echo '</div>';
 
 	echo '</form>';
