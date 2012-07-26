@@ -53,6 +53,9 @@ global $USER;
 
 $form = new add_view_form(null, array('id' => $id, 'n' => $n, 'courseid' => $course->id, 'cm' => $cm));
 $entry = $form->get_data();
+echo'<br/>x';
+print_r($entry);
+echo'<br/>y';
 
 if (!empty($entry) and confirm_sesskey()) {
 
@@ -60,14 +63,19 @@ if (!empty($entry) and confirm_sesskey()) {
 
     foreach ($new_array as $data) {
 
-        $db_entry->('feedback_value'.$data->id) = $entry->('value'.$data->id);
-        $db_entry->('allow'.$data->id) = $entry->('check'.$data->id);
+        $question_id = 'qid'.$data->id;
+        $answer = 'value'.$data->id;
 
-        insert_feedback_answer($USER->id, $data->id, , $value);
+        insert_feedback_answer(
+            $USER->id,
+            $data->id,
+            $entry->$question_id,
+            $entry->$answer
+        );
 
     }
 
-	echo $OUTPUT->notification(get_string('feedback_sent', 'feedbackccna'), 'notifysuccess');
+    echo $OUTPUT->notification(get_string('feedback_sent', 'feedbackccna'), 'notifysuccess');
 
 }
 
