@@ -37,6 +37,8 @@ $PAGE->set_title(format_string($feedbackccna->name));
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($context);
 
+echo '<script type="text/javascript" src="prototype.js"></script>
+      <script type="text/javascript" src="stars.js"></script>';
 
 // Output starts here
 

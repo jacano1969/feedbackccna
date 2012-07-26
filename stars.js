@@ -109,7 +109,7 @@ Stars.prototype = {
 			var star = new Image();
 			star.src = this.locked ? this._starSrc.empty : this._setStarSrc.empty;
 			star.style.cursor = 'pointer';
-			star.title = 'Rate as ' + (i + 1);
+			star.title = 'Notează cu ' + (i + 1);
 			!this.locked && Event.observe(star, 'mouseover', this._starHover.bind(this));
 			!this.locked && Event.observe(star, 'click', this._starClick.bind(this));
 			!this.locked && Event.observe(star, 'mouseout', this._starClear.bind(this));

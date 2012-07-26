@@ -604,7 +604,9 @@
         if ($userlist)  {
 
             $usersprinted = array();
+			$i = 0;
             foreach ($userlist as $user) {
+				$i++;
                 if (in_array($user->id, $usersprinted)) { /// Prevent duplicates by r.hidden - MDL-13935
                     continue;
                 }
@@ -682,12 +684,16 @@
                         $data[] = implode(', ', array_map('s', $userlist_extra[$user->id]['gping']));
                     }
                 }
-
+				echo "<input id='Rating".$i."' type='hidden' value='' name='Rating".$i."' size='0' />";
                 if ($bulkoperations) {
-
-                    $data[] = '<select class = "feedback" name = "feed' . $user->id . '" id = "feed' . $user->id . '">' .
-                        '<option value = "1">1</option><option value = "2">2</option><option value = "3">3</option>' .
-                        '<option value = "4">4</option><option value = "5">5</option></select>';
+					$data[] .= "<script type='text/javascript'>
+                                                                        var s".$i." = new Stars({ 
+                                                                                    maxRating: 5,
+                                                                                    imagePath: 'images/',
+                                                                                    value: 1,
+																					bindField: Rating".$i."
+                                                                                    });
+                                                                    </script>";
                     $data[] .= '<input type="checkbox" class="labcheckbox" name="lab'.$user->id.'" id = "lab'.$user->id .
                         '" onclick = unclick("lab",' . $user->id . ') />';
                     $data[] .= '<input type="checkbox" class="usercheckbox" name="user'.$user->id.'" id = "user'.$user->id .

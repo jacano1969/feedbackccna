@@ -89,6 +89,14 @@ print_r($array_q);
                                         $nothing = 0;
 
                                         $mform->addElement('header', 'editorheader', get_string('headerlabel_presentation', 'feedbackccna'));
+                                        $mform->addElement('html', "<script type='text/javascript'>
+																		var s1 = new Stars({ 
+																					maxRating: 5,
+																					imagePath: 'images/',
+																					value: 3
+																					});
+																	</script>");
+
 
                                         $mform->addElement('select', 'value'.$data->id, get_string('feedback_values', 'feedbackccna'),
                                                 array('1' => '1', '2' => '2', '3' => '3', '4' => '4', '5' => '5'));
@@ -126,6 +134,13 @@ print_r($array_q);
                                         $nothing = 0;
 
                                         $mform->addElement('header', 'editorheader', get_string('headerlabel_lab', 'feedbackccna'));
+                                        $mform->addElement('html', "<script type='text/javascript'>
+                                                                        var s1 = new Stars({ 
+                                                                                    maxRating: 5,
+                                                                                    imagePath: 'images/',
+                                                                                    value: 3
+                                                                                    });
+                                                                    </script>");
 
                                         $mform->addElement('select', 'value'.$data->id, get_string('feedback_values', 'feedbackccna'),
                                                 array('1' => '1', '2' => '2', '3' => '3', '4' => '4', '5' => '5'));
