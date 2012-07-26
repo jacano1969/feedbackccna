@@ -58,7 +58,7 @@ echo'<br/>x';
 print_r($entry);
 echo'<br/>y';
 
-if (!empty($entry) and confirm_sesskey()) {
+if (!empty($entry) and confirm_sesskey($USER->sesskey)) {
 
     $db_entry = new stdClass();
 
@@ -81,17 +81,6 @@ if (!empty($entry) and confirm_sesskey()) {
 }
 
 $form->display();
-
-/*
-$new_array = get_tfos_feedback($cm->section);
-foreach ($data as $new_array) {
-	if ($data->type == '1') {
-		$my_feedback_id = $data->id;
-		break;
-	}
-}
-*/
-
 
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 

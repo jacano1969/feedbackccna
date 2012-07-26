@@ -45,6 +45,7 @@ echo '<script type="text/javascript" src="prototype.js"></script>
 echo $OUTPUT->header();
 
 
+
 if(has_capability('mod/feedbackccna:ratestudent', $context)) {
 
     build_tabs('t_view', $id, $n, $context);
@@ -52,70 +53,41 @@ if(has_capability('mod/feedbackccna:ratestudent', $context)) {
     global $DB;
     global $USER;
 
-    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    include 'participants.php';
 
-    echo '<link type="text/css" rel="stylesheet" href="achievement.css"/>';
+    if (!empty($_POST) and confirm_sesskey($USER->sesskey)) {
 
-    $vach = array();
-    foreach($_POST as $key=>$post){
-            if(strpos($key,'color')!==FALSE){
-                    $dd=explode('_',$key);
-                    if($post==1){
-                            array_push($vach, $dd[1]);
-                    }
+        foreach ($bundle as $user_id) {
+
+            $user = "user".$user_id;
+
+            if (isset($_POST[$user]) and $_POST[$user] == "") {
+
+                $feed = "feed".$user_id;
+                $lab = "lab".$user_id;
+
+                insert_feedback_answer(
+                    $user_id,
+                    1, //$feedback_id,
+                    1, //$question_id,
+                    $_POST[$feed]
+                );
+
+                insert_feedback_answer(
+                    $user_id,
+                    1, //$feedback_id,
+                    1, //$question_id,
+                    $_POST[$lab]
+                );
+
             }
+
+        }
+
+        echo $OUTPUT->notification(get_string('feedback_sent', 'feedbackccna'), 'notifysuccess');
+
     }
 
-
-
-    include('participants.php');
-
-
-    
-    foreach($vach as $key){
-            $delid=$key;
-    
-            $students = get_students_by_course($course->id);
-            foreach($students as $student){
-                    $name='user'.$student->id;
-                    if (array_key_exists($name,$_POST)){
-    
-                            $post=new object();
-                            $post->discussion = 0;
-                            $post->parent = 0;
-                            $post->userid = $USER->id;
-                            $t = time();
-                            $post->created = $t;
-                            $post->modified = $t;
-                            $post->mailed = 0;
-                            $post->subject = "";
-                            $post->message = "";
-                            //$fid = $DB->insert_record('forum_posts', $post);
-    
-                            $f=new object();
-                            $f->achid=$delid;
-                            $f->postid=$fid;
-                            $usr=$student->id;
-                            $pc=get_profile_course_by_course_user($course->id,$usr);
-                            //$profile = $DB->get_record('academy_profile',array('userid'=>$usr));
-                            if ($pc!=NULL) {
-                                    // add the new feedback inside the course
-                                    $f->apcid=$pc[$course->id]->pcid;
-                                    //$DB->insert_record('academy_profile_feedback',$f);
-                            }else{
-                                    $tmpcourse = new object();
-                                    //$tmpcourse->apid = $profile->id;
-                                    $tmpcourse->courseid = $course->id;
-                                    $tmpcourse->hidden = 0;
-                                    //$f->apcid = $DB->insert_record('academy_profile_course',$tmpcourse);
-                                    //$DB->insert_record('academy_profile_feedback',$f);
-                            }
-    
-                    }
-            }
-    }
-
-    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 } else {
     die('You are not allowed to see this page!');
 }
