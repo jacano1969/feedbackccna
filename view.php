@@ -53,15 +53,29 @@ global $USER;
 
 $form = new add_view_form(null, array('id' => $id, 'n' => $n, 'courseid' => $course->id, 'cm' => $cm));
 $entry = $form->get_data();
+echo'<br/>x';
+print_r($entry);
+echo'<br/>y';
 
 if (!empty($entry) and confirm_sesskey()) {
 
-	$db_entry = new stdClass();
-	//$db_entry->instances = $entry->value;
+    $db_entry = new stdClass();
 
-	//$DB->insert_db_entry('feedbackccna_feedback', $db_entry);
+    foreach ($new_array as $data) {
 
-	echo $OUTPUT->notification(get_string('feedback_sent', 'feedbackccna'), 'notifysuccess');
+        $question_id = 'qid'.$data->id;
+        $answer = 'value'.$data->id;
+
+        insert_feedback_answer(
+            $USER->id,
+            $data->id,
+            $entry->$question_id,
+            $entry->$answer
+        );
+
+    }
+
+    echo $OUTPUT->notification(get_string('feedback_sent', 'feedbackccna'), 'notifysuccess');
 
 }
 
