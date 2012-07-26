@@ -38,7 +38,7 @@ function insert_feedback_object($type, $name, $instructor_id, $module_id) {
 }
 
 // functie de inserat intrebari
-function insert_feedback_question($name, $type) {
+function insert_feedback_question($name, $type, $which_way) {
 	global $DB;
 
 	$record = new stdClass();
@@ -50,8 +50,7 @@ function insert_feedback_question($name, $type) {
 }
 
 // functie de inserat raspunsul
-function insert_feedback_answer($student_id, $feedback_id, $question_id, $answer,
-$which_way) {
+function insert_feedback_answer($student_id, $feedback_id, $question_id, $answer) {
 	global $DB;
 
 	$record =  new stdClass();
