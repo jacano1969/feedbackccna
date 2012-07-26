@@ -59,12 +59,16 @@ if(has_capability('mod/feedbackccna:ratestudent', $context)) {
 
         foreach ($bundle as $user_id) {
 
-            $user = "user".$user_id;
+            $user = 'user'.$user_id;
 
-            if (isset($_POST[$user]) and $_POST[$user] == "") {
+            if (isset($_POST[$user])) echo 'isset '.$user_id.'<br/>';
+            if ($_POST[$user] == "on") {echo 'ison '.$user_id.'<br/>';} else echo 'isoff '.$user_id.'<br/>';
 
-                $feed = "feed".$user_id;
-                $lab = "lab".$user_id;
+
+            if (!isset($_POST[$user])) {
+
+                $feed = 'Rating'.$user_id;
+                $lab = 'lab'.$user_id;
 
                 insert_feedback_answer(
                     $user_id,
@@ -73,12 +77,25 @@ if(has_capability('mod/feedbackccna:ratestudent', $context)) {
                     $_POST[$feed]
                 );
 
-                insert_feedback_answer(
-                    $user_id,
-                    1, //$feedback_id,
-                    1, //$question_id,
-                    $_POST[$lab]
-                );
+                if (isset($_POST[$lab])) {
+
+                    insert_feedback_answer(
+                        $user_id,
+                        1, //$feedback_id,
+                        1, //$question_id,
+                        1
+                    );
+
+                } else {
+
+                    insert_feedback_answer(
+                        $user_id,
+                        1, //$feedback_id,
+                        1, //$question_id,
+                        0
+                    );
+
+                }
 
             }
 

@@ -199,6 +199,8 @@
 	$tableheaders[] = get_string('no_select', 'feedbackccna');
     }
 
+    global $table;
+
     $table = new flexible_table('user-index-participants-'.$course->id);
     $table->define_columns($tablecolumns);
     $table->define_headers($tableheaders);
@@ -611,9 +613,7 @@
             global $bundle;
 
             $usersprinted = array();
-			$i = 0;
             foreach ($userlist as $user) {
-				$i++;
                 if (in_array($user->id, $usersprinted)) { /// Prevent duplicates by r.hidden - MDL-13935
                     continue;
                 }
@@ -653,6 +653,8 @@
                     $profilelink = '<strong>'.fullname($user).'</strong>';
                 }
 
+                global $data;
+
                 $data = array ($OUTPUT->user_picture($user, array('size' => 35, 'courseid'=>$course->id)), $profilelink);
 
                 if ($mode === MODE_BRIEF) {
@@ -691,16 +693,16 @@
                         $data[] = implode(', ', array_map('s', $userlist_extra[$user->id]['gping']));
                     }
                 }
-				echo "<input id='Rating".$i."' type='hidden' value='' name='Rating".$i."' size='0' />";
                 if ($bulkoperations) {
-					$data[] .= "<script type='text/javascript'>
-                                                                        var s".$i." = new Stars({ 
-                                                                                    maxRating: 5,
-                                                                                    imagePath: 'images/',
-                                                                                    value: 1,
-																					bindField: Rating".$i."
-                                                                                    });
-                                                                    </script>";
+    	            $data[] .= "<input id='Rating".$user->id."' type='hidden' value='' name='Rating".$user->id."' size='0' />". //;
+                    /*$data[] .=*/ "<script type='text/javascript'>
+                                         var s".$user->id." = new Stars({
+                                              maxRating: 5,
+                                              imagePath: 'images/',
+                                              value: 1,
+					      bindField: Rating".$user->id."
+                                         });
+                                </script>";
                     $data[] .= '<input type="checkbox" class="labcheckbox" name="lab'.$user->id.'" id = "lab'.$user->id .
                         '" onclick = unclick("lab",' . $user->id . ') />';
                     $data[] .= '<input type="checkbox" class="usercheckbox" name="user'.$user->id.'" id = "user'.$user->id .
@@ -734,10 +736,6 @@
         $PAGE->requires->js_init_call('M.core_user.init_participation', null, false, $module);
     }
 
-  /*  if (has_capability('moodle/site:viewparticipants', $context) && $totalcount > ($perpage*3)) {
-        echo '<form action="index.php" class="searchform"><div><input type="hidden" name="id" value="'.$course->id.'" />'.get_string('search').':&nbsp;'."\n";
-        echo '<input type="text" name="search" value="'.s($search).'" />&nbsp;<input type="submit" value="'.get_string('search').'" /></div></form>'."\n";
-    }*/
 
     $perpageurl = clone($baseurl);
     $perpageurl->remove_params('perpage');
@@ -751,7 +749,6 @@
     }
 
     echo '</div>';  // userlist
-
 
 
     if ($userlist) {
