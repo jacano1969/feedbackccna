@@ -97,12 +97,41 @@ function get_feedback_module($course_id, $section, $which_way) {
 }
 
 /*
-	functie de obtinut rating mediu pentru un curs
+	functie de obtinut modulul de feedback dintr-un curs si o sectiune
+	- course_id -id-ul cursului
+	- section - saptamana sau topicul
+	- which_way - daca feedback-ul este dat de student pt profesor sau invers
 */
+function get_feedback_module_teacher($course_id, $section, $which_way) {
+	global $DB;
+
+	return $DB->get_records_sql("SELECT * FROM {feedbackccna_module} WHERE course_id = ? AND section = ? AND which_way = ?", array($course_id, $section, $which_way) );
+}
+/*
+	functie de obtinut rating mediu pentru un curs pe tip de intrebare
+	- course_id - id-ul cursului
+	- type - tipul itemului pt care se doreste rezultatul
+*/
+function average_course_rating_pertype($course_id, $type) {
+	global $DB;
+	
+	return $DB->get_records_sql("SELECT AVG(a.answer) FROM {feedbackccna_answer} a  INNER JOIN {feedbackccna_module} m ON a.module_id = m.id WHERE m.course_id = ? AND m.which_way='".STUDENT_FOR_TEACHER."' AND a.type = ?", array($course_id, $type));
+}
+
+/*
+	functie de obtinut rating mediu pentru un curs
+	- course_id - id-ul cursului
+*/
+function average_course_rating($course_id) {
+	global $DB;
+	
+	return $DB->get_records_sql("SELECT AVG(a.answer) FROM {feedbackccna_answer} a  INNER JOIN {feedbackccna_module} m ON a.module_id = m.id WHERE m.course_id = ? AND m.which_way='".STUDENT_FOR_TEACHER."'", array($course_id));
+}
 
 /*
 	functie de obtinut rating mediu pentru un profesor
 */
+
 
 /*
 	functie de obtinut nr de laboratoare completate de un utilizator
