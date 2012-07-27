@@ -61,8 +61,8 @@ if(has_capability('mod/feedbackccna:ratestudent', $context)) {
 
             $user = 'user'.$user_id;
 
-            if (isset($_POST[$user])) echo 'isset '.$user_id.'<br/>';
-            if ($_POST[$user] == "on") {echo 'ison '.$user_id.'<br/>';} else echo 'isoff '.$user_id.'<br/>';
+            //if (isset($_POST[$user])) echo 'isset '.$user_id.'<br/>';
+            //if ($_POST[$user] == "on") {echo 'ison '.$user_id.'<br/>';} else echo 'isoff '.$user_id.'<br/>';
 
 
             if (!isset($_POST[$user])) {

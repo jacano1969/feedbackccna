@@ -54,9 +54,9 @@ global $USER;
 
 $form = new add_view_form(null, array('id' => $id, 'n' => $n, 'courseid' => $course->id, 'cm' => $cm));
 $entry = $form->get_data();
-echo'<br/>x';
-print_r($entry);
-echo'<br/>y';
+//echo'<br/>x';
+//print_r($entry);
+//echo'<br/>y';
 
 if (!empty($entry) and confirm_sesskey($USER->sesskey)) {
 
