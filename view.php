@@ -59,24 +59,52 @@ $entry = $form->get_data();
 //echo'<br/>y';
 
 //print($course->id);
-$array = get_feedback_module($course->id, $cm->section);
-foreach ($array as $data) print_r($data->id);
+//foreach ($new_array as $data) print_r($data->id);
 
-if (!empty($entry) and confirm_sesskey($USER->sesskey) and false) {
+if (!empty($entry) and confirm_sesskey($USER->sesskey)) {
 
     $db_entry = new stdClass();
 
-    foreach ($array as $data) {
+    foreach ($new_array as $data) {
 
-        $answer = 'value'.$data->id;
-/*
-        insert_feedback_answer(
-            $data->id,
-            $1,
-            $->id,
-            $entry->$answer
-        );
- */
+        if (has_capability('mod/feedbackccna:rateteacher', $context)) {
+
+            $answer_feed = 'value'.$data->id.'1';
+            $answer_lab = 'value'.$data->id.'2';
+
+            echo '1: '.$entry->$answer_feed.'<br/>';
+            echo '2: '.$entry->$answer_lab.'<br/>';
+
+            insert_feedback_answer(
+                $data->id,
+                1,
+                $USER->id,
+                $entry->$answer_feed
+            );
+
+            insert_feedback_answer(
+                $data->id,
+                2,
+                $USER->id,
+                $entry->$answer_lab
+            );
+
+        }
+
+        if (has_capability('mod/feedbackccna:feedallow', $context)) {
+
+            $check1 = 'check'.$data->id.'1';
+            $check2 = 'check'.$data->id.'2';
+
+            if ($entry->$check1 == '1') {
+                echo '<br/>1';
+            }
+            if ($entry->$check2 == '1') {
+                echo '<br/>2';
+            }
+
+        }
+
     }
 
     echo $OUTPUT->notification(get_string('feedback_sent', 'feedbackccna'), 'notifysuccess');

@@ -6,6 +6,9 @@ require_once("$CFG->libdir/formslib.php");
 require_once($CFG->dirroot.'/lib/accesslib.php');
 require_once(dirname(__FILE__).'/db_functions.php');
 
+echo '<script type="text/javascript" src="prototype.js"></script>
+      <script type="text/javascript" src="stars.js"></script>';
+
 function build_tabs($active, $id, $n, $context) {
 
 	global $CFG;
@@ -66,11 +69,7 @@ class add_view_form extends moodleform {
                 $course_id = $this->_customdata['courseid'];
                 $section = $cm->section;
 
-                $new_array = $DB->get_records_sql("SELECT * FROM {feedbackccna_module}
-                                                   WHERE course_id = ? AND section = ?",
-                                                   array($course_id, $section));
-
-//print_r($new_array);
+                $new_array = get_feedback_module($course_id, $section, 2);
 
                 $nothing = 1;
 		$something = 0;
@@ -95,7 +94,7 @@ class add_view_form extends moodleform {
                                                         </script>");
 
 
-                            $mform->addElement('select', 'value'.$data->id, get_string('feedback_values', 'feedbackccna'),
+                            $mform->addElement('select', 'value'.$data->id.'1', get_string('feedback_values', 'feedbackccna'),
                                     array('1' => '1', '2' => '2', '3' => '3', '4' => '4', '5' => '5'));
                         }
                     }
@@ -121,7 +120,7 @@ class add_view_form extends moodleform {
                                                                         });
                                                         </script>");
 
-                            $mform->addElement('select', 'value'.$data->id, get_string('feedback_values', 'feedbackccna'),
+                            $mform->addElement('select', 'value'.$data->id.'2', get_string('feedback_values', 'feedbackccna'),
                                     array('1' => '1', '2' => '2', '3' => '3', '4' => '4', '5' => '5'));
 
                         }
