@@ -71,8 +71,8 @@ function feedbackccna_add_instance(stdClass $feedbackccna, mod_feedbackccna_mod_
 
     $feedbackccna->timecreated = time();
 	# You may have to add extra stuff in here #
-
-	mod_setup_insert_module($feedbackccna);
+	die("Morriii ");
+	//setup_feedback_module($feedbackccna, );
 
     return $DB->insert_record('feedbackccna', $feedbackccna);
 }
