@@ -4,6 +4,7 @@ require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
 require_once(dirname(__FILE__).'/lib.php');
 require_once(dirname(__FILE__).'/locallib.php');
 require_once(dirname(__FILE__).'/mod_form.php');
+require_once(dirname(__FILE__).'/db_functions.php');
 require_once($CFG->dirroot.'/lib/accesslib.php');
 
 $id = optional_param('id', 0, PARAM_INT); // course_module ID, or
@@ -46,15 +47,15 @@ echo $OUTPUT->header();
 
 if(has_capability('mod/feedbackccna:ratestudent', $context)) {
 
-    $new_array = get_feedback_module($courseid, $cm->section, 1);
+    global $bla_array;
+    $bla_array = get_feedback_module_teacher($courseid, $cm->section, 1);
 
-print_r($new_array);
+    build_tabs('t_view', $id, $n, $context);
 
-    /*foreach ($new_array as $data) {
-        build_tabs('t_view', $id, $n, $context);
+    global $DB;
+    global $USER;
 
-        global $DB;
-        global $USER;
+    foreach ($bla_array as $t_module) {
 
         include 'participants.php';
 
@@ -70,27 +71,27 @@ print_r($new_array);
                     $lab = 'lab'.$user_id;
 
                     insert_feedback_answer(
+                        $t_module->id,
+                        1,
                         $user_id,
-                        1, //$feedback_id,
-                        1, //$question_id,
                         $_POST[$feed]
                     );
 
                     if (isset($_POST[$lab])) {
 
                         insert_feedback_answer(
+                            $t_module->id,
+                            2,
                             $user_id,
-                            1, //$feedback_id,
-                            1, //$question_id,
                             1
                         );
 
                     } else {
 
                         insert_feedback_answer(
+                            $t_module->id,
+                            2,
                             $user_id,
-                            1, //$feedback_id,
-                            1, //$question_id,
                             0
                         );
 
@@ -104,7 +105,7 @@ print_r($new_array);
 
         }
 
-    } */
+    }
 
 } else {
     die('You are not allowed to see this page!');
