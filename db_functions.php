@@ -17,16 +17,13 @@ define('FEEDBACK_STUDENT_LAB_NOT_DONE', 2);
 define('FEEDBACK_STUDENT_LAB_DONE', 1);
 
 /*
-function insert_feedback_module($type, $instructor_id, $course_id, $section, $denumire, $which_way);
 	functie care insereaza un modul de feedback
-	parametri:
 	- instructor_id - id-ul instructorului care adauga modulul
 	- denumire - denumirea modulului
 	- section - sectiunea din curs unde se afla modulul
 	- course_id - id-ul cursului unde se afla modulul
 	- which_way - daca feedback-ul este dat de profesor studentului sau invers
 */
-
 function insert_feedback_module($instructor_id, $course_id, $section, $denumire, $which_way) {
 	global $DB;
 
@@ -57,7 +54,6 @@ function setup_feedback_module($feedbackccna, $instructor_id) {
 
 /*
 	functie de inserare raspuns la intrebare
-	parametri:
 	- type - tipul feedback-ului prezentare/laborator
 	- module_id - id-ul modulului la care s-a raspuns
 	- student_id - id-ul studentului care a raspuns
@@ -76,6 +72,19 @@ function insert_feedback_answer($module_id, $type, $student_id, $answer) {
 }
 
 /*
+	functie de schimbat valoarea campului allow din modulul de feedback
+	- module_id - id-ul modulului de modificat
+	- allow - noua valoare a campului allow
+*/
+function set_allow_feedback($module_id, $allow) {
+	global $DB;
+
+	if($allow ==  FEEDBACK_ALLOWED && $allow == FEEDBACK_NOT_ALLOWED) {
+		$DB->update_field("feedbackccna_module", array('id'=>$module_id, 'allow'=>$allow));
+	}
+}
+
+/*
 	functie de obtinut modulul de feedback dintr-un curs si o sectiune
 	- course_id -id-ul cursului
 	- section - saptamana sau topicul
@@ -84,7 +93,7 @@ function insert_feedback_answer($module_id, $type, $student_id, $answer) {
 function get_feedback_module($course_id, $section, $which_way) {
 	global $DB;
 
-	return $DB->get_records_sql("SELECT * FROM {feedbackccna_module} WHERE course_id = ? AND section = ? AND which_way = ?", array($course_id, $section, $which_way) );
+	return $DB->get_records_sql("SELECT * FROM {feedbackccna_module} WHERE course_id = ? AND section = ? AND which_way = ? AND allow='".FEEDBACK_ALLOWED."'", array($course_id, $section, $which_way) );
 }
 
 /*
