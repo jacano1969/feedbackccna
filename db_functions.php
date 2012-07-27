@@ -46,10 +46,10 @@ function insert_feedback_module($instructor_id, $course_id, $section, $denumire,
 /*
 	functie de inserat automat intrare unui modul
 */
-function setup_feedback_module($feedbackccna, $instructor_id) {
+function setup_feedback_module($feedback, $instructor_id) {
 
-	insert_feedback_module($instructor_id, $feedbackccna->course_id, $feedback->section, $feedback->name, STUDENT_FOR_TEACHER);
-	insert_feedback_module($instructor_id, $feedbackccna->course_id, $feedback->section, $feedback->name, TEACHER_FOR_STUDENT);	
+	insert_feedback_module($instructor_id, $feedback->course, $feedback->section, $feedback->name, STUDENT_FOR_TEACHER);
+	insert_feedback_module($instructor_id, $feedback->course, $feedback->section, $feedback->name, TEACHER_FOR_STUDENT);	
 }
 
 /*
