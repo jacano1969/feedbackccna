@@ -67,12 +67,12 @@ function feedbackccna_supports($feature) {
  * @return int The id of the newly inserted feedbackccna record
  */
 function feedbackccna_add_instance(stdClass $feedbackccna, mod_feedbackccna_mod_form $mform = null) {
-	global $DB;
+	global $DB, $USER;
 
     $feedbackccna->timecreated = time();
 	# You may have to add extra stuff in here #
-	//die("Morriii ");
-	//setup_feedback_module($feedbackccna, );
+	
+	setup_feedback_module($feedbackccna, $USER->id);
 
     return $DB->insert_record('feedbackccna', $feedbackccna);
 }

@@ -14,7 +14,6 @@ class mod_feedbackccna_mod_form extends moodleform_mod {
 
 	// Adding the "general" fieldset, where all the common settings are showed
         $mform->addElement('header', 'general', get_string('general', 'form'));
-
         // Adding the standard "name" field
         $mform->addElement('text', 'name', get_string('feedbackccnaname', 'feedbackccna'), array('size'=>'64'));
         $mform->setType('name', PARAM_TEXT);
