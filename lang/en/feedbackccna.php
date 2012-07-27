@@ -31,6 +31,7 @@ $string['feedback_values'] = 'Your rating:';
 $string['feedback_sent'] = 'Your feedback has been successfully sent! Thank you!';
 $string['no_select'] = 'Absent';
 $string['laborator'] = 'Laborator<br/>complet';
+$string['checkbox'] = 'Allow this feedback';
 
 $string['viewtitle'] = 'View feedbackccna';
 $string['headerlabel_presentation'] = 'Please submit your feedback for the presentation:';
