@@ -44,66 +44,67 @@ echo '<script type="text/javascript" src="prototype.js"></script>
 
 echo $OUTPUT->header();
 
-
-
 if(has_capability('mod/feedbackccna:ratestudent', $context)) {
 
-    build_tabs('t_view', $id, $n, $context);
+    $new_array = get_feedback_module($courseid, $cm->section, 1);
 
-    global $DB;
-    global $USER;
+print_r($new_array);
 
-    include 'participants.php';
+    /*foreach ($new_array as $data) {
+        build_tabs('t_view', $id, $n, $context);
 
-    if (!empty($_POST) and confirm_sesskey($USER->sesskey)) {
+        global $DB;
+        global $USER;
 
-        foreach ($bundle as $user_id) {
+        include 'participants.php';
 
-            $user = 'user'.$user_id;
+        if (!empty($_POST) and confirm_sesskey($USER->sesskey)) {
 
-            //if (isset($_POST[$user])) echo 'isset '.$user_id.'<br/>';
-            //if ($_POST[$user] == "on") {echo 'ison '.$user_id.'<br/>';} else echo 'isoff '.$user_id.'<br/>';
+            foreach ($bundle as $user_id) {
 
+                $user = 'user'.$user_id;
 
-            if (!isset($_POST[$user])) {
+                if (!isset($_POST[$user])) {
 
-                $feed = 'Rating'.$user_id;
-                $lab = 'lab'.$user_id;
-
-                insert_feedback_answer(
-                    $user_id,
-                    1, //$feedback_id,
-                    1, //$question_id,
-                    $_POST[$feed]
-                );
-
-                if (isset($_POST[$lab])) {
+                    $feed = 'Rating'.$user_id;
+                    $lab = 'lab'.$user_id;
 
                     insert_feedback_answer(
                         $user_id,
                         1, //$feedback_id,
                         1, //$question_id,
-                        1
+                        $_POST[$feed]
                     );
 
-                } else {
+                    if (isset($_POST[$lab])) {
 
-                    insert_feedback_answer(
-                        $user_id,
-                        1, //$feedback_id,
-                        1, //$question_id,
-                        0
-                    );
+                        insert_feedback_answer(
+                            $user_id,
+                            1, //$feedback_id,
+                            1, //$question_id,
+                            1
+                        );
+
+                    } else {
+
+                        insert_feedback_answer(
+                            $user_id,
+                            1, //$feedback_id,
+                            1, //$question_id,
+                            0
+                        );
+
+                    }
 
                 }
 
             }
 
+            echo $OUTPUT->notification(get_string('feedback_sent', 'feedbackccna'), 'notifysuccess');
+
         }
 
-        echo $OUTPUT->notification(get_string('feedback_sent', 'feedbackccna'), 'notifysuccess');
-
-    }
+    } */
 
 } else {
     die('You are not allowed to see this page!');

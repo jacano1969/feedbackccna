@@ -50,20 +50,11 @@ if(has_capability('mod/feedbackccna:ratestudent', $context)) {
 global $USER;
 
 
-//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
 $form = new add_view_form(null, array('id' => $id, 'n' => $n, 'courseid' => $course->id, 'cm' => $cm));
 $entry = $form->get_data();
-//echo'<br/>x';
-//print_r($entry);
-//echo'<br/>y';
 
-//print($course->id);
-//foreach ($new_array as $data) print_r($data->id);
 
 if (!empty($entry) and confirm_sesskey($USER->sesskey)) {
-
-    $db_entry = new stdClass();
 
     foreach ($new_array as $data) {
 
@@ -97,10 +88,10 @@ if (!empty($entry) and confirm_sesskey($USER->sesskey)) {
             $check2 = 'check'.$data->id.'2';
 
             if ($entry->$check1 == '1') {
-                echo '<br/>1';
+                set_allow_feedback($data->id, FEEDBACK_ALLOWED);
             }
             if ($entry->$check2 == '1') {
-                echo '<br/>2';
+                set_allow_feedback($data->id, FEEDBACK_ALLOWED);
             }
 
         }
@@ -112,8 +103,6 @@ if (!empty($entry) and confirm_sesskey($USER->sesskey)) {
 }
 
 $form->display();
-
-//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
 // Finish the page
