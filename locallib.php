@@ -63,8 +63,8 @@ class add_view_form extends moodleform {
                 $new_array = get_feedback_ccna_objects_teacher($this->_customdata['id'], ($this->_customdata['cm']->section));
                 $array_q = get_questions_for_teachers();
 
-print_r($new_array);
-print_r($array_q);
+//print_r($new_array);
+//print_r($array_q);
 
                 $nothing = 1;
 		$something = 0;
@@ -90,7 +90,7 @@ print_r($array_q);
 
                                         $mform->addElement('header', 'editorheader', get_string('headerlabel_presentation', 'feedbackccna'));
                                         $mform->addElement('html', "<script type='text/javascript'>
-																		var s1 = new Stars({ 
+																		var s1 = new Stars({
 																					maxRating: 5,
 																					imagePath: 'images/',
 																					value: 3
@@ -135,7 +135,7 @@ print_r($array_q);
 
                                         $mform->addElement('header', 'editorheader', get_string('headerlabel_lab', 'feedbackccna'));
                                         $mform->addElement('html', "<script type='text/javascript'>
-                                                                        var s1 = new Stars({ 
+                                                                        var s1 = new Stars({
                                                                                     maxRating: 5,
                                                                                     imagePath: 'images/',
                                                                                     value: 3
@@ -166,7 +166,7 @@ print_r($array_q);
 
                     }
 		}
-echo '2';
+//echo '2';
 		if (!$something) {
 
 			if($nothing) {

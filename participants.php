@@ -393,8 +393,8 @@
 			if (document.getElementById("user".concat(id)).checked) {
 				document.getElementById("lab".concat(id)).checked = false;
 			}
+                        document.getElementById("lab".concat(id)).hidden = !(document.getElementById("lab".concat(id)).hidden);
 			document.getElementById("feed".concat(id)).hidden = !(document.getElementById("feed".concat(id)).hidden);
-			document.getElementById("lab".concat(id)).hidden = !(document.getElementById("lab".concat(id)).hidden);
 		} else {
 			if (document.getElementById("lab".concat(id)).checked) {
 				document.getElementById("user".concat(id)).checked = false;
@@ -694,8 +694,8 @@
                     }
                 }
                 if ($bulkoperations) {
-    	            $data[] .= "<input id='Rating".$user->id."' type='hidden' value='' name='Rating".$user->id."' size='0' />". //;
-                    /*$data[] .=*/ "<script type='text/javascript'>
+    	            $data[] .= "<input id='Rating".$user->id."' type='hidden' value='' name='Rating".$user->id."' size='0' />" .
+                               "<script type='text/javascript'>
                                          var s".$user->id." = new Stars({
                                               maxRating: 5,
                                               imagePath: 'images/',
