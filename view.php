@@ -58,19 +58,22 @@ $entry = $form->get_data();
 //print_r($entry);
 //echo'<br/>y';
 
-if (!empty($entry) and confirm_sesskey($USER->sesskey)) {
+//print($course->id);
+$array = get_feedback_module($course->id, $cm->section);
+foreach ($array as $data) print_r($data->id);
+
+if (!empty($entry) and confirm_sesskey($USER->sesskey) and false) {
 
     $db_entry = new stdClass();
 
-    foreach ($new_array as $data) {
+    foreach ($array as $data) {
 
-        $question_id = 'qid'.$data->id;
         $answer = 'value'.$data->id;
 /*
         insert_feedback_answer(
-            $USER->id,
             $data->id,
-            $entry->$question_id,
+            $1,
+            $->id,
             $entry->$answer
         );
  */
