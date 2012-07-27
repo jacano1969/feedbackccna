@@ -31,6 +31,7 @@
  */
 
 defined('MOODLE_INTERNAL') || die();
+require_once("db_functions.php");
 
 /** example constant */
 //define('NEWMODULE_ULTIMATE_ANSWER', 42);
@@ -70,7 +71,8 @@ function feedbackccna_add_instance(stdClass $feedbackccna, mod_feedbackccna_mod_
 
     $feedbackccna->timecreated = time();
 	# You may have to add extra stuff in here #
-
+	//die("Morriii ");
+	//setup_feedback_module($feedbackccna, );
 
     return $DB->insert_record('feedbackccna', $feedbackccna);
 }

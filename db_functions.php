@@ -43,7 +43,16 @@ function insert_feedback_module($instructor_id, $course_id, $section, $denumire,
 	$record->course_id = $course_id;
 	$record->which_way = $which_way;
 	
-	$DB->insert_record("module", $record);
+	$DB->insert_record("feedbackccna_module", $record);
+}
+
+/*
+	functie de inserat automat intrare unui modul
+*/
+function setup_feedback_module($feedbackccna, $instructor_id) {
+
+	insert_feedback_module($instructor_id, $feedbackccna->course_id, $feedback->section, $feedback->name, STUDENT_FOR_TEACHER);
+	insert_feedback_module($instructor_id, $feedbackccna->course_id, $feedback->section, $feedback->name, TEACHER_FOR_STUDENT);	
 }
 
 /*
@@ -63,18 +72,19 @@ function insert_feedback_answer($module_id, $type, $student_id, $answer) {
 	$record->module_id = $module_id;
 	$record->answer = $answer;
 
-	$DB->insert_record("answer",$record);
+	$DB->insert_record("feedbackccna_answer",$record);
 }
 
 /*
 	functie de obtinut modulul de feedback dintr-un curs si o sectiune
 	- course_id -id-ul cursului
 	- section - saptamana sau topicul
+	- which_way - daca feedback-ul este dat de student pt profesor sau invers
 */
-function get_feedback_module($course_id, $section) {
+function get_feedback_module($course_id, $section, $which_way) {
 	global $DB;
 
-	return $DB->get_records_sql("SELECT * FROM {module} WHERE course_id = ? AND section = ?", array($course_id, $section) );
+	return $DB->get_records_sql("SELECT * FROM {feedbackccna_module} WHERE course_id = ? AND section = ? AND which_way = ?", array($course_id, $section, $which_way) );
 }
 
 /*
@@ -93,7 +103,7 @@ function get_feedback_module($course_id, $section) {
 function get_user_lab_count($course_id, $student_id) {
 	global $DB;
 
-	return $DB->count_record_sql("SELECT COUNT(*) FROM {module} m INNER JOIN {answer} a ON m.id = a.module_id WHERE a.value ='".FEEDBACK_STUDENT_LAB_DONE."' AND a.type='".FEEDBACK_TYPE_LAB."'");
+	return $DB->count_record_sql("SELECT COUNT(*) FROM {feedbackccna_module} m INNER JOIN {feedbackccna_answer} a ON m.id = a.module_id WHERE a.value ='".FEEDBACK_STUDENT_LAB_DONE."' AND a.type='".FEEDBACK_TYPE_LAB."'");
 }
 
 /*
@@ -103,5 +113,5 @@ function get_user_lab_count($course_id, $student_id) {
 function get_feedback_modules_count($course_id) {
 	global $DB;
 
-	return $DB->count_record_sql("SELECT COUNT(*) FROM {module} WHERE course_id ='".$course_id"'");
+	return $DB->count_record_sql("SELECT COUNT(*) FROM {feedbackccna_module} WHERE course_id ='".$course_id."'");
 }
