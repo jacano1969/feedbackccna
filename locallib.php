@@ -85,12 +85,13 @@ class add_view_form extends moodleform {
 
                             $nothing = 0;
 
+                            $mform->addElement('html', '<div id = "star'.$data->id.'1"></div>');
 
                             $mform->addElement('html', "<script type='text/javascript'>
                                                             var s1 = new Stars({
                                                                     maxRating: 5,
                                                                     imagePath: 'images/',
-                                                                    value: 3,
+                                                                    value: 1,
                                                                     container: 'star".$data->id."1'
                                                             });
                                                         </script>");
@@ -106,7 +107,7 @@ class add_view_form extends moodleform {
                                                 null, array(0, 1));
                     }
 
-                    $mform->addElement('header', 'editorheader', get_string('headerlabel_presentation', 'feedbackccna'));
+                    $mform->addElement('header', 'editorheader', get_string('headerlabel_lab', 'feedbackccna'));
 
                     if (has_capability('mod/feedbackccna:rateteacher', $context)) {
 
@@ -114,11 +115,13 @@ class add_view_form extends moodleform {
 
                             $nothing = 0;
 
+                            $mform->addElement('html', '<div id = "star'.$data->id.'2"></div>');
+
                             $mform->addElement('html', "<script type='text/javascript'>
-                                                            var s1 = new Stars({
+                                                            var s2 = new Stars({
                                                                         maxRating: 5,
                                                                         imagePath: 'images/',
-                                                                        value: 3
+                                                                        value: 1,
                                                                         container: 'star".$data->id."2'
                                                                         });
                                                         </script>");
