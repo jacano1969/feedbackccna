@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="mod/feedbackccna/db" VERSION="20120725" COMMENT="XMLDB file for Moodle mod/feedbackccna"
+<XMLDB PATH="mod/feedbackccna/db" VERSION="20120727" COMMENT="XMLDB file for Moodle mod/feedbackccna"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
 >
@@ -7,10 +7,10 @@
     <TABLE NAME="feedbackccna" COMMENT="Default comment for feedbackccna, please edit me" NEXT="feedbackccna_module">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" NEXT="course"/>
-        <FIELD NAME="course" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Course feedbackccna activity belongs to" PREVIOUS="id" NEXT="name"/>
-        <FIELD NAME="name" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="name field for moodle instances" PREVIOUS="course" NEXT="intro"/>
-        <FIELD NAME="intro" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="General introduction of the feedbackccna activity" PREVIOUS="name" NEXT="introformat"/>
-        <FIELD NAME="introformat" TYPE="int" LENGTH="4" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Format of the intro field (MOODLE, HTML, MARKDOWN...)" PREVIOUS="intro" NEXT="timecreated"/>
+        <FIELD NAME="course" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" PREVIOUS="id" NEXT="name"/>
+        <FIELD NAME="name" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" PREVIOUS="course" NEXT="intro"/>
+        <FIELD NAME="intro" TYPE="text" NOTNULL="false" SEQUENCE="false" PREVIOUS="name" NEXT="introformat"/>
+        <FIELD NAME="introformat" TYPE="int" LENGTH="4" NOTNULL="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="intro" NEXT="timecreated"/>
         <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" PREVIOUS="introformat" NEXT="timemodified"/>
         <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="timecreated"/>
       </FIELDS>
@@ -21,53 +21,31 @@
         <INDEX NAME="course" UNIQUE="false" FIELDS="course"/>
       </INDEXES>
     </TABLE>
-    <TABLE NAME="feedbackccna_module" COMMENT="Organizare pe saptamana" PREVIOUS="feedbackccna" NEXT="feedbackccna_questions">
+    <TABLE NAME="feedbackccna_module" COMMENT="The less specific one" PREVIOUS="feedbackccna" NEXT="feedbackccna_answer">
       <FIELDS>
-        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" NEXT="course_id"/>
-        <FIELD NAME="course_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" PREVIOUS="id" NEXT="section"/>
-        <FIELD NAME="section" TYPE="int" LENGTH="2" NOTNULL="true" SEQUENCE="false" PREVIOUS="course_id"/>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" NEXT="instructor_id"/>
+        <FIELD NAME="instructor_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="ID-ul instructorului" PREVIOUS="id" NEXT="denumire"/>
+        <FIELD NAME="denumire" TYPE="char" LENGTH="45" NOTNULL="true" DEFAULT="Feedback" SEQUENCE="false" COMMENT="Denumirea feedback-ului" PREVIOUS="instructor_id" NEXT="allow"/>
+        <FIELD NAME="allow" TYPE="int" LENGTH="1" NOTNULL="true" SEQUENCE="false" COMMENT="1 - daca instructorul a autorizat modulul curent 0 - daca nu" PREVIOUS="denumire" NEXT="section"/>
+        <FIELD NAME="section" TYPE="int" LENGTH="2" NOTNULL="true" SEQUENCE="false" COMMENT="Saptamana in care este adaugat modulul" PREVIOUS="allow" NEXT="course_id"/>
+        <FIELD NAME="course_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="ID-ul cursului in care este adaugat modulul" PREVIOUS="section" NEXT="which_way"/>
+        <FIELD NAME="which_way" TYPE="int" LENGTH="1" NOTNULL="true" SEQUENCE="false" COMMENT="1 - daca instructorul a dat feedback pentru student 2 - daca studentul a dat feedback pentru instructor" PREVIOUS="course_id"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
       </KEYS>
     </TABLE>
-    <TABLE NAME="feedbackccna_questions" COMMENT="Default comment for the table, please edit me" PREVIOUS="feedbackccna_module" NEXT="feedbackccna_feedback">
+    <TABLE NAME="feedbackccna_answer" COMMENT="The more specific one" PREVIOUS="feedbackccna_module">
       <FIELDS>
-        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" NEXT="name"/>
-        <FIELD NAME="name" TYPE="char" LENGTH="45" NOTNULL="true" SEQUENCE="false" PREVIOUS="id" NEXT="type"/>
-        <FIELD NAME="type" TYPE="int" LENGTH="2" NOTNULL="true" SEQUENCE="false" PREVIOUS="name" NEXT="which_way"/>
-        <FIELD NAME="which_way" TYPE="int" LENGTH="2" NOTNULL="true" SEQUENCE="false" PREVIOUS="type"/>
-      </FIELDS>
-      <KEYS>
-        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
-      </KEYS>
-    </TABLE>
-    <TABLE NAME="feedbackccna_feedback" COMMENT="Default comment for the table, please edit me" PREVIOUS="feedbackccna_questions" NEXT="feedbackccna_answer">
-      <FIELDS>
-        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" NEXT="type"/>
-        <FIELD NAME="type" TYPE="int" LENGTH="2" NOTNULL="true" SEQUENCE="false" PREVIOUS="id" NEXT="name"/>
-        <FIELD NAME="name" TYPE="char" LENGTH="45" NOTNULL="true" SEQUENCE="false" PREVIOUS="type" NEXT="instructor_id"/>
-        <FIELD NAME="instructor_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" PREVIOUS="name" NEXT="module_id"/>
-        <FIELD NAME="module_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" PREVIOUS="instructor_id" NEXT="allow"/>
-        <FIELD NAME="allow" TYPE="int" LENGTH="1" NOTNULL="true" SEQUENCE="false" PREVIOUS="module_id"/>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" NEXT="student_id"/>
+        <FIELD NAME="student_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="ID-ul studentului" PREVIOUS="id" NEXT="module_id"/>
+        <FIELD NAME="module_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="ID-ul modulului de feedback" PREVIOUS="student_id" NEXT="answer"/>
+        <FIELD NAME="answer" TYPE="int" LENGTH="3" NOTNULL="true" SEQUENCE="false" COMMENT="Aici stocam raspunsul la modulul de feedback" PREVIOUS="module_id" NEXT="type"/>
+        <FIELD NAME="type" TYPE="int" LENGTH="1" NOTNULL="true" SEQUENCE="false" COMMENT="1 - prezentare 2 - laborator ? - unused" PREVIOUS="answer"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id" NEXT="fk_module_id"/>
-        <KEY NAME="fk_module_id" TYPE="foreign" FIELDS="module_id" REFTABLE="feedbackccna_module" REFFIELDS="id" PREVIOUS="primary"/>
-      </KEYS>
-    </TABLE>
-    <TABLE NAME="feedbackccna_answer" COMMENT="Default comment for the table, please edit me" PREVIOUS="feedbackccna_feedback">
-      <FIELDS>
-        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" NEXT="student_id"/>
-        <FIELD NAME="student_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" PREVIOUS="id" NEXT="feedback_id"/>
-        <FIELD NAME="feedback_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" PREVIOUS="student_id" NEXT="question_id"/>
-        <FIELD NAME="question_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" PREVIOUS="feedback_id" NEXT="answer"/>
-        <FIELD NAME="answer" TYPE="int" LENGTH="2" NOTNULL="true" SEQUENCE="false" PREVIOUS="question_id"/>
-      </FIELDS>
-      <KEYS>
-        <KEY NAME="primary" TYPE="primary" FIELDS="id" NEXT="fk_feedback_id"/>
-        <KEY NAME="fk_feedback_id" TYPE="foreign" FIELDS="feedback_id" REFTABLE="feedbackccna_feedback" REFFIELDS="id" PREVIOUS="primary" NEXT="fk_questions_id"/>
-        <KEY NAME="fk_questions_id" TYPE="foreign" FIELDS="question_id" REFTABLE="feedbackccna_questions" REFFIELDS="id" PREVIOUS="fk_feedback_id"/>
+        <KEY NAME="fk_module_id" TYPE="foreign" FIELDS="module_id" REFTABLE="feedbackccna_module" REFFIELDS="id" COMMENT="Leaga tabelul answer de tabelul module" PREVIOUS="primary"/>
       </KEYS>
     </TABLE>
   </TABLES>

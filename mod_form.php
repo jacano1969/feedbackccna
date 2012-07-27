@@ -12,7 +12,6 @@ class mod_feedbackccna_mod_form extends moodleform_mod {
 	global $COURSE;
         $mform = $this->_form;
 
-		mail("nastasie.octavian@gmail.com", "DEBUG form", print_r($this, true));
 	// Adding the "general" fieldset, where all the common settings are showed
         $mform->addElement('header', 'general', get_string('general', 'form'));
 
