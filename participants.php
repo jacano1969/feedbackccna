@@ -393,8 +393,8 @@
 			if (document.getElementById("user".concat(id)).checked) {
 				document.getElementById("lab".concat(id)).checked = false;
 			}
-			document.getElementById("feed".concat(id)).hidden = !(document.getElementById("feed".concat(id)).hidden);
 			document.getElementById("lab".concat(id)).hidden = !(document.getElementById("lab".concat(id)).hidden);
+			document.getElementById("stars".concat(id)).hidden = !(document.getElementById("stars".concat(id)).hidden);
 		} else {
 			if (document.getElementById("lab".concat(id)).checked) {
 				document.getElementById("user".concat(id)).checked = false;
@@ -694,14 +694,14 @@
                     }
                 }
                 if ($bulkoperations) {
-    	            $data[] .= "<input id='Rating".$user->id."' type='hidden' value='' name='Rating".$user->id."' size='0' />". //;
-                    /*$data[] .=*/ "<script type='text/javascript'>
+    	            $data[] .= "<input id='Rating".$user->id."' type='hidden' value='' name='Rating".$user->id."' size='0' /><div id='stars".$user->id."'></div>
+                    <script type='text/javascript'>
                                          var s".$user->id." = new Stars({
                                               maxRating: 5,
                                               imagePath: 'images/',
                                               value: 1,
-					      bindField: Rating".$user->id."
-                                         });
+					      bindField: Rating".$user->id.",
+							container: stars".$user->id."});
                                 </script>";
                     $data[] .= '<input type="checkbox" class="labcheckbox" name="lab'.$user->id.'" id = "lab'.$user->id .
                         '" onclick = unclick("lab",' . $user->id . ') />';
