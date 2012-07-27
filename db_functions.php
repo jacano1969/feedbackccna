@@ -13,6 +13,8 @@ define('TEACHER_FOR_STUDENT', 1);
 define('STUDENT_FOR_TEACHER', 2);
 define('FEEDBACK_TYPE_PRE', 1);
 define('FEEDBACK_TYPE_LAB', 2);
+define('FEEDBACK_STUDENT_LAB_NOT_DONE', 2);
+define('FEEDBACK_STUDENT_LAB_DONE', 1);
 
 /*
 function insert_feedback_module($type, $instructor_id, $course_id, $section, $denumire, $which_way);
@@ -64,3 +66,42 @@ function insert_feedback_answer($module_id, $type, $student_id, $answer) {
 	$DB->insert_record("answer",$record);
 }
 
+/*
+	functie de obtinut modulul de feedback dintr-un curs si o sectiune
+	- course_id -id-ul cursului
+	- section - saptamana sau topicul
+*/
+function get_feedback_module($course_id, $section) {
+	global $DB;
+
+	return $DB->get_records_sql("SELECT * FROM {module} WHERE course_id = ? AND section = ?", array($course_id, $section) );
+}
+
+/*
+	functie de obtinut rating mediu pentru un curs
+*/
+
+/*
+	functie de obtinut rating mediu pentru un profesor
+*/
+
+/*
+	functie de obtinut nr de laboratoare completate de un utilizator
+	- course_id
+	- student_id
+*/
+function get_user_lab_count($course_id, $student_id) {
+	global $DB;
+
+	return $DB->count_record_sql("SELECT COUNT(*) FROM {module} m INNER JOIN {answer} a ON m.id = a.module_id WHERE a.value ='".FEEDBACK_STUDENT_LAB_DONE."' AND a.type='".FEEDBACK_TYPE_LAB."'");
+}
+
+/*
+	functie de obtinut nr total de feedback-uri pe curs
+	- course_id
+*/
+function get_feedback_modules_count($course_id) {
+	global $DB;
+
+	return $DB->count_record_sql("SELECT COUNT(*) FROM {module} WHERE course_id ='".$course_id"'");
+}
