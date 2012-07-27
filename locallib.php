@@ -77,13 +77,15 @@ class add_view_form extends moodleform {
                 // numarul de tipuri este considerat hard-coded = 2 in view.php
 		foreach ($new_array as $data) {
 
+                    $mform->addElement('header', 'editorheader', get_string('headerlabel_presentation', 'feedbackccna'));
+
                     if (has_capability('mod/feedbackccna:rateteacher', $context)) {
 
                         if ($data->allow == '1' || has_capability('mod/feedbackccna:feededit', $context)) {
 
                             $nothing = 0;
 
-                            $mform->addElement('header', 'editorheader', get_string('headerlabel_presentation', 'feedbackccna'));
+
                             $mform->addElement('html', "<script type='text/javascript'>
                                                             var s1 = new Stars({
                                                                     maxRating: 5,
@@ -103,6 +105,8 @@ class add_view_form extends moodleform {
                         $mform->addElement('advcheckbox', 'check'.$data->id.'1', get_string('checkbox', 'feedbackccna'), null,
                                                 null, array(0, 1));
                     }
+
+                    $mform->addElement('header', 'editorheader', get_string('headerlabel_presentation', 'feedbackccna'));
 
                     if (has_capability('mod/feedbackccna:rateteacher', $context)) {
 
