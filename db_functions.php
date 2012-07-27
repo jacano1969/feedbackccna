@@ -151,6 +151,40 @@ function average_instructor_rating_percourse($instructor_id, $course_id) {
 	return $DB->get_records_sql("SELECT AVG(a.answer) FROM {feedbackccna_answer} a  INNER JOIN {feedbackccna_module} m ON a.module_id = m.id WHERE m.instructor_id = ? AND m.which_way='".STUDENT_FOR_TEACHER."' AND m.course_id = ?", array($instructor_id, $course_id));
 }
 
+//  functie de obtinut valoare medie feedback student
+//  - student_id
+function average_rating_student($student_id) {
+	global $DB;
+	
+	return $DB->get_records_sql("SELECT AVG(a.answer) FROM {feedbackccna_answer} a INNER JOIN {feedbackccna_module} m ON a.module_id = m_id WHERE  m.which_way='".TEACHER_FOR_STUDENT."' AND a.student_id = ?", array($student_id));
+}
+
+//  functie de obtinut valoare medie feedback student pe fiecare item
+//  - student_id
+//  - type
+function average_rating_student_pertype($student_id, $type) {
+	global $DB;
+	
+	return $DB->get_records_sql("SELECT AVG(a.answer) FROM {feedbackccna_answer} a INNER JOIN {feedbackccna_module} m ON a.module_id = m_id WHERE  m.which_way='".TEACHER_FOR_STUDENT."' AND a.student_id = ? AND a.type = ?", array($student_id, $type));
+}
+//  functie de obtinut valoare medie 
+//  - student_id
+//  - course_id
+function average_rating_student_percourse($student_id, $course_id) {
+	global $DB;
+	
+	return $DB->get_records_sql("SELECT AVG(a.answer) FROM {feedbackccna_answer} a INNER JOIN {feedbackccna_module} m ON a.module_id = m_id WHERE  m.which_way='".TEACHER_FOR_STUDENT."' AND a.student_id = ? AND m.course_id = ?", array($student_id, $course_id));
+}
+
+//  functie de obtinut valoare medie feedback student
+//  - student_id
+//  - type
+function average_rating_student_pertype_percourse($student_id, $type, $course_id) {
+	global $DB;
+	
+	return $DB->get_records_sql("SELECT AVG(a.answer) FROM {feedbackccna_answer} a INNER JOIN {feedbackccna_module} m ON a.module_id = m_id WHERE  m.which_way='".TEACHER_FOR_STUDENT."' AND a.student_id = ? AND a.type = ? AND m.course_id = ?", array($student_id, $type, $course_id));
+}
+
 //	functie de obtinut nr de laboratoare completate de un utilizator
 //	- course_id
 //	- student_id
