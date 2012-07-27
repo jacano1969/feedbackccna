@@ -66,14 +66,14 @@ if (!empty($entry) and confirm_sesskey($USER->sesskey)) {
 
         $question_id = 'qid'.$data->id;
         $answer = 'value'.$data->id;
-
+/*
         insert_feedback_answer(
             $USER->id,
             $data->id,
             $entry->$question_id,
             $entry->$answer
         );
-
+ */
     }
 
     echo $OUTPUT->notification(get_string('feedback_sent', 'feedbackccna'), 'notifysuccess');
