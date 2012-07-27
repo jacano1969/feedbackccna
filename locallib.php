@@ -114,7 +114,6 @@ class add_view_form extends moodleform {
 
                             $nothing = 0;
 
-                            $mform->addElement('header', 'editorheader', get_string('headerlabel_lab', 'feedbackccna'));
                             $mform->addElement('html', "<script type='text/javascript'>
                                                             var s1 = new Stars({
                                                                         maxRating: 5,
