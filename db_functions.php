@@ -11,27 +11,32 @@ define('DEFAULT_FEEDBACK_ALLOWED', FEEDBACK_NOT_ALLOWED); // valoarea implicita 
 define('TEACHER_FOR_STUDENT', 1);
 // feedback-ul se da de elev pentru profesor
 define('STUDENT_FOR_TEACHER', 2);
+define('FEEDBACK_TYPE_PRE', 1);
+define('FEEDBACK_TYPE_LAB', 2);
 
 /*
 function insert_feedback_module($type, $instructor_id, $course_id, $section, $denumire, $which_way);
 	functie care insereaza un modul de feedback
 	parametri:
-	-type - tipul feedback-ului prezentare/laborator
-	-instructor_id - id-ul instructorului care adauga modulul
-	-denumire - denumirea modulului
-	-section - sectiunea din curs unde se afla modulul
-	-course_id - id-ul cursului unde se afla modulul
-	-which_way - daca feedback-ul este dat de profesor studentului sau invers
+	- instructor_id - id-ul instructorului care adauga modulul
+	- denumire - denumirea modulului
+	- section - sectiunea din curs unde se afla modulul
+	- course_id - id-ul cursului unde se afla modulul
+	- which_way - daca feedback-ul este dat de profesor studentului sau invers
 */
 
-function insert_feedback_module($type, $instructor_id, $course_id, $section, $denumire, $which_way) {
+function insert_feedback_module($instructor_id, $course_id, $section, $denumire, $which_way) {
 	global $DB;
 
+	// inserez modulul de feedback cu drepturile care trebuie, pentru a fi afisat
+	$allow = FEEDBACK_NOT_ALLOWED;
+	if( $which_way == STUDENT_FOR_TEACHER) $allow = DEFAULT_FEEDBACK_ALLOWED;
+	elseif( $which_way == TEACHER_FOR_STUDENT) $allow = FEEDBACK_ALLOWED;
+	
 	$record = new stdClass();
-	$record->type = $type;
 	$record->instructor_id = $instructor_id;
 	$record->denumire = $denumire;
-	$record->allow = $which_way === STUDENT_FOR_TEACHER ? DEFAULT_FEEDBACK_ALLOWED : FEEDBACK_ALLOWED;
+	$record->allow = $allow;
 	$record->section = $section;
 	$record->course_id = $course_id;
 	$record->which_way = $which_way;
@@ -40,19 +45,22 @@ function insert_feedback_module($type, $instructor_id, $course_id, $section, $de
 }
 
 /*
-	functie de inserare
+	functie de inserare raspuns la intrebare
 	parametri:
+	- type - tipul feedback-ului prezentare/laborator
 	- module_id - id-ul modulului la care s-a raspuns
 	- student_id - id-ul studentului care a raspuns
 	- answer - valoarea efectiva a raspunsului
 */
-function insert_feedback_answer($module_id, $student_id, $answer) {
+function insert_feedback_answer($module_id, $type, $student_id, $answer) {
 	global $DB;
 
 	$record = new stdClass();
+	$record->type = $type ;
 	$record->student_id = $student_id;
 	$record->module_id = $module_id;
 	$record->answer = $answer;
 
 	$DB->insert_record("answer",$record);
 }
+
