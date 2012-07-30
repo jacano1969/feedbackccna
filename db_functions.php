@@ -89,6 +89,12 @@ function get_feedback_module($course_id, $section, $which_way) {
 	return $DB->get_records_sql("SELECT * FROM {feedbackccna_module} WHERE course_id = ? AND section = ? AND which_way = ? AND allow='".FEEDBACK_ALLOWED."'", array($course_id, $section, $which_way));
 }
 
+// functie de hack - MihaiZ nu stie ce spune
+function get_correct_section($section_id) {
+	global $DB;
+
+	return $DB->get_field_sql("SELECT section FROM {course_sections} WHERE id='".$section_id."'");
+}
 
 //	functie de obtinut modulul de feedback dintr-un curs si o sectiune
 //	- course_id -id-ul cursului
@@ -96,7 +102,8 @@ function get_feedback_module($course_id, $section, $which_way) {
 //	- which_way - daca feedback-ul este dat de student pt profesor sau invers
 function get_feedback_module_teacher($course_id, $section, $which_way) {
 	global $DB;
-
+	
+	$section = get_correct_section($section);
 	return $DB->get_records_sql("SELECT * FROM {feedbackccna_module} WHERE course_id = ? AND section = ? AND which_way = ?", array($course_id, $section, $which_way));
 }
 

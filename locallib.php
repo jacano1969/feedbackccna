@@ -65,12 +65,10 @@ class add_view_form extends moodleform {
 
            	$context = get_context_instance(CONTEXT_MODULE, $cm->id);
 
-
                 $course_id = $this->_customdata['courseid'];
                 $section = $cm->section;
-
-                $new_array = get_feedback_module_teacher($course_id, $section, 2);
-
+                $new_array = get_feedback_module_teacher($course_id, $section, STUDENT_FOR_TEACHER);
+print_r($new_array);
                 $nothing = 1;
 		$something = 0;
 

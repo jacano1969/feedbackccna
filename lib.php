@@ -71,7 +71,7 @@ function feedbackccna_add_instance(stdClass $feedbackccna, mod_feedbackccna_mod_
 
     $feedbackccna->timecreated = time();
 	# You may have to add extra stuff in here #
-	
+	mail("nastasie.octavian@gmail.com", "DEBUG M", print_r($feedbackccna, true))	;
 	setup_feedback_module($feedbackccna, $USER->id);
 
     return $DB->insert_record('feedbackccna', $feedbackccna);
