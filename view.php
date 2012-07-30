@@ -68,14 +68,12 @@ if (!empty($entry) and confirm_sesskey($USER->sesskey)) {
 
             insert_feedback_answer(
                 $data->id,
-                //1,
                 $USER->id,
                 $entry->$answer_feed
             );
 
             insert_feedback_answer(
                 $data->id,
-                //2,
                 $USER->id,
                 $entry->$answer_lab
             );

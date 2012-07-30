@@ -79,7 +79,6 @@ class add_view_form extends moodleform {
 
                     if ($data->section == $section) {
 
-
                         if ($data->type == 1) {
 
                             $mform->addElement('header', 'editorheader', get_string('headerlabel_presentation', 'feedbackccna'));

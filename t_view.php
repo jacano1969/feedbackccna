@@ -70,29 +70,21 @@ if(has_capability('mod/feedbackccna:ratestudent', $context)) {
                     $feed = 'Rating'.$user_id;
                     $lab = 'lab'.$user_id;
 
-                    insert_feedback_answer(
-                        $t_module->id,
-                        //1,
-                        $user_id,
-                        $_POST[$feed]
-                    );
-
-                    if (isset($_POST[$lab])) {
+                    if($t_module->type == 1) {
 
                         insert_feedback_answer(
                             $t_module->id,
-                            //2,
                             $user_id,
-                            1
+                            $_POST[$feed]
                         );
 
-                    } else {
+                    } elseif($t_module->type == 2) {
 
+                        $lab_full = isset($_POST[$lab]);
                         insert_feedback_answer(
                             $t_module->id,
-                            //2,
                             $user_id,
-                            0
+                            $lab_full
                         );
 
                     }
