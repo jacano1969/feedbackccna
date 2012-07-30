@@ -57,7 +57,7 @@ if(has_capability('mod/feedbackccna:ratestudent', $context)) {
 
     foreach ($bla_array as $t_module) {
 
-        include 'participants.php';
+        require_once('participants.php');
 
         if (!empty($_POST) and confirm_sesskey($USER->sesskey)) {
 

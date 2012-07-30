@@ -69,7 +69,7 @@ class add_view_form extends moodleform {
                 $course_id = $this->_customdata['courseid'];
                 $section = $cm->section;
 
-                $new_array = get_feedback_module($course_id, $section, 2);
+                $new_array = get_feedback_module_teacher($course_id, $section, 2);
 
                 $nothing = 1;
 		$something = 0;
@@ -81,11 +81,11 @@ class add_view_form extends moodleform {
 
                         if ($data->type == 1) {
 
-                            $mform->addElement('header', 'editorheader', get_string('headerlabel_presentation', 'feedbackccna'));
-
                             if (has_capability('mod/feedbackccna:rateteacher', $context)) {
 
                                 if ($data->allow == '1' || has_capability('mod/feedbackccna:feededit', $context)) {
+
+                                    $mform->addElement('header', 'editorheader', get_string('headerlabel_presentation', 'feedbackccna'));
 
                                     $nothing = 0;
 
@@ -107,17 +107,24 @@ class add_view_form extends moodleform {
                             }
 
                             if (has_capability('mod/feedbackccna:feedallow', $context)) {
+
+                                if (!has_capability('mod/feedbackccna:feededit', $context)) {
+
+                                    $mform->addElement('header', 'editorheader', get_string('headerlabel_presentation', 'feedbackccna'));
+
+                                }
+
                                 $mform->addElement('advcheckbox', 'check'.$data->id.'1', get_string('checkbox', 'feedbackccna'), null,
                                                         null, array(0, 1));
                             }
 
                         } elseif ($data->type == 2) {
 
-                            $mform->addElement('header', 'editorheader', get_string('headerlabel_lab', 'feedbackccna'));
-
                             if (has_capability('mod/feedbackccna:rateteacher', $context)) {
 
                                 if ($data->allow == '1' || has_capability('mod/feedbackccna:feededit', $context)) {
+
+                                    $mform->addElement('header', 'editorheader', get_string('headerlabel_lab', 'feedbackccna'));
 
                                     $nothing = 0;
 
@@ -139,22 +146,29 @@ class add_view_form extends moodleform {
                             }
 
                             if (has_capability('mod/feedbackccna:feedallow', $context)) {
+
+                                if (!has_capability('mod/feedbackccna:feededit', $context)) {
+
+                                    $mform->addElement('header', 'editorheader', get_string('headerlabel_presentation', 'feedbackccna'));
+
+                                }
+
                                 $mform->addElement('advcheckbox', 'check'.$data->id.'2', get_string('checkbox', 'feedbackccna'), null,
-                                                        null, array(0, 1));
+                                        null, array(0, 1));
                             }
 
                         }
 
-                        print_container_start(false, 'singlebutton');
-                        $this->add_action_buttons(false, get_string('submitlabel', 'feedbackccna'));
-                        print_container_end();
 
                         $something = 1;
-                        break;
 
                     }
 
-		}
+                }
+
+                print_container_start(false, 'singlebutton');
+                $this->add_action_buttons(false, get_string('submitlabel', 'feedbackccna'));
+                print_container_end();
 
                 if (!$something) {
 
