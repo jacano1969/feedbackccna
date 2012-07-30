@@ -72,7 +72,7 @@ if(has_capability('mod/feedbackccna:ratestudent', $context)) {
 
                     insert_feedback_answer(
                         $t_module->id,
-                        1,
+                        //1,
                         $user_id,
                         $_POST[$feed]
                     );
@@ -81,7 +81,7 @@ if(has_capability('mod/feedbackccna:ratestudent', $context)) {
 
                         insert_feedback_answer(
                             $t_module->id,
-                            2,
+                            //2,
                             $user_id,
                             1
                         );
@@ -90,7 +90,7 @@ if(has_capability('mod/feedbackccna:ratestudent', $context)) {
 
                         insert_feedback_answer(
                             $t_module->id,
-                            2,
+                            //2,
                             $user_id,
                             0
                         );
