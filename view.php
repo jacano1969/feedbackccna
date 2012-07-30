@@ -60,23 +60,13 @@ if (!empty($entry) and confirm_sesskey($USER->sesskey)) {
 
         if (has_capability('mod/feedbackccna:rateteacher', $context)) {
 
-            $answer_feed = 'value'.$data->id.'1';
-            $answer_lab = 'value'.$data->id.'2';
+            $answer = 'value'.$data->id.$data->type;
 
-            echo '1: '.$entry->$answer_feed.'<br/>';
-            echo '2: '.$entry->$answer_lab.'<br/>';
-
-            insert_feedback_answer(
-                $data->id,
-                $USER->id,
-                $entry->$answer_feed
-            );
-
-            insert_feedback_answer(
-                $data->id,
-                $USER->id,
-                $entry->$answer_lab
-            );
+                insert_feedback_answer(
+                    $data->id,
+                    $USER->id,
+                    $entry->$answer
+                );
 
         }
 
@@ -85,10 +75,10 @@ if (!empty($entry) and confirm_sesskey($USER->sesskey)) {
             $check1 = 'check'.$data->id.'1';
             $check2 = 'check'.$data->id.'2';
 
-            if ($entry->$check1 == '1') {
+            if (isset($entry->$check1) and $entry->$check1 == '1') {
                 set_allow_feedback($data->id, FEEDBACK_ALLOWED);
             }
-            if ($entry->$check2 == '1') {
+            if (isset($entry->$check2) and $entry->$check2 == '1') {
                 set_allow_feedback($data->id, FEEDBACK_ALLOWED);
             }
 

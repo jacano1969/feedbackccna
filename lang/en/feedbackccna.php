@@ -35,7 +35,9 @@ $string['checkbox'] = 'Allow this feedback';
 
 $string['viewtitle'] = 'View feedbackccna';
 $string['headerlabel_presentation'] = 'Please submit your feedback for the presentation:';
+$string['headerlabel2_presentation'] = 'Would you like to allow feedback for the presentation?';
 $string['headerlabel_lab'] = 'Please submit your feedback for the laboratory:';
+$string['headerlabel2_lab'] = 'Would you like to allow feedback for the laboratory?';
 $string['headerlabel_nothing'] = 'Your teacher did not allow any feedback yet. Please be patient :)';
 $string['namelabel'] = 'Name';
 $string['imagelabel'] = 'Image';

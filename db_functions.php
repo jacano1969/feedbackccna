@@ -30,7 +30,7 @@ function insert_feedback_module($instructor_id, $course_id, $section, $denumire,
 	$allow = FEEDBACK_NOT_ALLOWED;
 	if( $which_way == STUDENT_FOR_TEACHER) $allow = DEFAULT_FEEDBACK_ALLOWED;
 	elseif( $which_way == TEACHER_FOR_STUDENT) $allow = FEEDBACK_ALLOWED;
-	
+
 	$record = new stdClass();
 	$record->instructor_id = $instructor_id;
 	$record->denumire = $denumire;
@@ -39,7 +39,7 @@ function insert_feedback_module($instructor_id, $course_id, $section, $denumire,
 	$record->course_id = $course_id;
 	$record->which_way = $which_way;
 	$record->type = $type;
-	
+
 	$DB->insert_record("feedbackccna_module", $record);
 }
 
@@ -49,7 +49,7 @@ function setup_feedback_module($feedback, $instructor_id) {
 	insert_feedback_module($instructor_id, $feedback->course, $feedback->section, $feedback->name, STUDENT_FOR_TEACHER, FEEDBACK_TYPE_PRE);
 	insert_feedback_module($instructor_id, $feedback->course, $feedback->section, $feedback->name, TEACHER_FOR_STUDENT, FEEDBACK_TYPE_PRE);
 	insert_feedback_module($instructor_id, $feedback->course, $feedback->section, $feedback->name, STUDENT_FOR_TEACHER, FEEDBACK_TYPE_LAB);
-	insert_feedback_module($instructor_id, $feedback->course, $feedback->section, $feedback->name, TEACHER_FOR_STUDENT, FEEDBACK_TYPE_LAB);	
+	insert_feedback_module($instructor_id, $feedback->course, $feedback->section, $feedback->name, TEACHER_FOR_STUDENT, FEEDBACK_TYPE_LAB);
 
 }
 
@@ -64,7 +64,7 @@ function insert_feedback_answer($module_id, $student_id, $answer) {
 	$record->module_id = $module_id;
 	$record->student_id = $student_id;
 	$record->answer = $answer;
-	
+
 	$DB->insert_record("feedbackccna_answer",$record);
 }
 
@@ -74,8 +74,8 @@ function insert_feedback_answer($module_id, $student_id, $answer) {
 function set_allow_feedback($module_id, $allow) {
 	global $DB;
 
-	if($allow ==  FEEDBACK_ALLOWED && $allow == FEEDBACK_NOT_ALLOWED) {
-		$DB->update_field("feedbackccna_module", array('id'=>$module_id, 'allow'=>$allow));
+	if($allow ==  FEEDBACK_ALLOWED || $allow == FEEDBACK_NOT_ALLOWED) {
+		$DB->update_record("feedbackccna_module", array('id'=>$module_id, 'allow'=>$allow));
 	}
 }
 
@@ -105,7 +105,7 @@ function get_feedback_module_teacher($course_id, $section, $which_way) {
 //	- type - tipul itemului pt care se doreste rezultatul
 function average_course_rating_pertype($course_id, $type) {
 	global $DB;
-	
+
 	return $DB->get_records_sql("SELECT AVG(a.answer) FROM {feedbackccna_answer} a  INNER JOIN {feedbackccna_module} m ON a.module_id = m.id WHERE m.course_id = ? AND m.which_way='".STUDENT_FOR_TEACHER."' AND m.type = ?", array($course_id, $type));
 }
 
@@ -113,7 +113,7 @@ function average_course_rating_pertype($course_id, $type) {
 //	- course_id - id-ul cursului
 function average_course_rating($course_id) {
 	global $DB;
-	
+
 	return $DB->get_records_sql("SELECT AVG(a.answer) FROM {feedbackccna_answer} a  INNER JOIN {feedbackccna_module} m ON a.module_id = m.id WHERE m.course_id = ? AND m.which_way='".STUDENT_FOR_TEACHER."'", array($course_id));
 }
 
@@ -122,7 +122,7 @@ function average_course_rating($course_id) {
 //	- type - tipul itemului pt care se doreste rezultatul
 function average_instructor_rating_pertype($instructor_id, $type) {
 	global $DB;
-	
+
 	return $DB->get_records_sql("SELECT AVG(a.answer) FROM {feedbackccna_answer} a  INNER JOIN {feedbackccna_module} m ON a.module_id = m.id WHERE m.instructor_id = ? AND m.which_way='".STUDENT_FOR_TEACHER."' AND m.type = ?", array($instructor_id, $type));
 }
 
@@ -131,7 +131,7 @@ function average_instructor_rating_pertype($instructor_id, $type) {
 //	- type - tipul itemului pt care se doreste rezultatul
 function average_instructor_rating($instructor_id) {
 	global $DB;
-	
+
 	return $DB->get_records_sql("SELECT AVG(a.answer) FROM {feedbackccna_answer} a  INNER JOIN {feedbackccna_module} m ON a.module_id = m.id WHERE m.instructor_id = ? AND m.which_way='".STUDENT_FOR_TEACHER."'" , array($instructor_id));
 }
 
@@ -141,7 +141,7 @@ function average_instructor_rating($instructor_id) {
 //	- course_id - id-ul cursului
 function average_instructor_rating_pertype_percourse($instructor_id, $type, $course_id) {
 	global $DB;
-	
+
 	return $DB->get_records_sql("SELECT AVG(a.answer) FROM {feedbackccna_answer} a  INNER JOIN {feedbackccna_module} m ON a.module_id = m.id WHERE m.instructor_id = ? AND m.which_way='".STUDENT_FOR_TEACHER."' AND m.type = ? AND m.course_id = ?", array($instructor_id, $type, $course_id));
 }
 
@@ -150,7 +150,7 @@ function average_instructor_rating_pertype_percourse($instructor_id, $type, $cou
 //	- course_id - tipul itemului pt care se doreste rezultatul
 function average_instructor_rating_percourse($instructor_id, $course_id) {
 	global $DB;
-	
+
 	return $DB->get_records_sql("SELECT AVG(a.answer) FROM {feedbackccna_answer} a  INNER JOIN {feedbackccna_module} m ON a.module_id = m.id WHERE m.instructor_id = ? AND m.which_way='".STUDENT_FOR_TEACHER."' AND m.course_id = ?", array($instructor_id, $course_id));
 }
 
@@ -158,7 +158,7 @@ function average_instructor_rating_percourse($instructor_id, $course_id) {
 //  - student_id
 function average_rating_student($student_id) {
 	global $DB;
-	
+
 	return $DB->get_records_sql("SELECT AVG(a.answer) FROM {feedbackccna_answer} a INNER JOIN {feedbackccna_module} m ON a.module_id = m_id WHERE  m.which_way='".TEACHER_FOR_STUDENT."' AND a.student_id = ?", array($student_id));
 }
 
@@ -167,15 +167,15 @@ function average_rating_student($student_id) {
 //  - type
 function average_rating_student_pertype($student_id, $type) {
 	global $DB;
-	
+
 	return $DB->get_records_sql("SELECT AVG(a.answer) FROM {feedbackccna_answer} a INNER JOIN {feedbackccna_module} m ON a.module_id = m_id WHERE  m.which_way='".TEACHER_FOR_STUDENT."' AND a.student_id = ? AND m.type = ?", array($student_id, $type));
 }
-//  functie de obtinut valoare medie 
+//  functie de obtinut valoare medie
 //  - student_id
 //  - course_id
 function average_rating_student_percourse($student_id, $course_id) {
 	global $DB;
-	
+
 	return $DB->get_records_sql("SELECT AVG(a.answer) FROM {feedbackccna_answer} a INNER JOIN {feedbackccna_module} m ON a.module_id = m_id WHERE  m.which_way='".TEACHER_FOR_STUDENT."' AND a.student_id = ? AND m.course_id = ?", array($student_id, $course_id));
 }
 
@@ -185,7 +185,7 @@ function average_rating_student_percourse($student_id, $course_id) {
 //  - course_id
 function average_rating_student_pertype_percourse($student_id, $type, $course_id) {
 	global $DB;
-	
+
 	return $DB->get_records_sql("SELECT AVG(a.answer) FROM {feedbackccna_answer} a INNER JOIN {feedbackccna_module} m ON a.module_id = m_id WHERE  m.which_way='".TEACHER_FOR_STUDENT."' AND a.student_id = ? AND m.type = ? AND m.course_id = ?", array($student_id, $type, $course_id));
 }
 
@@ -205,7 +205,7 @@ function get_user_feedback_count($course_id, $student_id, $type, $value) {
 function get_feedback_feedbacks_count($course_id, $type) {
 	global $DB;
 
-	return $DB->count_record_sql("SELECT COUNT(*) FROM {feedbackccna_module} WHERE course_id ='".$course_id."' AND allow != '".FEEDBACK_NOT_ALLOWED."' AND type='".$type."'"); 
+	return $DB->count_record_sql("SELECT COUNT(*) FROM {feedbackccna_module} WHERE course_id ='".$course_id."' AND allow != '".FEEDBACK_NOT_ALLOWED."' AND type='".$type."'");
 }
 
 //	functie care determina daca un student a terminat toate laboratoarele

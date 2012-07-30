@@ -85,24 +85,22 @@ class add_view_form extends moodleform {
 
                                 if ($data->allow == '1' || has_capability('mod/feedbackccna:feededit', $context)) {
 
-                                    $mform->addElement('header', 'editorheader', get_string('headerlabel_presentation', 'feedbackccna'));
+                                    $mform->addElement('header', 'editorheader', get_string('headerlabel2_presentation', 'feedbackccna'));
 
                                     $nothing = 0;
 
-                                    $mform->addElement('html', '<div id = "star'.$data->id.'1"></div>');
-
+                                    $mform->addElement('html', '<div id = "star'.$data->id.'1" ></div>');
+                                    $mform->addElement('hidden', 'value'.$data->id.'1', null, array('id' => 'value'.$data->id.'1', 'type' => 'hidden'));
                                     $mform->addElement('html', "<script type='text/javascript'>
                                                                     var s1 = new Stars({
                                                                             maxRating: 5,
                                                                             imagePath: 'images/',
                                                                             value: 1,
-                                                                            container: 'star".$data->id."1'
+                                                                            container: 'star".$data->id."1',
+					                                    bindField: 'value".$data->id."1'
                                                                     });
                                                                 </script>");
 
-
-                                    $mform->addElement('select', 'value'.$data->id.'1', get_string('feedback_values', 'feedbackccna'),
-                                            array('1' => '1', '2' => '2', '3' => '3', '4' => '4', '5' => '5'));
                                 }
                             }
 
@@ -110,10 +108,11 @@ class add_view_form extends moodleform {
 
                                 if (!has_capability('mod/feedbackccna:feededit', $context)) {
 
-                                    $mform->addElement('header', 'editorheader', get_string('headerlabel_presentation', 'feedbackccna'));
+                                    $mform->addElement('header', 'editorheader', get_string('headerlabel2_presentation', 'feedbackccna'));
 
                                 }
 
+                                $nothing = 0;
                                 $mform->addElement('advcheckbox', 'check'.$data->id.'1', get_string('checkbox', 'feedbackccna'), null,
                                                         null, array(0, 1));
                             }
@@ -124,23 +123,21 @@ class add_view_form extends moodleform {
 
                                 if ($data->allow == '1' || has_capability('mod/feedbackccna:feededit', $context)) {
 
-                                    $mform->addElement('header', 'editorheader', get_string('headerlabel_lab', 'feedbackccna'));
+                                    $mform->addElement('header', 'editorheader', get_string('headerlabel2_lab', 'feedbackccna'));
 
                                     $nothing = 0;
 
                                     $mform->addElement('html', '<div id = "star'.$data->id.'2"></div>');
-
+                                    $mform->addElement('hidden', 'value'.$data->id.'2', null, array('id' => 'value'.$data->id.'2', 'type' => 'hidden'));
                                     $mform->addElement('html', "<script type='text/javascript'>
                                                                     var s2 = new Stars({
                                                                                 maxRating: 5,
                                                                                 imagePath: 'images/',
                                                                                 value: 1,
-                                                                                container: 'star".$data->id."2'
+                                                                                container: 'star".$data->id."2',
+					                                        bindField: 'value".$data->id."2'
                                                                                 });
                                                                 </script>");
-
-                                    $mform->addElement('select', 'value'.$data->id.'2', get_string('feedback_values', 'feedbackccna'),
-                                            array('1' => '1', '2' => '2', '3' => '3', '4' => '4', '5' => '5'));
 
                                 }
                             }
@@ -149,16 +146,16 @@ class add_view_form extends moodleform {
 
                                 if (!has_capability('mod/feedbackccna:feededit', $context)) {
 
-                                    $mform->addElement('header', 'editorheader', get_string('headerlabel_presentation', 'feedbackccna'));
+                                    $mform->addElement('header', 'editorheader', get_string('headerlabel2_lab', 'feedbackccna'));
 
                                 }
 
+                                $nothing = 0;
                                 $mform->addElement('advcheckbox', 'check'.$data->id.'2', get_string('checkbox', 'feedbackccna'), null,
                                         null, array(0, 1));
                             }
 
                         }
-
 
                         $something = 1;
 
@@ -166,21 +163,24 @@ class add_view_form extends moodleform {
 
                 }
 
-                print_container_start(false, 'singlebutton');
-                $this->add_action_buttons(false, get_string('submitlabel', 'feedbackccna'));
-                print_container_end();
 
-                if (!$something) {
+                if ($nothing) {
 
-			if($nothing) {
+                    if($something) {
 
-				$mform->addElement('header', 'editorheader', get_string('headerlabel_nothing', 'feedbackccna'));
+                        $mform->addElement('header', 'editorheader', get_string('headerlabel_nothing', 'feedbackccna'));
 
-			} else {
+                    } else {
 
-				print_error('Feedback category is non-existent!');
+                        print_error('Feedback category is non-existent!');
 
-			}
+                    }
+
+                } else {
+
+                    print_container_start(false, 'singlebutton');
+                    $this->add_action_buttons(false, get_string('submitlabel', 'feedbackccna'));
+                    print_container_end();
 
                 }
 

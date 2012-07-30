@@ -701,7 +701,7 @@
                                               imagePath: 'images/',
                                               value: 1,
 					      bindField: Rating".$user->id.",
-							container: stars".$user->id."});
+				              container: stars".$user->id."});
                                 </script>";
                     $data[] .= '<input type="checkbox" class="labcheckbox" name="lab'.$user->id.'" id = "lab'.$user->id .
                         '" onclick = unclick("lab",' . $user->id . ') />';
