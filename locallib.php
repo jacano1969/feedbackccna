@@ -190,11 +190,15 @@ class add_view_form extends moodleform {
                             $this->add_action_buttons(false, get_string('submitlabel', 'feedbackccna'));
                             print_container_end();
 
+                        } elseif (has_capability('mod/feedbackccna:feedallow', $context)) {
+
+                            print_container_start(false, 'singlebutton');
+                            $this->add_action_buttons(false, get_string('submitlabel', 'feedbackccna'));
+                            print_container_end();
+
                         }
 
-                    }
-
-                    elseif (has_capability('mod/feedbackccna:feedallow', $context)) {
+                    } elseif (has_capability('mod/feedbackccna:feedallow', $context)) {
 
                         print_container_start(false, 'singlebutton');
                         $this->add_action_buttons(false, get_string('submitlabel', 'feedbackccna'));
