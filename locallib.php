@@ -53,6 +53,11 @@ class add_view_form extends moodleform {
                 global $new_array;
                 global $DB;
 
+
+                global values;
+
+                values = new array('1', '2');
+
                 $cm = $this->_customdata['cm'];
 
 	        $mform =& $this->_form;
@@ -67,12 +72,13 @@ class add_view_form extends moodleform {
 
 
                 $course_id = $this->_customdata['courseid'];
+
                 $section = $cm->section;
 
                 $new_array = get_feedback_module_teacher($course_id, $section, 2);
 
                 $nothing = 1;
-		$something = 0;
+                $something = 0;
 
                 // numarul de tipuri este considerat hard-coded = 2 in view.php
 		foreach ($new_array as $data) {
@@ -95,13 +101,14 @@ class add_view_form extends moodleform {
                                                                     var s1 = new Stars({
                                                                             maxRating: 5,
                                                                             imagePath: 'images/',
-                                                                            value: 1,
+                                                                            value: ".$values['1'].",
                                                                             container: 'star".$data->id."1',
 					                                    bindField: 'value".$data->id."1'
                                                                     });
                                                                 </script>");
 
                                 }
+
                             }
 
                             if (has_capability('mod/feedbackccna:feedallow', $context)) {
@@ -133,7 +140,7 @@ class add_view_form extends moodleform {
                                                                     var s2 = new Stars({
                                                                                 maxRating: 5,
                                                                                 imagePath: 'images/',
-                                                                                value: 1,
+                                                                                value: ".$values['2'].",
                                                                                 container: 'star".$data->id."2',
 					                                        bindField: 'value".$data->id."2'
                                                                                 });
