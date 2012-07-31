@@ -43,6 +43,16 @@ function insert_feedback_module($instructor_id, $course_id, $section, $denumire,
 	$DB->insert_record("feedbackccna_module", $record);
 }
 
+function delete_feedback_module($course_id, $section) {
+	global $DB;
+
+	$modis = get_feedback_module_id($course_id, $section);
+	foreach($modis as $id) {
+		$DB->delete_records('feedbackccna_answer', array('module_id'=>$id));	
+		$DB->delete_records('feedbackccna_module', array('id'=>$id));
+	}
+}
+
 //  functie de inserat automat intrare unui modul
 function setup_feedback_module($feedback, $instructor_id) {
 
@@ -87,6 +97,12 @@ function get_feedback_module($course_id, $section, $which_way) {
 	global $DB;
 
 	return $DB->get_records_sql("SELECT * FROM {feedbackccna_module} WHERE course_id = ? AND section = ? AND which_way = ? AND allow='".FEEDBACK_ALLOWED."'", array($course_id, $section, $which_way));
+}
+
+function get_feedback_module_id($course_id, $section) {
+	global $DB;
+
+	return $DB->get_records_sql("SELECT id FROM {feedbackccna_module} WHERE course_id = ? AND section = ?", array($course_id, $section));
 }
 
 // functie de hack - MihaiZ nu stie ce spune

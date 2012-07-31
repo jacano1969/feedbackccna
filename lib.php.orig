@@ -31,7 +31,6 @@
  */
 
 defined('MOODLE_INTERNAL') || die();
-require_once("db_functions.php");
 
 /** example constant */
 //define('NEWMODULE_ULTIMATE_ANSWER', 42);
@@ -67,11 +66,16 @@ function feedbackccna_supports($feature) {
  * @return int The id of the newly inserted feedbackccna record
  */
 function feedbackccna_add_instance(stdClass $feedbackccna, mod_feedbackccna_mod_form $mform = null) {
-	global $DB, $USER;
+	global $DB;
 
     $feedbackccna->timecreated = time();
 	# You may have to add extra stuff in here #
-	setup_feedback_module($feedbackccna, $USER->id);
+<<<<<<< HEAD
+	die("Morriii ");
+	//setup_feedback_module($feedbackccna, );
+=======
+
+>>>>>>> 7bd1a9702d91de136a295c130e193483470072ae
 
     return $DB->insert_record('feedbackccna', $feedbackccna);
 }
@@ -114,9 +118,7 @@ function feedbackccna_delete_instance($id) {
     if (! $feedbackccna = $DB->get_record('feedbackccna', array('id' => $id))) {
         return false;
     }
-	$section_id = $DB->get_field_sql("SELECT section FROM {course_modules} WHERE instance ='$feedbackccna->id'");
-	$section = get_correct_section($section_id);
-	delete_feedback_module($feedbackccna->course, $section);
+
     # Delete any dependent records here #
 
     $DB->delete_records('feedbackccna', array('id' => $feedbackccna->id));
