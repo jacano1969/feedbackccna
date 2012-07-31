@@ -89,6 +89,12 @@ function get_feedback_module($course_id, $section, $which_way) {
 	return $DB->get_records_sql("SELECT * FROM {feedbackccna_module} WHERE course_id = ? AND section = ? AND which_way = ? AND allow='".FEEDBACK_ALLOWED."'", array($course_id, $section, $which_way));
 }
 
+// functie de hack - MihaiZ nu stie ce spune
+function get_correct_section($section_id) {
+	global $DB;
+
+	return $DB->get_field_sql("SELECT section FROM {course_sections} WHERE id='".$section_id."'");
+}
 
 //	functie de obtinut modulul de feedback dintr-un curs si o sectiune
 //	- course_id -id-ul cursului
@@ -96,7 +102,8 @@ function get_feedback_module($course_id, $section, $which_way) {
 //	- which_way - daca feedback-ul este dat de student pt profesor sau invers
 function get_feedback_module_teacher($course_id, $section, $which_way) {
 	global $DB;
-
+	
+	$section = get_correct_section($section);
 	return $DB->get_records_sql("SELECT * FROM {feedbackccna_module} WHERE course_id = ? AND section = ? AND which_way = ?", array($course_id, $section, $which_way));
 }
 
@@ -211,7 +218,18 @@ function get_feedback_feedbacks_count($course_id, $type) {
 //	functie care determina daca un student a terminat toate laboratoarele
 //	- id_curs
 //	- id_student
-
 function user_completed_all_labs($course_id, $student_id) {
 	return  get_user_feedback_count($course_id, $student_id, FEEDBACK_TYPE_LAB, FEEDBACK_STUDENT_LAB_DONE) ===  get_feedback_feedbacks_count($course_id, FEEDBACK_TYPE_LAB);
+}
+
+//  functie care obtine ratingul dat de cineva
+//  - course_id - 
+//  - user_id -
+//  - section -
+//  - which_way -
+function get_feedback_answer_value($course_id, $student_id, $section, $which_way) {
+	global $DB;
+
+	$section = get_correct_section($section);	
+	return $DB->get_records_sql("SELECT a.value FROM {feedbackccna_answer} a JOIN {feedbackccna_module} m on a.module_id = m.id AND a.student_id = ? AND m.section = ? AND m.course_id = ? AND m.which_way = ? " , array($student_id, $section, $course_id, $which_way));
 }
