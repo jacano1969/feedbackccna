@@ -40,6 +40,7 @@ $string['headerlabel2_presentation'] = 'Would you like to allow feedback for the
 $string['headerlabel_lab'] = 'Please submit your feedback for the laboratory:';
 $string['headerlabel2_lab'] = 'Would you like to allow feedback for the laboratory?';
 $string['headerlabel_nothing'] = 'Your teacher did not allow any feedback yet. Please be patient :)';
+$string['headerlabel2_nothing'] = 'All the feedback modules have been allowed!';
 $string['namelabel'] = 'Name';
 $string['imagelabel'] = 'Image';
 $string['submitlabel'] = 'Add';

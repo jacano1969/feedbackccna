@@ -1,5 +1,4 @@
 <?php
-
 require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
 require_once(dirname(__FILE__).'/lib.php');
 require_once(dirname(__FILE__).'/locallib.php');
@@ -41,9 +40,8 @@ $PAGE->set_context($context);
 echo '<script type="text/javascript" src="prototype.js"></script>
       <script type="text/javascript" src="stars.js"></script>';
 
-// Output starts here
 
-echo $OUTPUT->header();
+ echo $OUTPUT->header();
 
 if(has_capability('mod/feedbackccna:ratestudent', $context)) {
 
@@ -93,9 +91,30 @@ if(has_capability('mod/feedbackccna:ratestudent', $context)) {
 
             }
 
-            echo $OUTPUT->notification(get_string('feedback_sent', 'feedbackccna'), 'notifysuccess');
-
         }
+
+    }
+
+    if ($_POST) {
+
+        go();
+
+    }
+
+/*    echo '<script type="text/javascript" src="prototype.js"></script>
+      <script type="text/javascript" src="stars.js"></script>';
+
+    echo $OUTPUT->header();
+
+    build_tabs('t_view', $id, $n, $context);
+
+    require_once('participants.php');
+ */
+
+
+    if ($_POST) {
+
+        echo $OUTPUT->notification(get_string('feedback_sent', 'feedbackccna'), 'notifysuccess');
 
     }
 
@@ -105,5 +124,12 @@ if(has_capability('mod/feedbackccna:ratestudent', $context)) {
 
 // Finish the page
 echo $OUTPUT->footer();
+
+function go() {
+
+    global $CFG;
+    redirect($CFG->wwwroot.'/mod/feedbackccna/t_view.php?id=33');
+
+}
 
 ?>
