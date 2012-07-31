@@ -102,7 +102,7 @@ function get_correct_section($section_id) {
 //	- which_way - daca feedback-ul este dat de student pt profesor sau invers
 function get_feedback_module_teacher($course_id, $section, $which_way) {
 	global $DB;
-	
+
 	$section = get_correct_section($section);
 	return $DB->get_records_sql("SELECT * FROM {feedbackccna_module} WHERE course_id = ? AND section = ? AND which_way = ?", array($course_id, $section, $which_way));
 }
@@ -223,13 +223,19 @@ function user_completed_all_labs($course_id, $student_id) {
 }
 
 //  functie care obtine ratingul dat de cineva
-//  - course_id - 
+//  - course_id -
 //  - user_id -
 //  - section -
 //  - which_way -
-function get_feedback_answer_value($course_id, $student_id, $section, $which_way) {
+function get_feedback_answer_records($course_id, $student_id, $section, $which_way) {
 	global $DB;
 
-	$section = get_correct_section($section);	
-	return $DB->get_records_sql("SELECT a.value FROM {feedbackccna_answer} a JOIN {feedbackccna_module} m on a.module_id = m.id AND a.student_id = ? AND m.section = ? AND m.course_id = ? AND m.which_way = ? " , array($student_id, $section, $course_id, $which_way));
+        $section = get_correct_section($section);
+
+        $records = $DB->get_records_sql("SELECT * FROM {feedbackccna_answer} a JOIN {feedbackccna_module} m
+                                         ON a.module_id = m.id AND a.student_id = ? AND m.section = ?
+                                         AND m.course_id = ? AND m.which_way = ? ",
+                                         array($student_id, $section, $course_id, $which_way));
+
+        return $records;
 }

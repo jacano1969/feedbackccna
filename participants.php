@@ -37,6 +37,14 @@
 
 
 
+    global $values;
+    global $checks;
+    global $absences;
+
+    $values = array();
+    $checks = array();
+    $absences = array();
+
 
     $systemcontext = get_context_instance(CONTEXT_SYSTEM);
     $isfrontpage = ($course->id == SITEID);
@@ -175,6 +183,7 @@
             $select->set_label(get_string('usersnoaccesssince'));
         }
     }
+
 
     $tablecolumns = array('userpic', 'fullname');
     $extrafields = get_extra_user_fields($context);
@@ -407,7 +416,6 @@
 	//]]>
 	</script>
 		';
-
 
 	echo '<form action="t_view.php?id='.$cm->id.'" method="post" id="participantsform">';// onsubmit="return checksubmit(this);">';
 	echo '<div>';
@@ -694,17 +702,53 @@
                     }
                 }
                 if ($bulkoperations) {
+
+                    $records = get_feedback_answer_records($course->id, $user->id, $cm->section, TEACHER_FOR_STUDENT);
+
+                    if ($records) {
+
+                        foreach ($records as $record) {
+
+                            if ($record->type == 1) {
+
+                                $values[$user->id] = $record->answer;
+
+                            } elseif ($record->type == 2) {
+
+                                if ($record->answer == 1) {
+
+                                    $checks[$user->id] = 'checked';
+
+                                } else {
+
+                                    $checks[$user->id] = '';
+
+                                }
+
+                            }
+
+                            $absences[$user->id] = '';
+
+                        }
+
+                    } else {
+
+                        $values[$user->id] = 1;
+                        $checks[$user->id] = '';
+
+                    }
+
     	            $data[] .= "<input id='Rating".$user->id."' type='hidden' value='' name='Rating".$user->id."' size='0' /><div id='stars".$user->id."'></div>
                     <script type='text/javascript'>
                                          var s".$user->id." = new Stars({
                                               maxRating: 5,
                                               imagePath: 'images/',
-                                              value: 1,
+                                              value: ".$values[$user->id].",
 					      bindField: Rating".$user->id.",
 				              container: stars".$user->id."});
                                 </script>";
                     $data[] .= '<input type="checkbox" class="labcheckbox" name="lab'.$user->id.'" id = "lab'.$user->id .
-                        '" onclick = unclick("lab",' . $user->id . ') />';
+                        '" onclick = unclick("lab",' . $user->id . ') '.$checks[$user->id].'/>';
                     $data[] .= '<input type="checkbox" class="usercheckbox" name="user'.$user->id.'" id = "user'.$user->id .
                         '" onclick = unclick("user",' . $user->id . ') />';
                 }
@@ -726,9 +770,13 @@
 		"\n//]]>\n".'</script>';
 	echo '</div>';
 
-        echo '<br /><div class="buttons">';
-        echo '<input type="submit" id = "formsubmit" value = "'.get_string('submit').'" /> ';
-	echo '</div>';
+        if (!$records) {
+
+            echo '<br /><div class="buttons">';
+            echo '<input type="submit" id = "formsubmit" value = "'.get_string('submit').'" /> ';
+            echo '</div>';
+
+        }
 
 	echo '</form>';
 

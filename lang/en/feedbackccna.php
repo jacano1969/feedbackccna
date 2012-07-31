@@ -29,6 +29,7 @@ $string['t_view'] = 'Student feedback';
 $string['t_viewdesc'] = 'Rate your students!';
 $string['feedback_values'] = 'Your rating:';
 $string['feedback_sent'] = 'Your feedback has been successfully sent! Thank you!';
+$string['feedback_allowed'] = 'The feedback has been allowed';
 $string['no_select'] = 'Absent';
 $string['laborator'] = 'Laborator<br/>complet';
 $string['checkbox'] = 'Allow this feedback';

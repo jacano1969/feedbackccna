@@ -49,7 +49,7 @@ if(has_capability('mod/feedbackccna:ratestudent', $context)) {
 
 global $USER;
 
-$form = new add_view_form(null, array('id' => $id, 'n' => $n, 'courseid' => $course->id, 'cm' => $cm));
+$form = new add_view_form(null, array('id' => $id, 'n' => $n, 'courseid' => $course->id, 'cm' => $cm, 'user_id' => $USER->id));
 $entry = $form->get_data();
 
 
@@ -92,7 +92,7 @@ if (!empty($entry) and confirm_sesskey($USER->sesskey)) {
 
     } else {
 
-        echo $OUTPUT->motification(get_string('feedback_allowed', 'feedbackccna'), 'notifysuccess');
+        echo $OUTPUT->notification(get_string('feedback_allowed', 'feedbackccna'), 'notifysuccess');
 
     }
 
