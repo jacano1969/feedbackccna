@@ -770,13 +770,9 @@
 		"\n//]]>\n".'</script>';
 	echo '</div>';
 
-        if (!$records) {
-
-            echo '<br /><div class="buttons">';
-            echo '<input type="submit" id = "formsubmit" value = "'.get_string('submit').'" /> ';
-            echo '</div>';
-
-        }
+        echo '<br /><div class="buttons">';
+        echo '<input type="submit" id = "formsubmit" value = "'.get_string('submit').'" /> ';
+        echo '</div>';
 
 	echo '</form>';
 

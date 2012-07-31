@@ -101,17 +101,6 @@ if(has_capability('mod/feedbackccna:ratestudent', $context)) {
 
     }
 
-/*    echo '<script type="text/javascript" src="prototype.js"></script>
-      <script type="text/javascript" src="stars.js"></script>';
-
-    echo $OUTPUT->header();
-
-    build_tabs('t_view', $id, $n, $context);
-
-    require_once('participants.php');
- */
-
-
     if ($_POST) {
 
         echo $OUTPUT->notification(get_string('feedback_sent', 'feedbackccna'), 'notifysuccess');
@@ -128,7 +117,7 @@ echo $OUTPUT->footer();
 function go() {
 
     global $CFG;
-    redirect($CFG->wwwroot.'/mod/feedbackccna/t_view.php?id=33');
+    redirect($CFG->wwwroot.'/mod/feedbackccna/t_view.php?id='.$cm->id);
 
 }
 
