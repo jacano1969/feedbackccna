@@ -32,22 +32,14 @@ add_to_log($course->id, 'feedbackccna', 'view', "view.php?id={$cm->id}", $feedba
 
 /// Print the page header
 
+
 $PAGE->set_url('/mod/feedbackccna/view.php', array('id' => $cm->id));
 $PAGE->set_title(format_string($feedbackccna->name));
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($context);
-echo '<script type="text/javascript" src="prototype.js"></script>
-	  <script type="text/javascript" src="stars.js"></script>';
-
-// Output starts here
-echo $OUTPUT->header();
-
-
-if(has_capability('mod/feedbackccna:ratestudent', $context)) {
-    build_tabs('view', $id, $n, $context);
-}
 
 global $USER;
+
 
 $form = new add_view_form(null, array('id' => $id, 'n' => $n, 'courseid' => $course->id, 'cm' => $cm, 'user_id' => $USER->id));
 $entry = $form->get_data();
@@ -86,6 +78,25 @@ if (!empty($entry) and confirm_sesskey($USER->sesskey)) {
 
     }
 
+}
+
+if ($_POST) go($cm->id);
+
+
+echo '<script type="text/javascript" src="prototype.js"></script>
+	  <script type="text/javascript" src="stars.js"></script>';
+
+echo $OUTPUT->header();
+
+
+if(has_capability('mod/feedbackccna:ratestudent', $context)) {
+    build_tabs('view', $id, $n, $context);
+}
+
+$form->display();
+
+if ($_POST) {
+
     if (has_capability('mod/feedbackccna:rateteacher', $context)) {
 
         echo $OUTPUT->notification(get_string('feedback_sent', 'feedbackccna'), 'notifysuccess');
@@ -98,10 +109,15 @@ if (!empty($entry) and confirm_sesskey($USER->sesskey)) {
 
 }
 
-$form->display();
-
 
 // Finish the page
 echo $OUTPUT->footer();
+
+function go($cm_id) {
+
+    global $CFG;
+    redirect($CFG->wwwroot.'/mod/feedbackccna/view.php?id='.$cm_id);
+
+}
 
 ?>
