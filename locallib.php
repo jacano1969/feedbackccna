@@ -54,7 +54,7 @@ class add_view_form extends moodleform {
                 global $DB;
                 global $values;
 
-                $values = array();
+                $values = array('1' => '1', '2' => '1');
                 $cm = $this->_customdata['cm'];
 
 	        $mform =& $this->_form;
@@ -73,12 +73,7 @@ class add_view_form extends moodleform {
                 $new_array = get_feedback_module_teacher($course_id, $section, STUDENT_FOR_TEACHER);
 
                 $records = get_feedback_answer_records($course_id, $this->_customdata['user_id'], $section, STUDENT_FOR_TEACHER);
-                echo $course_id;
-                echo ' ';
-                echo $this->_customdata['user_id'];
-                echo ' ';
-                echo $section;
-                echo ' ';
+
                 if (isset($records)) {
 
                     foreach ($records as $record) {
@@ -86,11 +81,6 @@ class add_view_form extends moodleform {
                         $values[$record->type] = $record->answer;
 
                     }
-
-                } else {
-
-                    $values['1'] = 1;
-                    $values['2'] = 1;
 
                 }
 
