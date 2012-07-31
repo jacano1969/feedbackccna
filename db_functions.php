@@ -43,6 +43,16 @@ function insert_feedback_module($instructor_id, $course_id, $section, $denumire,
 	$DB->insert_record("feedbackccna_module", $record);
 }
 
+function delete_feedback_module($course_id, $section) {
+	global $DB;
+
+	$modis = get_feedback_module_id($course_id, $section);
+	foreach($modis as $id) {
+		$DB->delete_records('feedbackccna_answer', array('module_id'=>$id->id));	
+		$DB->delete_records('feedbackccna_module', array('id'=>$id->id));
+	}
+}
+
 //  functie de inserat automat intrare unui modul
 function setup_feedback_module($feedback, $instructor_id) {
 
@@ -87,6 +97,12 @@ function get_feedback_module($course_id, $section, $which_way) {
 	global $DB;
 
 	return $DB->get_records_sql("SELECT * FROM {feedbackccna_module} WHERE course_id = ? AND section = ? AND which_way = ? AND allow='".FEEDBACK_ALLOWED."'", array($course_id, $section, $which_way));
+}
+
+function get_feedback_module_id($course_id, $section) {
+	global $DB;
+
+	return $DB->get_records_sql("SELECT id FROM {feedbackccna_module} WHERE course_id = ? AND section = ?", array($course_id, $section));
 }
 
 // functie de hack - MihaiZ nu stie ce spune
@@ -199,10 +215,10 @@ function average_rating_student_pertype_percourse($student_id, $type, $course_id
 //	functie de obtinut nr de laboratoare completate de un utilizator
 //	- course_id
 //	- student_id
-function get_user_feedback_count($course_id, $student_id, $type, $value) {
+function get_user_feedback_count($course_id, $student_id, $type) {
 	global $DB;
 
-	return $DB->count_record_sql("SELECT COUNT(*) FROM {feedbackccna_module} m INNER JOIN {feedbackccna_answer} a ON m.id = a.module_id WHERE a.value ='".$value."' AND m.type='".$type."'");
+	return $DB->count_record_sql("SELECT COUNT(*) FROM {feedbackccna_module} m INNER JOIN {feedbackccna_answer} a ON m.id = a.module_id WHERE m.which_way ='".STUDENT_FOR_TEACHER."' AND m.type='".$type."' AND a.student_id = '".$student_id."' AND m.course_id='".$course_id."'");
 }
 
 
@@ -212,7 +228,7 @@ function get_user_feedback_count($course_id, $student_id, $type, $value) {
 function get_feedback_feedbacks_count($course_id, $type) {
 	global $DB;
 
-	return $DB->count_record_sql("SELECT COUNT(*) FROM {feedbackccna_module} WHERE course_id ='".$course_id."' AND allow != '".FEEDBACK_NOT_ALLOWED."' AND type='".$type."'");
+	return $DB->count_record_sql("SELECT COUNT(*) FROM {feedbackccna_module} WHERE course_id ='".$course_id."' AND allow != '".FEEDBACK_NOT_ALLOWED."' AND type='".$type."' AND m.which_way='".STUDENT_FOR_TEACHER."'");
 }
 
 //	functie care determina daca un student a terminat toate laboratoarele
