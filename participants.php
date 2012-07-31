@@ -703,19 +703,19 @@
                 }
                 if ($bulkoperations) {
 
-                    $records = get_feedback_answer_records($course->id, $user->id, $cm->section, TEACHER_FOR_STUDENT);
+                    $bulk_records = get_feedback_answer_records($course->id, $user->id, $cm->section, TEACHER_FOR_STUDENT);
 
-                    if ($records) {
+                    if ($bulk_records) {
 
-                        foreach ($records as $record) {
+                        foreach ($bulk_records as $bulk_record) {
 
-                            if ($record->type == 1) {
+                            if ($bulk_record->type == 1) {
 
-                                $values[$user->id] = $record->answer;
+                                $values[$user->id] = $bulk_record->answer;
 
-                            } elseif ($record->type == 2) {
+                            } elseif ($bulk_record->type == 2) {
 
-                                if ($record->answer == 1) {
+                                if ($bulk_record->answer == 1) {
 
                                     $checks[$user->id] = 'checked';
 
@@ -726,8 +726,6 @@
                                 }
 
                             }
-
-                            $absences[$user->id] = '';
 
                         }
 

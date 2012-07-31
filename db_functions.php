@@ -48,7 +48,7 @@ function delete_feedback_module($course_id, $section) {
 
 	$modis = get_feedback_module_id($course_id, $section);
 	foreach($modis as $id) {
-		$DB->delete_records('feedbackccna_answer', array('module_id'=>$id->id));	
+		$DB->delete_records('feedbackccna_answer', array('module_id'=>$id->id));
 		$DB->delete_records('feedbackccna_module', array('id'=>$id->id));
 	}
 }
@@ -76,6 +76,18 @@ function insert_feedback_answer($module_id, $student_id, $answer) {
 	$record->answer = $answer;
 
 	$DB->insert_record("feedbackccna_answer",$record);
+}
+
+function update_feedback_answer($id, $module_id, $student_id, $answer) {
+	global $DB;
+
+        $record = new stdClass();
+        $record->id = $id;
+	$record->module_id = $module_id;
+	$record->student_id = $student_id;
+	$record->answer = $answer;
+
+	$DB->update_record("feedbackccna_answer",$record);
 }
 
 //	functie de schimbat valoarea campului allow din modulul de feedback
@@ -248,10 +260,29 @@ function get_feedback_answer_records($course_id, $student_id, $section, $which_w
 
         $section = get_correct_section($section);
 
-        $records = $DB->get_records_sql("SELECT * FROM {feedbackccna_answer} a JOIN {feedbackccna_module} m
+        $ans_records = $DB->get_records_sql("SELECT * FROM {feedbackccna_answer} a JOIN {feedbackccna_module} m
                                          ON a.module_id = m.id AND a.student_id = ? AND m.section = ?
                                          AND m.course_id = ? AND m.which_way = ? ",
                                          array($student_id, $section, $course_id, $which_way));
 
-        return $records;
+        return $ans_records;
+}
+
+function get_feedback_answer_id($course_id, $student_id, $section, $which_way, $type) {
+
+    global $DB;
+
+    $section = get_correct_section($section);
+
+    $id_records = $DB->get_records_sql("SELECT a.id FROM {feedbackccna_answer} a JOIN {feedbackccna_module} m
+                                     ON a.module_id = m.id AND a.student_id = ? AND m.section = ?
+                                     AND m.course_id = ? AND m.which_way = ? AND type = ?",
+                                     array($student_id, $section, $course_id, $which_way, $type));
+
+    foreach ($id_records as $id_record) {
+        return $id_record->id;
+    }
+
+    return 0;
+
 }

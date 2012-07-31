@@ -9,6 +9,8 @@ require_once($CFG->dirroot.'/lib/accesslib.php');
 $id = optional_param('id', 0, PARAM_INT); // course_module ID, or
 $n  = optional_param('n', 0, PARAM_INT);  // feedbackccna instance ID - it should be named as the first character of the module
 
+//global $cm;
+
 if ($id) {
     $cm         = get_coursemodule_from_id('feedbackccna', $id, 0, false, MUST_EXIST);
     $course     = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
@@ -18,7 +20,7 @@ if ($id) {
     $course     = $DB->get_record('course', array('id' => $feedbackccna->course), '*', MUST_EXIST);
     $cm         = get_coursemodule_from_instance('feedbackccna', $feedbackccna->id, $course->id, false, MUST_EXIST);
 } else {
-    error('You must specify a course_module ID or an instance ID');
+    print_error('You must specify a course_module ID or an instance ID');
 }
 
 require_login($course, true, $cm);
@@ -41,7 +43,7 @@ echo '<script type="text/javascript" src="prototype.js"></script>
       <script type="text/javascript" src="stars.js"></script>';
 
 
- echo $OUTPUT->header();
+echo $OUTPUT->header();
 
 if(has_capability('mod/feedbackccna:ratestudent', $context)) {
 
@@ -53,6 +55,7 @@ if(has_capability('mod/feedbackccna:ratestudent', $context)) {
     global $DB;
     global $USER;
 
+
     foreach ($bla_array as $t_module) {
 
         require_once('participants.php');
@@ -60,6 +63,9 @@ if(has_capability('mod/feedbackccna:ratestudent', $context)) {
         if (!empty($_POST) and confirm_sesskey($USER->sesskey)) {
 
             foreach ($bundle as $user_id) {
+
+                $old_id_1 = get_feedback_answer_id($courseid, $user_id, $cm->section, 1, 1);
+                $old_id_2 = get_feedback_answer_id($courseid, $user_id, $cm->section, 1, 2);
 
                 $user = 'user'.$user_id;
 
@@ -70,20 +76,47 @@ if(has_capability('mod/feedbackccna:ratestudent', $context)) {
 
                     if($t_module->type == 1) {
 
-                        insert_feedback_answer(
-                            $t_module->id,
-                            $user_id,
-                            $_POST[$feed]
-                        );
+                        if ($old_id_1) {
 
-                    } elseif($t_module->type == 2) {
+                            update_feedback_answer(
+                                $old_id_1,
+                                $t_module->id,
+                                $user_id,
+                                $_POST[$feed]
+                            );
+
+                        } else {
+
+                            insert_feedback_answer(
+                                $t_module->id,
+                                $user_id,
+                                $_POST[$feed]
+                            );
+
+                        }
+
+                    } elseif ($t_module->type == 2) {
 
                         $lab_full = isset($_POST[$lab]);
-                        insert_feedback_answer(
-                            $t_module->id,
-                            $user_id,
-                            $lab_full
-                        );
+
+                        if ($old_id_2) {
+
+                            update_feedback_answer(
+                                $old_id_2,
+                                $t_module->id,
+                                $user_id,
+                                $lab_full
+                            );
+
+                        } else {
+
+                            insert_feedback_answer(
+                                $t_module->id,
+                                $user_id,
+                                $lab_full
+                            );
+
+                        }
 
                     }
 
@@ -97,12 +130,7 @@ if(has_capability('mod/feedbackccna:ratestudent', $context)) {
 
     if ($_POST) {
 
-        go();
-
-    }
-
-    if ($_POST) {
-
+        go($cm->id);
         echo $OUTPUT->notification(get_string('feedback_sent', 'feedbackccna'), 'notifysuccess');
 
     }
@@ -114,10 +142,10 @@ if(has_capability('mod/feedbackccna:ratestudent', $context)) {
 // Finish the page
 echo $OUTPUT->footer();
 
-function go() {
+function go($cm_id) {
 
     global $CFG;
-    redirect($CFG->wwwroot.'/mod/feedbackccna/t_view.php?id='.$cm->id);
+    redirect($CFG->wwwroot.'/mod/feedbackccna/t_view.php?id='.$cm_id);
 
 }
 
