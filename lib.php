@@ -69,11 +69,25 @@ function feedbackccna_supports($feature) {
 function feedbackccna_add_instance(stdClass $feedbackccna, mod_feedbackccna_mod_form $mform = null) {
 	global $DB, $USER;
 
-    $feedbackccna->timecreated = time();
-	# You may have to add extra stuff in here #
-	setup_feedback_module($feedbackccna, $USER->id);
+        $feedbackccna->timecreated = time();
 
-    return $DB->insert_record('feedbackccna', $feedbackccna);
+        setup_feedback_module($feedbackccna, $USER->id);
+
+        $id = $DB->insert_record('feedbackccna', $feedbackccna);
+
+        $modules = $DB->get_records_sql(
+           "SELECT * FROM {feedbackccna_module}
+            WHERE course_id = ?
+            AND section = ?
+            AND feedback_id = ?",
+            array($feedbackccna->course, $feedbackccna->section, 0));
+
+        foreach ($modules as $module) {
+            $module->feedback_id = $id;
+            $DB->update_record("feedbackccna_module", $module);
+        }
+
+        return $id;
 }
 
 /**
@@ -114,10 +128,14 @@ function feedbackccna_delete_instance($id) {
     if (! $feedbackccna = $DB->get_record('feedbackccna', array('id' => $id))) {
         return false;
     }
-	$section_id = $DB->get_field_sql("SELECT section FROM {course_modules} WHERE instance ='$feedbackccna->id'");
-	$section = get_correct_section($section_id);
-	delete_feedback_module($feedbackccna->course, $section);
-    # Delete any dependent records here #
+    $section_id = $DB->get_field_sql(
+       "SELECT section FROM {course_modules}
+       WHERE instance ='$feedbackccna->id'
+       AND timecreated = '$feedbackccna->timecreated'");
+
+    $section = get_correct_section($section_id);
+
+    delete_feedback_module($feedbackccna->course, $section, $feedbackccna->id);
 
     $DB->delete_records('feedbackccna', array('id' => $feedbackccna->id));
 

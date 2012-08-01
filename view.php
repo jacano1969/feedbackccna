@@ -40,8 +40,10 @@ $PAGE->set_context($context);
 
 global $USER;
 
+//print_r($feedbackccna);
 
-$form = new add_view_form(null, array('id' => $id, 'n' => $n, 'courseid' => $course->id, 'cm' => $cm, 'user_id' => $USER->id));
+$form = new add_view_form(null, array('id' => $id, 'n' => $n, 'courseid' => $course->id,
+    'cm' => $cm, 'user_id' => $USER->id, 'f_id' => $feedbackccna->id));
 $entry = $form->get_data();
 
 //print_r($entry); echo '<br/>';

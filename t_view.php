@@ -9,7 +9,7 @@ require_once($CFG->dirroot.'/lib/accesslib.php');
 $id = optional_param('id', 0, PARAM_INT); // course_module ID, or
 $n  = optional_param('n', 0, PARAM_INT);  // feedbackccna instance ID - it should be named as the first character of the module
 
-//global $cm;
+global $f_id;
 
 if ($id) {
     $cm         = get_coursemodule_from_id('feedbackccna', $id, 0, false, MUST_EXIST);
@@ -18,10 +18,12 @@ if ($id) {
 } elseif ($n) {
     $feedbackccna  = $DB->get_record('feedbackccna', array('id' => $n), '*', MUST_EXIST);
     $course     = $DB->get_record('course', array('id' => $feedbackccna->course), '*', MUST_EXIST);
-    $cm         = get_coursemodule_from_instance('feedbackccna', $feedbackccna->id, $course->id, false, MUST_EXIST);
+    $cm         = get_coursemodule_from_instance('feedbackccna', $f_id, $course->id, false, MUST_EXIST);
 } else {
     print_error('You must specify a course_module ID or an instance ID');
 }
+
+$f_id = $feedbackccna->id;
 
 require_login($course, true, $cm);
 
@@ -48,7 +50,7 @@ echo $OUTPUT->header();
 if(has_capability('mod/feedbackccna:ratestudent', $context)) {
 
     global $bla_array;
-    $bla_array = get_feedback_module_teacher($courseid, $cm->section, 1);
+    $bla_array = get_feedback_module_teacher($courseid, $cm->section, $f_id, 1);
 
     build_tabs('t_view', $id, $n, $context);
 
@@ -64,8 +66,8 @@ if(has_capability('mod/feedbackccna:ratestudent', $context)) {
 
             foreach ($bundle as $user_id) {
 
-                $old_id_1 = get_feedback_answer_id($courseid, $user_id, $cm->section, 1, 1);
-                $old_id_2 = get_feedback_answer_id($courseid, $user_id, $cm->section, 1, 2);
+                $old_id_1 = get_feedback_answer_id($courseid, $user_id, $cm->section, $f_id, 1, 1);
+                $old_id_2 = get_feedback_answer_id($courseid, $user_id, $cm->section, $f_id, 1, 2);
 
                 $user = 'user'.$user_id;
 

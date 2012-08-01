@@ -23,7 +23,7 @@ define('FEEDBACK_STUDENT_LAB_DONE', 1);
 //	- section - sectiunea din curs unde se afla modulul
 //	- course_id - id-ul cursului unde se afla modulul
 //	- which_way - daca feedback-ul este dat de profesor studentului sau invers
-function insert_feedback_module($instructor_id, $course_id, $section, $denumire, $which_way, $type) {
+function insert_feedback_module($instructor_id, $feedback_id, $course_id, $section, $denumire, $which_way, $type) {
 	global $DB;
 
 	// inserez modulul de feedback cu drepturile care trebuie, pentru a fi afisat
@@ -31,7 +31,8 @@ function insert_feedback_module($instructor_id, $course_id, $section, $denumire,
 	if( $which_way == STUDENT_FOR_TEACHER) $allow = DEFAULT_FEEDBACK_ALLOWED;
 	elseif( $which_way == TEACHER_FOR_STUDENT) $allow = FEEDBACK_ALLOWED;
 
-	$record = new stdClass();
+        $record = new stdClass();
+        $record->feedback_id = $feedback_id;
 	$record->instructor_id = $instructor_id;
 	$record->denumire = $denumire;
 	$record->allow = $allow;
@@ -43,23 +44,31 @@ function insert_feedback_module($instructor_id, $course_id, $section, $denumire,
 	$DB->insert_record("feedbackccna_module", $record);
 }
 
-function delete_feedback_module($course_id, $section) {
+function delete_feedback_module($course_id, $section, $feedback_id) {
 	global $DB;
 
-	$modis = get_feedback_module_id($course_id, $section);
+	$modis = get_feedback_module_id($course_id, $section, $feedback_id);
 	foreach($modis as $id) {
 		$DB->delete_records('feedbackccna_answer', array('module_id'=>$id->id));
-		$DB->delete_records('feedbackccna_module', array('id'=>$id->id));
+                $DB->delete_records('feedbackccna_module', array('id'=>$id->id));
 	}
 }
 
 //  functie de inserat automat intrare unui modul
 function setup_feedback_module($feedback, $instructor_id) {
 
-	insert_feedback_module($instructor_id, $feedback->course, $feedback->section, $feedback->name, STUDENT_FOR_TEACHER, FEEDBACK_TYPE_PRE);
-	insert_feedback_module($instructor_id, $feedback->course, $feedback->section, $feedback->name, TEACHER_FOR_STUDENT, FEEDBACK_TYPE_PRE);
-	insert_feedback_module($instructor_id, $feedback->course, $feedback->section, $feedback->name, STUDENT_FOR_TEACHER, FEEDBACK_TYPE_LAB);
-	insert_feedback_module($instructor_id, $feedback->course, $feedback->section, $feedback->name, TEACHER_FOR_STUDENT, FEEDBACK_TYPE_LAB);
+    insert_feedback_module($instructor_id, 0,
+        $feedback->course, $feedback->section,
+        $feedback->name, STUDENT_FOR_TEACHER, FEEDBACK_TYPE_PRE);
+    insert_feedback_module($instructor_id, 0,
+        $feedback->course, $feedback->section,
+        $feedback->name, TEACHER_FOR_STUDENT, FEEDBACK_TYPE_PRE);
+    insert_feedback_module($instructor_id, 0,
+        $feedback->course, $feedback->section,
+        $feedback->name, STUDENT_FOR_TEACHER, FEEDBACK_TYPE_LAB);
+    insert_feedback_module($instructor_id, 0,
+        $feedback->course, $feedback->section,
+        $feedback->name, TEACHER_FOR_STUDENT, FEEDBACK_TYPE_LAB);
 
 }
 
@@ -119,10 +128,15 @@ function get_feedback_module($course_id, $section, $which_way) {
 	return $DB->get_records_sql("SELECT * FROM {feedbackccna_module} WHERE course_id = ? AND section = ? AND which_way = ? AND allow='".FEEDBACK_ALLOWED."'", array($course_id, $section, $which_way));
 }
 
-function get_feedback_module_id($course_id, $section) {
+function get_feedback_module_id($course_id, $section, $feedback_id) {
 	global $DB;
 
-	return $DB->get_records_sql("SELECT id FROM {feedbackccna_module} WHERE course_id = ? AND section = ?", array($course_id, $section));
+        return $DB->get_records_sql(
+            "SELECT id FROM {feedbackccna_module}
+            WHERE course_id = ?
+            AND section = ?
+            AND feedback_id = ?",
+            array($course_id, $section, $feedback_id));
 }
 
 // functie de hack - MihaiZ nu stie ce spune
@@ -136,11 +150,17 @@ function get_correct_section($section_id) {
 //	- course_id -id-ul cursului
 //	- section - saptamana sau topicul
 //	- which_way - daca feedback-ul este dat de student pt profesor sau invers
-function get_feedback_module_teacher($course_id, $section, $which_way) {
+function get_feedback_module_teacher($course_id, $section, $f_id, $which_way) {
 	global $DB;
 
 	$section = get_correct_section($section);
-	return $DB->get_records_sql("SELECT * FROM {feedbackccna_module} WHERE course_id = ? AND section = ? AND which_way = ?", array($course_id, $section, $which_way));
+        return $DB->get_records_sql(
+            "SELECT * FROM {feedbackccna_module}
+            WHERE course_id = ?
+            AND section = ?
+            AND feedback_id = ?
+            AND which_way = ?",
+            array($course_id, $section, $f_id, $which_way));
 }
 
 //	functie de obtinut rating mediu pentru un curs pe tip de intrebare
@@ -263,20 +283,25 @@ function user_completed_all_labs($course_id, $student_id) {
 //  - user_id -
 //  - section -
 //  - which_way -
-function get_feedback_answer_records($course_id, $student_id, $section, $which_way) {
+function get_feedback_answer_records($course_id, $student_id, $section, $f_id, $which_way) {
 	global $DB;
 
         $section = get_correct_section($section);
 
-        $ans_records = $DB->get_records_sql("SELECT * FROM {feedbackccna_answer} a JOIN {feedbackccna_module} m
-                                         ON a.module_id = m.id AND a.student_id = ? AND m.section = ?
-                                         AND m.course_id = ? AND m.which_way = ? ",
-                                         array($student_id, $section, $course_id, $which_way));
+        $ans_records = $DB->get_records_sql(
+            "SELECT * FROM {feedbackccna_answer} a JOIN {feedbackccna_module} m
+            ON a.module_id = m.id
+            AND a.student_id = ?
+            AND m.section = ?
+            AND m.feedback_id = ?
+            AND m.course_id = ?
+            AND m.which_way = ?",
+            array($student_id, $section, $f_id, $course_id, $which_way));
 
         return $ans_records;
 }
 
-function get_feedback_answer_id($course_id, $student_id, $section, $which_way, $type) {
+function get_feedback_answer_id($course_id, $student_id, $section, $f_id, $which_way, $type) {
 
     global $DB;
 

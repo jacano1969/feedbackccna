@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="mod/feedbackccna/db" VERSION="20120730" COMMENT="XMLDB file for Moodle mod/feedbackccna"
+<XMLDB PATH="mod/feedbackccna/db" VERSION="20120801" COMMENT="XMLDB file for Moodle mod/feedbackccna"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
 >
@@ -30,9 +30,8 @@
         <FIELD NAME="section" TYPE="int" LENGTH="2" NOTNULL="true" SEQUENCE="false" COMMENT="Saptamana in care este adaugat modulul" PREVIOUS="allow" NEXT="course_id"/>
         <FIELD NAME="course_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="ID-ul cursului in care este adaugat modulul" PREVIOUS="section" NEXT="which_way"/>
         <FIELD NAME="which_way" TYPE="int" LENGTH="1" NOTNULL="true" SEQUENCE="false" COMMENT="1 - daca instructorul a dat feedback pentru student 2 - daca studentul a dat feedback pentru instructor" PREVIOUS="course_id" NEXT="type"/>
-        <FIELD NAME="type" TYPE="int" LENGTH="1" NOTNULL="true" SEQUENCE="false" COMMENT="1 - prezentare
-2 - laborator
-? - unused" PREVIOUS="which_way"/>
+        <FIELD NAME="type" TYPE="int" LENGTH="1" NOTNULL="true" SEQUENCE="false" COMMENT="1 - prezentare 2 - laborator ? - unused" PREVIOUS="which_way" NEXT="feedback_id"/>
+        <FIELD NAME="feedback_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="ID-ul modulului inserat" PREVIOUS="type"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>

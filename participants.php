@@ -624,7 +624,7 @@ if ($mode === MODE_USERDETAILS) {    // Print simple listing
 
         $ch_userlist = $DB->get_recordset_sql("$select $from $where $sort", $params, $table->get_page_start(), $table->get_page_size());
 
-        $min_1_entry = get_entries($ch_userlist, $course, $cm);
+        $min_1_entry = get_entries($ch_userlist, $course, $cm, $f_id);
 
         foreach ($userlist as $user) {
 
@@ -710,7 +710,7 @@ if ($mode === MODE_USERDETAILS) {    // Print simple listing
 
             if ($bulkoperations) {
 
-                $bulk_records = get_feedback_answer_records($course->id, $user->id, $cm->section, TEACHER_FOR_STUDENT);
+                $bulk_records = get_feedback_answer_records($course->id, $user->id, $cm->section, $f_id, TEACHER_FOR_STUDENT);
 
                 //echo '- '.$user->id.'<br/>';
                 //print_r($bulk_records);
@@ -848,11 +848,11 @@ function get_user_lastaccess_sql($accesssince='') {
     }
 }
 
-function get_entries($ch_userlist, $course, $cm) {
+function get_entries($ch_userlist, $course, $cm, $f_id) {
 
     foreach ($ch_userlist as $ch_user) {
 
-        $ch_bulk_records = get_feedback_answer_records($course->id, $ch_user->id, $cm->section, TEACHER_FOR_STUDENT);
+        $ch_bulk_records = get_feedback_answer_records($course->id, $ch_user->id, $cm->section, $f_id, TEACHER_FOR_STUDENT);
 
         if ($ch_bulk_records) {
 
