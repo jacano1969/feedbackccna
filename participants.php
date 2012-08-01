@@ -39,11 +39,15 @@
 
     global $values;
     global $checks;
+    global $absent;
     global $absences;
+    global $min_1_entry;
 
+    $absent = array();
     $values = array();
     $checks = array();
     $absences = array();
+    $min_1_entry = 0;
 
 
     $systemcontext = get_context_instance(CONTEXT_SYSTEM);
@@ -396,19 +400,16 @@
 		return checked;
 	}
 
-	function unclick(type, id) {
+	function unclick(id) {
 		id += \'\';
-		if (type == "user") {
-			if (document.getElementById("user".concat(id)).checked) {
-				document.getElementById("lab".concat(id)).checked = false;
-			}
-			document.getElementById("lab".concat(id)).hidden = !(document.getElementById("lab".concat(id)).hidden);
-			document.getElementById("stars".concat(id)).hidden = !(document.getElementById("stars".concat(id)).hidden);
-		} else {
-			if (document.getElementById("lab".concat(id)).checked) {
-				document.getElementById("user".concat(id)).checked = false;
-			}
-		}
+
+                if (document.getElementById("user".concat(id)).checked) {
+                        document.getElementById("lab".concat(id)).hidden = true;
+                        document.getElementById("stars".concat(id)).hidden = true;
+                } else {
+                        document.getElementById("lab".concat(id)).hidden = false;
+                        document.getElementById("stars".concat(id)).hidden = false;
+                }
 
 		return false;
         }
@@ -425,203 +426,60 @@
 
     }
 
-    if ($mode === MODE_USERDETAILS) {    // Print simple listing
-        if ($totalcount < 1) {
-            echo $OUTPUT->heading(get_string('nothingtodisplay'));
-        } else {
-            if ($totalcount > $perpage) {
+if ($mode === MODE_USERDETAILS) {    // Print simple listing
+    if ($totalcount < 1) {
+        echo $OUTPUT->heading(get_string('nothingtodisplay'));
+    } else {
+        if ($totalcount > $perpage) {
 
-                $firstinitial = $table->get_initial_first();
-                $lastinitial  = $table->get_initial_last();
-                $strall = get_string('all');
-                $alpha  = explode(',', get_string('alphabet', 'langconfig'));
+            $firstinitial = $table->get_initial_first();
+            $lastinitial  = $table->get_initial_last();
+            $strall = get_string('all');
+            $alpha  = explode(',', get_string('alphabet', 'langconfig'));
 
-                // Bar of first initials
+            // Bar of first initials
 
-                echo '<div class="initialbar firstinitial">'.get_string('firstname').' : ';
-                if(!empty($firstinitial)) {
-                    echo '<a href="'.$baseurl->out().'&amp;sifirst=">'.$strall.'</a>';
-                } else {
-                    echo '<strong>'.$strall.'</strong>';
-                }
-                foreach ($alpha as $letter) {
-                    if ($letter == $firstinitial) {
-                        echo ' <strong>'.$letter.'</strong>';
-                    } else {
-                        echo ' <a href="'.$baseurl->out().'&amp;sifirst='.$letter.'">'.$letter.'</a>';
-                    }
-                }
-                echo '</div>';
-
-                // Bar of last initials
-
-                echo '<div class="initialbar lastinitial">'.get_string('lastname').' : ';
-                if(!empty($lastinitial)) {
-                    echo '<a href="'.$baseurl->out().'&amp;silast=">'.$strall.'</a>';
-                } else {
-                    echo '<strong>'.$strall.'</strong>';
-                }
-                foreach ($alpha as $letter) {
-                    if ($letter == $lastinitial) {
-                        echo ' <strong>'.$letter.'</strong>';
-                    } else {
-                        echo ' <a href="'.$baseurl->out().'&amp;silast='.$letter.'">'.$letter.'</a>';
-                    }
-                }
-                echo '</div>';
-
-                $pagingbar = new paging_bar($matchcount, intval($table->get_page_start() / $perpage), $perpage, $baseurl);
-                $pagingbar->pagevar = 'spage';
-                echo $OUTPUT->render($pagingbar);
-            }
-
-            if ($matchcount > 0) {
-                $usersprinted = array();
-                foreach ($userlist as $user) {
-
-                    if (in_array($user->id, $usersprinted)) { /// Prevent duplicates by r.hidden - MDL-13935
-                        continue;
-                    }
-                    $usersprinted[] = $user->id; /// Add new user to the array of users printed
-
-                    context_instance_preload($user);
-
-                    $context = get_context_instance(CONTEXT_COURSE, $course->id);
-                    $usercontext = get_context_instance(CONTEXT_USER, $user->id);
-
-                    $countries = get_string_manager()->get_list_of_countries();
-
-                    /// Get the hidden field list
-                    if (has_capability('moodle/course:viewhiddenuserfields', $context)) {
-                        $hiddenfields = array();
-                    } else {
-                        $hiddenfields = array_flip(explode(',', $CFG->hiddenuserfields));
-                    }
-
-                    $table = new html_table();
-                    $table->attributes['class'] = 'userinfobox';
-
-                    $row = new html_table_row();
-                    $row->cells[0] = new html_table_cell();
-                    $row->cells[0]->attributes['class'] = 'left side';
-
-                    $row->cells[0]->text = $OUTPUT->user_picture($user, array('size' => 100, 'courseid'=>$course->id));
-                    $row->cells[1] = new html_table_cell();
-                    $row->cells[1]->attributes['class'] = 'content';
-
-                    $row->cells[1]->text = $OUTPUT->container(fullname($user, has_capability('moodle/site:viewfullnames', $context)), 'username');
-                    $row->cells[1]->text .= $OUTPUT->container_start('info');
-
-                    if (!empty($user->role)) {
-                        $row->cells[1]->text .= get_string('role').get_string('labelsep', 'langconfig').$user->role.'<br />';
-                    }
-                    if ($user->maildisplay == 1 or ($user->maildisplay == 2 and ($course->id != SITEID) and !isguestuser()) or
-                                has_capability('moodle/course:viewhiddenuserfields', $context) or
-                                in_array('email', $extrafields)) {
-                        $row->cells[1]->text .= get_string('email').get_string('labelsep', 'langconfig').html_writer::link("mailto:$user->email", $user->email) . '<br />';
-                    }
-                    foreach ($extrafields as $field) {
-                        if ($field === 'email') {
-                            // Skip email because it was displayed with different
-                            // logic above (because this page is intended for
-                            // students too)
-                            continue;
-                        }
-                        $row->cells[1]->text .= get_user_field_name($field) .
-                                get_string('labelsep', 'langconfig') . s($user->{$field}) . '<br />';
-                    }
-                    if (($user->city or $user->country) and (!isset($hiddenfields['city']) or !isset($hiddenfields['country']))) {
-                        //$row->cells[1]->text .= get_string('city').get_string('labelsep', 'langconfig');
-                        if ($user->city && !isset($hiddenfields['city'])) {
-                            //$row->cells[1]->text .= $user->city;
-                        }
-                        if (!empty($countries[$user->country]) && !isset($hiddenfields['country'])) {
-                            if ($user->city && !isset($hiddenfields['city'])) {
-                                //$row->cells[1]->text .= ', ';
-                            }
-                            //$row->cells[1]->text .= $countries[$user->country];
-                        }
-                        $row->cells[1]->text .= '<br />';
-                    }
-
-                    if (!isset($hiddenfields['lastaccess'])) {
-                        if ($user->lastaccess) {
-                            $row->cells[1]->text .= get_string('lastaccess').get_string('labelsep', 'langconfig').userdate($user->lastaccess);
-                            $row->cells[1]->text .= '&nbsp; ('. format_time(time() - $user->lastaccess, $datestring) .')';
-                        } else {
-                            $row->cells[1]->text .= get_string('lastaccess').get_string('labelsep', 'langconfig').get_string('never');
-                        }
-                    }
-
-                    $row->cells[1]->text .= $OUTPUT->container_end();
-
-                    $row->cells[2] = new html_table_cell();
-                    $row->cells[2]->attributes['class'] = 'links';
-                    $row->cells[2]->text = '';
-
-                    $links = array();
-
-                    if ($CFG->bloglevel > 0) {
-                        $links[] = html_writer::link(new moodle_url('/blog/index.php?userid='.$user->id), get_string('blogs','blog'));
-                    }
-
-                    if (!empty($CFG->enablenotes) and (has_capability('moodle/notes:manage', $context) || has_capability('moodle/notes:view', $context))) {
-                        $links[] = html_writer::link(new moodle_url('/notes/index.php?course=' . $course->id. '&user='.$user->id), get_string('notes','notes'));
-                    }
-
-                    if (has_capability('moodle/site:viewreports', $context) or has_capability('moodle/user:viewuseractivitiesreport', $usercontext)) {
-                        $links[] = html_writer::link(new moodle_url('/course/user.php?id='. $course->id .'&user='. $user->id), get_string('activity'));
-                    }
-
-                    if ($USER->id != $user->id && !session_is_loggedinas() && has_capability('moodle/user:loginas', $context) &&
-                        !is_siteadmin($user->id)) {
-
-                        $links[] = html_writer::link(new moodle_url('/course/loginas.php?id='. $course->id .'&user='. $user->id .
-                            '&sesskey='. sesskey()), get_string('loginas'));
-                    }
-
-                    $links[] = html_writer::link(new moodle_url('/user/view.php?id='. $user->id .'&course='. $course->id),
-                                get_string('fullprofile') . '...');
-
-                    $row->cells[2]->text .= implode('', $links);
-
-                    $row->cells[3] = new html_table_cell();
-                    $row->cells[3]->attributes['class'] = 'content';
-
-                    if ($bulkoperations) {
-                        $row->cells[3]->text = '<br />';
-			$row->cells[3]->text .= '<select class = "feedback" name = "feed' . $user->id . '" id = "feed' . $user->id . '">';
-			$row->cells[3]->text .= '<option value = "1">1</option>';
-			$row->cells[3]->text .= '<option value = "2">2</option>';
-			$row->cells[3]->text .= '<option value = "3">3</option>';
-			$row->cells[3]->text .= '<option value = "4">4</option>';
-			$row->cells[3]->text .= '<option value = "5">5</option>';
-			$row->cells[3]->text .= '</select>';
-                        $row->cells[3]->text .= '<br /><input type = "checkbox" class = "labcheckbox" id = "lab' . $user->id .
-                                                        '" name = "lab' . $user->id . '" onclick = unclick("lab",' . $user->id . ') />';
-                        $row->cells[3]->text .= '<br /><input type = "checkbox" class = "usercheckbox" id = "user' . $user->id .
-                                                        '" name = "user' . $user->id . '" onclick = unclick("user",' . $user->id . ') />';
-                    }
-                    $table->data = array($row);
-                    echo html_writer::table($table);
-                }
-
+            echo '<div class="initialbar firstinitial">'.get_string('firstname').' : ';
+            if(!empty($firstinitial)) {
+                echo '<a href="'.$baseurl->out().'&amp;sifirst=">'.$strall.'</a>';
             } else {
-                echo $OUTPUT->heading(get_string('nothingtodisplay'));
+                echo '<strong>'.$strall.'</strong>';
             }
+            foreach ($alpha as $letter) {
+                if ($letter == $firstinitial) {
+                    echo ' <strong>'.$letter.'</strong>';
+                } else {
+                    echo ' <a href="'.$baseurl->out().'&amp;sifirst='.$letter.'">'.$letter.'</a>';
+                }
+            }
+            echo '</div>';
+
+            // Bar of last initials
+
+            echo '<div class="initialbar lastinitial">'.get_string('lastname').' : ';
+            if(!empty($lastinitial)) {
+                echo '<a href="'.$baseurl->out().'&amp;silast=">'.$strall.'</a>';
+            } else {
+                echo '<strong>'.$strall.'</strong>';
+            }
+            foreach ($alpha as $letter) {
+                if ($letter == $lastinitial) {
+                    echo ' <strong>'.$letter.'</strong>';
+                } else {
+                    echo ' <a href="'.$baseurl->out().'&amp;silast='.$letter.'">'.$letter.'</a>';
+                }
+            }
+            echo '</div>';
+
+            $pagingbar = new paging_bar($matchcount, intval($table->get_page_start() / $perpage), $perpage, $baseurl);
+            $pagingbar->pagevar = 'spage';
+            echo $OUTPUT->render($pagingbar);
         }
 
-    } else {
-        $countrysort = (strpos($sort, 'country') !== false);
-        $timeformat = get_string('strftimedate');
-
-
-        if ($userlist)  {
-
-            global $bundle;
-
+        if ($matchcount > 0) {
             $usersprinted = array();
             foreach ($userlist as $user) {
+
                 if (in_array($user->id, $usersprinted)) { /// Prevent duplicates by r.hidden - MDL-13935
                     continue;
                 }
@@ -629,135 +487,305 @@
 
                 context_instance_preload($user);
 
-                if ($user->lastaccess) {
-                    $lastaccess = format_time(time() - $user->lastaccess, $datestring);
-                } else {
-                    $lastaccess = $strnever;
-                }
-
-                if (empty($user->country)) {
-                    $country = '';
-
-                } else {
-                    if($countrysort) {
-                        $country = '('.$user->country.') '.$countries[$user->country];
-                    }
-                    else {
-                        $country = $countries[$user->country];
-                    }
-                }
-
+                $context = get_context_instance(CONTEXT_COURSE, $course->id);
                 $usercontext = get_context_instance(CONTEXT_USER, $user->id);
 
-                if (
-                    $piclink = ($USER->id == $user->id ||
-                    has_capability('moodle/user:viewdetails', $context) ||
-                    has_capability('moodle/user:viewdetails', $usercontext))
-                   )
-                {
-                        $profilelink = '<strong><a href="'.
-                            $CFG->wwwroot.'/user/view.php?id='.$user->id.'&amp;course='.$course->id.'">'.fullname($user).'</a></strong>';
+                $countries = get_string_manager()->get_list_of_countries();
+
+                /// Get the hidden field list
+                if (has_capability('moodle/course:viewhiddenuserfields', $context)) {
+                    $hiddenfields = array();
                 } else {
-                    $profilelink = '<strong>'.fullname($user).'</strong>';
+                    $hiddenfields = array_flip(explode(',', $CFG->hiddenuserfields));
                 }
 
-                global $data;
+                $table = new html_table();
+                $table->attributes['class'] = 'userinfobox';
 
-                $data = array ($OUTPUT->user_picture($user, array('size' => 35, 'courseid'=>$course->id)), $profilelink);
+                $row = new html_table_row();
+                $row->cells[0] = new html_table_cell();
+                $row->cells[0]->attributes['class'] = 'left side';
 
-                if ($mode === MODE_BRIEF) {
-                    foreach ($extrafields as $field) {
-                        $data[] = $user->{$field};
+                $row->cells[0]->text = $OUTPUT->user_picture($user, array('size' => 100, 'courseid'=>$course->id));
+                $row->cells[1] = new html_table_cell();
+                $row->cells[1]->attributes['class'] = 'content';
+
+                $row->cells[1]->text = $OUTPUT->container(fullname($user, has_capability('moodle/site:viewfullnames', $context)), 'username');
+                $row->cells[1]->text .= $OUTPUT->container_start('info');
+
+                if (!empty($user->role)) {
+                    $row->cells[1]->text .= get_string('role').get_string('labelsep', 'langconfig').$user->role.'<br />';
+                }
+                if ($user->maildisplay == 1 or ($user->maildisplay == 2 and ($course->id != SITEID) and !isguestuser()) or
+                        has_capability('moodle/course:viewhiddenuserfields', $context) or
+                        in_array('email', $extrafields)) {
+                    $row->cells[1]->text .= get_string('email').get_string('labelsep', 'langconfig').html_writer::link("mailto:$user->email", $user->email) . '<br />';
+                }
+                foreach ($extrafields as $field) {
+                    if ($field === 'email') {
+                        // Skip email because it was displayed with different
+                        // logic above (because this page is intended for
+                        // students too)
+                        continue;
                     }
+                    $row->cells[1]->text .= get_user_field_name($field) .
+                        get_string('labelsep', 'langconfig') . s($user->{$field}) . '<br />';
                 }
-                if ($mode === MODE_BRIEF && !isset($hiddenfields['city'])) {
-                    //$data[] = $user->city;
-                }
-                if ($mode === MODE_BRIEF && !isset($hiddenfields['country'])) {
-                    //$data[] = $country;
-                }
-                if (!isset($hiddenfields['lastaccess'])) {
-                    $data[] = $lastaccess;
-                }
-
-                if (isset($userlist_extra) && isset($userlist_extra[$user->id])) {
-                    $ras = $userlist_extra[$user->id]['ra'];
-                    $rastring = '';
-                    foreach ($ras AS $key=>$ra) {
-                        $rolename = $allrolenames[$ra['roleid']] ;
-                        if ($ra['ctxlevel'] == CONTEXT_COURSECAT) {
-                            $rastring .= $rolename. ' @ ' . '<a href="' .
-                                $CFG->wwwroot.'/course/category.php?id='.$ra['ctxinstanceid'].'">'.s($ra['ccname']).'</a>';
-                        } elseif ($ra['ctxlevel'] == CONTEXT_SYSTEM) {
-                            $rastring .= $rolename. ' - ' . get_string('globalrole','role');
-                        } else {
-                            $rastring .= $rolename;
+                if (($user->city or $user->country) and (!isset($hiddenfields['city']) or !isset($hiddenfields['country']))) {
+                    //$row->cells[1]->text .= get_string('city').get_string('labelsep', 'langconfig');
+                    if ($user->city && !isset($hiddenfields['city'])) {
+                        //$row->cells[1]->text .= $user->city;
+                    }
+                    if (!empty($countries[$user->country]) && !isset($hiddenfields['country'])) {
+                        if ($user->city && !isset($hiddenfields['city'])) {
+                            //$row->cells[1]->text .= ', ';
                         }
+                        //$row->cells[1]->text .= $countries[$user->country];
                     }
-                    $data[] = $rastring;
-                    if ($groupmode != 0) {
-                        // htmlescape with s() and implode the array
-                        $data[] = implode(', ', array_map('s',$userlist_extra[$user->id]['group']));
-                        $data[] = implode(', ', array_map('s', $userlist_extra[$user->id]['gping']));
+                    $row->cells[1]->text .= '<br />';
+                }
+
+                if (!isset($hiddenfields['lastaccess'])) {
+                    if ($user->lastaccess) {
+                        $row->cells[1]->text .= get_string('lastaccess').get_string('labelsep', 'langconfig').userdate($user->lastaccess);
+                        $row->cells[1]->text .= '&nbsp; ('. format_time(time() - $user->lastaccess, $datestring) .')';
+                                } else {
+                                $row->cells[1]->text .= get_string('lastaccess').get_string('labelsep', 'langconfig').get_string('never');
+                                }
+                                }
+
+                                $row->cells[1]->text .= $OUTPUT->container_end();
+
+                                $row->cells[2] = new html_table_cell();
+                                $row->cells[2]->attributes['class'] = 'links';
+                                $row->cells[2]->text = '';
+
+                                $links = array();
+
+                                if ($CFG->bloglevel > 0) {
+                                $links[] = html_writer::link(new moodle_url('/blog/index.php?userid='.$user->id), get_string('blogs','blog'));
+                                }
+
+                                if (!empty($CFG->enablenotes) and (has_capability('moodle/notes:manage', $context) || has_capability('moodle/notes:view', $context))) {
+                                $links[] = html_writer::link(new moodle_url('/notes/index.php?course=' . $course->id. '&user='.$user->id), get_string('notes','notes'));
+                                }
+
+                                if (has_capability('moodle/site:viewreports', $context) or has_capability('moodle/user:viewuseractivitiesreport', $usercontext)) {
+                                    $links[] = html_writer::link(new moodle_url('/course/user.php?id='. $course->id .'&user='. $user->id), get_string('activity'));
+                                }
+
+                                if ($USER->id != $user->id && !session_is_loggedinas() && has_capability('moodle/user:loginas', $context) &&
+                                        !is_siteadmin($user->id)) {
+
+                                    $links[] = html_writer::link(new moodle_url('/course/loginas.php?id='. $course->id .'&user='. $user->id .
+                                                '&sesskey='. sesskey()), get_string('loginas'));
+                                }
+
+                                $links[] = html_writer::link(new moodle_url('/user/view.php?id='. $user->id .'&course='. $course->id),
+                                        get_string('fullprofile') . '...');
+
+                                $row->cells[2]->text .= implode('', $links);
+
+                                $row->cells[3] = new html_table_cell();
+                                $row->cells[3]->attributes['class'] = 'content';
+
+                                if ($bulkoperations) {
+                                    $row->cells[3]->text = '<br />';
+                                    $row->cells[3]->text .= '<select class = "feedback" name = "feed' . $user->id . '" id = "feed' . $user->id . '">';
+                                    $row->cells[3]->text .= '<option value = "1">1</option>';
+                                    $row->cells[3]->text .= '<option value = "2">2</option>';
+                                    $row->cells[3]->text .= '<option value = "3">3</option>';
+                                    $row->cells[3]->text .= '<option value = "4">4</option>';
+                                    $row->cells[3]->text .= '<option value = "5">5</option>';
+                                    $row->cells[3]->text .= '</select>';
+                                    $row->cells[3]->text .= '<br /><input type = "checkbox" class = "labcheckbox" id = "lab' . $user->id .
+                                        '" name = "lab' . $user->id . '" onclick = unclick("lab",' . $user->id . ') />';
+                                    $row->cells[3]->text .= '<br /><input type = "checkbox" class = "usercheckbox" id = "user' . $user->id .
+                                        '" name = "user' . $user->id . '" onclick = unclick("user",' . $user->id . ') />';
+                                }
+                                $table->data = array($row);
+                                echo html_writer::table($table);
+            }
+
+        } else {
+            echo $OUTPUT->heading(get_string('nothingtodisplay'));
+        }
+    }
+
+} else {
+
+    $countrysort = (strpos($sort, 'country') !== false);
+    $timeformat = get_string('strftimedate');
+
+    if ($userlist)  {
+
+        global $bundle;
+        $usersprinted = array();
+
+        $ch_userlist = $DB->get_recordset_sql("$select $from $where $sort", $params, $table->get_page_start(), $table->get_page_size());
+
+        $min_1_entry = get_entries($ch_userlist, $course, $cm);
+
+        foreach ($userlist as $user) {
+
+            if (in_array($user->id, $usersprinted)) { /// Prevent duplicates by r.hidden - MDL-13935
+                continue;
+            }
+            $usersprinted[] = $user->id; /// Add new user to the array of users printed
+
+            context_instance_preload($user);
+
+            if ($user->lastaccess) {
+                $lastaccess = format_time(time() - $user->lastaccess, $datestring);
+            } else {
+                $lastaccess = $strnever;
+            }
+
+            if (empty($user->country)) {
+                $country = '';
+
+            } else {
+                if($countrysort) {
+                    $country = '('.$user->country.') '.$countries[$user->country];
+                }
+                else {
+                    $country = $countries[$user->country];
+                }
+            }
+
+            $usercontext = get_context_instance(CONTEXT_USER, $user->id);
+
+            if (
+                $piclink = ($USER->id == $user->id ||
+                has_capability('moodle/user:viewdetails', $context) ||
+                has_capability('moodle/user:viewdetails', $usercontext))
+               )
+            {
+                    $profilelink = '<strong><a href="'.
+                        $CFG->wwwroot.'/user/view.php?id='.$user->id.'&amp;course='.$course->id.'">'.fullname($user).'</a></strong>';
+            } else {
+                $profilelink = '<strong>'.fullname($user).'</strong>';
+            }
+
+            global $data;
+
+            $data = array ($OUTPUT->user_picture($user, array('size' => 35, 'courseid'=>$course->id)), $profilelink);
+
+            if ($mode === MODE_BRIEF) {
+                foreach ($extrafields as $field) {
+                    $data[] = $user->{$field};
+                }
+            }
+            if ($mode === MODE_BRIEF && !isset($hiddenfields['city'])) {
+                //$data[] = $user->city;
+            }
+            if ($mode === MODE_BRIEF && !isset($hiddenfields['country'])) {
+                //$data[] = $country;
+            }
+            if (!isset($hiddenfields['lastaccess'])) {
+                $data[] = $lastaccess;
+            }
+
+            if (isset($userlist_extra) && isset($userlist_extra[$user->id])) {
+                $ras = $userlist_extra[$user->id]['ra'];
+                $rastring = '';
+                foreach ($ras AS $key=>$ra) {
+                    $rolename = $allrolenames[$ra['roleid']] ;
+                    if ($ra['ctxlevel'] == CONTEXT_COURSECAT) {
+                        $rastring .= $rolename. ' @ ' . '<a href="' .
+                            $CFG->wwwroot.'/course/category.php?id='.$ra['ctxinstanceid'].'">'.s($ra['ccname']).'</a>';
+                    } elseif ($ra['ctxlevel'] == CONTEXT_SYSTEM) {
+                        $rastring .= $rolename. ' - ' . get_string('globalrole','role');
+                    } else {
+                        $rastring .= $rolename;
                     }
                 }
-                if ($bulkoperations) {
+                $data[] = $rastring;
+                if ($groupmode != 0) {
+                    // htmlescape with s() and implode the array
+                    $data[] = implode(', ', array_map('s',$userlist_extra[$user->id]['group']));
+                    $data[] = implode(', ', array_map('s', $userlist_extra[$user->id]['gping']));
+                }
+            }
 
-                    $bulk_records = get_feedback_answer_records($course->id, $user->id, $cm->section, TEACHER_FOR_STUDENT);
+            if ($bulkoperations) {
 
-                    if ($bulk_records) {
+                $bulk_records = get_feedback_answer_records($course->id, $user->id, $cm->section, TEACHER_FOR_STUDENT);
 
-                        foreach ($bulk_records as $bulk_record) {
+                //echo '- '.$user->id.'<br/>';
+                //print_r($bulk_records);
+                //echo '<br/>';
 
-                            if ($bulk_record->type == 1) {
+                if ($bulk_records) {
 
-                                $values[$user->id] = $bulk_record->answer;
+                    $absences[$user->id] = '';
+                    $absent[$user->id] = '';
 
-                            } elseif ($bulk_record->type == 2) {
+                    foreach ($bulk_records as $bulk_record) {
 
-                                if ($bulk_record->answer == 1) {
+                        if ($bulk_record->type == 1) {
 
-                                    $checks[$user->id] = 'checked';
+                            $values[$user->id] = $bulk_record->answer;
 
-                                } else {
+                        } elseif ($bulk_record->type == 2) {
 
-                                    $checks[$user->id] = '';
+                            if ($bulk_record->answer == 1) {
 
-                                }
+                                $checks[$user->id] = 'checked';
+
+                            } else {
+
+                                $checks[$user->id] = '';
 
                             }
 
                         }
 
+                    }
+
+                } else {
+
+                    if ($min_1_entry == 1) {
+
+                        $absences[$user->id] = 'checked';
+                        $absent[$user->id] = 'hidden';
+
                     } else {
 
-                        $values[$user->id] = 1;
-                        $checks[$user->id] = '';
+                        $absences[$user->id] = '';
+                        $absent[$user->id] = '';
 
                     }
 
-    	            $data[] .= "<input id='Rating".$user->id."' type='hidden' value='' name='Rating".$user->id."' size='0' /><div id='stars".$user->id."'></div>
-                    <script type='text/javascript'>
-                                         var s".$user->id." = new Stars({
-                                              maxRating: 5,
-                                              imagePath: 'images/',
-                                              value: ".$values[$user->id].",
-					      bindField: Rating".$user->id.",
-				              container: stars".$user->id."});
-                                </script>";
-                    $data[] .= '<input type="checkbox" class="labcheckbox" name="lab'.$user->id.'" id = "lab'.$user->id .
-                        '" onclick = unclick("lab",' . $user->id . ') '.$checks[$user->id].'/>';
-                    $data[] .= '<input type="checkbox" class="usercheckbox" name="user'.$user->id.'" id = "user'.$user->id .
-                        '" onclick = unclick("user",' . $user->id . ') />';
+                    $values[$user->id] = 1;
+                    $checks[$user->id] = '';
+
                 }
-                $table->add_data($data);
-                $bundle[] = $user->id;
+
+                $data[] .= "<input id='Rating".$user->id."' type='hidden' value='' name='Rating".$user->id."' size='0' />
+                            <div id='stars".$user->id."' ".$absent[$user->id]."></div>
+
+                            <script type='text/javascript'>
+                                     var s".$user->id." = new Stars({
+                                          maxRating: 5,
+                                          imagePath: 'images/',
+                                          value: ".$values[$user->id].",
+                                          bindField: Rating".$user->id.",
+                                          container: stars".$user->id."});
+                            </script>";
+                $data[] .= '<input type="checkbox" class="labcheckbox" name="lab'.$user->id.'" id = "lab'.$user->id .
+                    '" '.$checks[$user->id].' '.$absent[$user->id].'/>';
+                $data[] .= '<input type="checkbox" class="usercheckbox" name="user'.$user->id.'" id = "user'.$user->id .
+                    '" onclick = unclick('.$user->id.') '.$absences[$user->id].'/>';
             }
+            //print_r($data);
+            $table->add_data($data);
+            $bundle[] = $user->id;
         }
-
-        $table->print_html();
-
     }
+}
+    $table->print_html();
+
 
     if ($bulkoperations) {
 
@@ -818,4 +846,22 @@ function get_user_lastaccess_sql($accesssince='') {
     } else {
         return 'u.lastaccess != 0 AND u.lastaccess < '.$accesssince;
     }
+}
+
+function get_entries($ch_userlist, $course, $cm) {
+
+    foreach ($ch_userlist as $ch_user) {
+
+        $ch_bulk_records = get_feedback_answer_records($course->id, $ch_user->id, $cm->section, TEACHER_FOR_STUDENT);
+
+        if ($ch_bulk_records) {
+
+            return 1;
+
+        }
+
+    }
+
+    return 0;
+
 }

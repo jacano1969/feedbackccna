@@ -44,6 +44,7 @@ global $USER;
 $form = new add_view_form(null, array('id' => $id, 'n' => $n, 'courseid' => $course->id, 'cm' => $cm, 'user_id' => $USER->id));
 $entry = $form->get_data();
 
+//print_r($entry); echo '<br/>';
 
 if (!empty($entry) and confirm_sesskey($USER->sesskey)) {
 
@@ -51,14 +52,20 @@ if (!empty($entry) and confirm_sesskey($USER->sesskey)) {
 
         if (has_capability('mod/feedbackccna:rateteacher', $context)) {
 
-            $answer = 'value'.$data->id.$data->type;
-            $values[$data->type] = $entry->$answer;
+            //print_r($data); echo '<br/>';
 
-            insert_feedback_answer(
-                $data->id,
-                $USER->id,
-                $entry->$answer
-            );
+            $answer = 'value'.$data->id.$data->type;
+
+            if (isset($entry->$answer) and $entry->$answer) {
+
+                $values[$data->type] = $entry->$answer;
+                insert_feedback_answer(
+                    $data->id,
+                    $USER->id,
+                    $entry->$answer
+                );
+
+            }
 
         }
 

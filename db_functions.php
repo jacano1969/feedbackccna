@@ -87,7 +87,15 @@ function update_feedback_answer($id, $module_id, $student_id, $answer) {
 	$record->student_id = $student_id;
 	$record->answer = $answer;
 
-	$DB->update_record("feedbackccna_answer",$record);
+	$DB->update_record("feedbackccna_answer", $record);
+}
+
+function delete_feedback_answer($id) {
+        global $DB;
+
+        $record = array('id' => $id);
+
+        $DB->delete_records("feedbackccna_answer", $record);
 }
 
 //	functie de schimbat valoarea campului allow din modulul de feedback

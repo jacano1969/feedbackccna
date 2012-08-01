@@ -120,6 +120,26 @@ if(has_capability('mod/feedbackccna:ratestudent', $context)) {
 
                     }
 
+                } else {
+
+                    if($t_module->type == 1) {
+
+                        if ($old_id_1) {
+
+                            delete_feedback_answer($old_id_1);
+
+                        }
+
+                    } elseif ($t_module->type == 2) {
+
+                        if ($old_id_2) {
+
+                            delete_feedback_answer($old_id_2);
+
+                        }
+
+                    }
+
                 }
 
             }
