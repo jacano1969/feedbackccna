@@ -113,9 +113,7 @@ function delete_feedback_answer($id) {
 function set_allow_feedback($module_id, $allow) {
 	global $DB;
 
-	if($allow ==  FEEDBACK_ALLOWED || $allow == FEEDBACK_NOT_ALLOWED) {
-		$DB->update_record("feedbackccna_module", array('id'=>$module_id, 'allow'=>$allow));
-	}
+        $DB->update_record("feedbackccna_module", array('id'=>$module_id, 'allow'=>$allow));
 }
 
 //	functie de obtinut modulul de feedback dintr-un curs si o sectiune
