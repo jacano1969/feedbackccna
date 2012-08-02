@@ -258,9 +258,42 @@ function average_rating_student_pertype_percourse($student_id, $type, $course_id
 function get_user_feedback_count($course_id, $student_id, $type) {
 	global $DB;
 
-	return $DB->count_record_sql("SELECT COUNT(*) FROM {feedbackccna_module} m INNER JOIN {feedbackccna_answer} a ON m.id = a.module_id WHERE m.which_way ='".STUDENT_FOR_TEACHER."' AND m.type='".$type."' AND a.student_id = '".$student_id."' AND m.course_id='".$course_id."'");
+        return $DB->count_records_sql(
+            "SELECT COUNT(*) FROM {feedbackccna_module} m
+            INNER JOIN {feedbackccna_answer} a
+            ON m.id = a.module_id
+            WHERE m.which_way ='".STUDENT_FOR_TEACHER."'
+            AND m.type='".$type."'
+            AND a.student_id = '".$student_id."'
+            AND m.course_id='".$course_id."'");
 }
 
+function get_user_answer_count($course_id, $type, $f_id) {
+	global $DB;
+
+        return $DB->count_records_sql(
+            "SELECT COUNT(*) FROM {feedbackccna_module} m
+            INNER JOIN {feedbackccna_answer} a
+            ON m.id = a.module_id
+            WHERE m.which_way ='".STUDENT_FOR_TEACHER."'
+            AND m.type='".$type."'
+            AND m.course_id='".$course_id."'
+            AND m.feedback_id = '".$f_id."'");
+}
+
+function get_user_answer_true($course_id, $student_id, $type, $f_id) {
+	global $DB;
+
+        return $DB->count_records_sql(
+            "SELECT COUNT(*) FROM {feedbackccna_module} m
+            INNER JOIN {feedbackccna_answer} a
+            ON m.id = a.module_id
+            WHERE m.which_way ='".STUDENT_FOR_TEACHER."'
+            AND a.student_id = '".$student_id."'
+            AND m.type='".$type."'
+            AND m.course_id='".$course_id."'
+            AND m.feedback_id = '".$f_id."'");
+}
 
 //	functie de obtinut nr total de feedback-uri care au fost activate pe curs
 //	- course_id
@@ -268,7 +301,13 @@ function get_user_feedback_count($course_id, $student_id, $type) {
 function get_feedback_feedbacks_count($course_id, $type) {
 	global $DB;
 
-	return $DB->count_record_sql("SELECT COUNT(*) FROM {feedbackccna_module} WHERE course_id ='".$course_id."' AND allow != '".FEEDBACK_NOT_ALLOWED."' AND type='".$type."' AND m.which_way='".STUDENT_FOR_TEACHER."'");
+        return $DB->count_records_sql(
+            "SELECT COUNT(*) FROM {feedbackccna_module}
+            WHERE course_id ='".$course_id."'
+            AND allow != '".FEEDBACK_NOT_ALLOWED."'
+            AND type='".$type."'
+            AND which_way='".STUDENT_FOR_TEACHER."'");
+
 }
 
 //	functie care determina daca un student a terminat toate laboratoarele

@@ -33,12 +33,16 @@ $string['feedback_allowed'] = 'The feedback has been allowed';
 $string['no_select'] = 'Absent';
 $string['laborator'] = 'Laborator<br/>complet';
 $string['checkbox'] = 'Allow this feedback';
+$string['checkbox2'] = 'End this feedback';
+$string['text'] = ' students have answered';
 
 $string['viewtitle'] = 'View feedbackccna';
 $string['headerlabel_presentation'] = 'Please submit your feedback for the presentation:';
 $string['headerlabel2_presentation'] = 'Would you like to allow feedback for the presentation?';
+$string['headerlabel3_presentation'] = 'The feedback for the presentation has been allowed!';
 $string['headerlabel_lab'] = 'Please submit your feedback for the laboratory:';
 $string['headerlabel2_lab'] = 'Would you like to allow feedback for the laboratory?';
+$string['headerlabel3_lab'] = 'The feedback for the laboratory has been allowed!';
 $string['headerlabel_nothing'] = 'Your teacher did not allow any feedback yet. Please be patient :)';
 $string['headerlabel2_nothing'] = 'All the feedback modules have been allowed!';
 $string['namelabel'] = 'Name';

@@ -74,13 +74,19 @@ if (!empty($entry) and confirm_sesskey($USER->sesskey)) {
         if (has_capability('mod/feedbackccna:feedallow', $context)) {
 
             $check1 = 'check'.$data->id.'1';
+            $uncheck1 = 'uncheck'.$data->id.'1';
             $check2 = 'check'.$data->id.'2';
+            $uncheck2 = 'uncheck'.$data->id.'2';
 
             if (isset($entry->$check1) and $entry->$check1 == '1') {
                 set_allow_feedback($data->id, FEEDBACK_ALLOWED);
+            } elseif (isset($entry->$uncheck1) and $entry->$uncheck1 == '1') {
+                set_allow_feedback($data->id, FEEDBACK_NOT_ALLOWED);
             }
             if (isset($entry->$check2) and $entry->$check2 == '1') {
                 set_allow_feedback($data->id, FEEDBACK_ALLOWED);
+            } elseif (isset($entry->$uncheck2) and $entry->$uncheck2 == '1') {
+                set_allow_feedback($data->id, FEEDBACK_NOT_ALLOWED);
             }
 
         }
