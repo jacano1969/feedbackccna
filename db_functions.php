@@ -15,7 +15,7 @@ define('STUDENT_FOR_TEACHER', 2);
 define('FEEDBACK_TYPE_PRE', 1);
 define('FEEDBACK_TYPE_LAB', 2);
 define('FEEDBACK_STUDENT_LAB_NOT_DONE', 2);
-define('FEEDBACK_STUDENT_LAB_DONE', 1);
+define('LAB_DONE', 1);
 
 //	functie care insereaza un modul de feedback
 //	- instructor_id - id-ul instructorului care adauga modulul
@@ -314,7 +314,22 @@ function get_feedback_feedbacks_count($course_id, $type) {
 //	- id_curs
 //	- id_student
 function user_completed_all_labs($course_id, $student_id) {
-	return  get_user_feedback_count($course_id, $student_id, FEEDBACK_TYPE_LAB, FEEDBACK_STUDENT_LAB_DONE) ===  get_feedback_feedbacks_count($course_id, FEEDBACK_TYPE_LAB);
+
+	global $DB;
+
+        $labs_done = $DB->count_records_sql(
+            "SELECT COUNT(*) FROM {feedbackccna_module} m
+            INNER JOIN {feedbackccna_answer} a
+            ON m.id = a.module_id
+            WHERE m.which_way ='".TEACHER_FOR_STUDENT."'
+            AND m.type='".FEEDBACK_TYPE_LAB."'
+            AND a.student_id = '".$student_id."'
+            AND m.course_id='".$course_id."'
+            AND a.answer = '".LAB_DONE."'");
+
+        $labs_total = get_feedback_feedbacks_count($course_id, FEEDBACK_TYPE_LAB);
+
+        return ($labs_done == $labs_total);
 }
 
 //  functie care obtine ratingul dat de cineva
