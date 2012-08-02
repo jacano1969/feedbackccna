@@ -131,7 +131,7 @@ class add_view_form extends moodleform {
 
                     $nothing = 0;
 
-                    if ($data->allow == 0) {
+                    if ($data->allow != 1) {
 
                         $mform->addElement('header', 'editorheader', get_string('headerlabel2_presentation', 'feedbackccna'));
 
@@ -191,7 +191,7 @@ class add_view_form extends moodleform {
 
                     $nothing = 0;
 
-                    if ($data->allow == 0) {
+                    if ($data->allow != 1) {
 
                         $mform->addElement('header', 'editorheader', get_string('headerlabel2_lab', 'feedbackccna'));
 

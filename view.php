@@ -81,12 +81,12 @@ if (!empty($entry) and confirm_sesskey($USER->sesskey)) {
             if (isset($entry->$check1) and $entry->$check1 == '1') {
                 set_allow_feedback($data->id, FEEDBACK_ALLOWED);
             } elseif (isset($entry->$uncheck1) and $entry->$uncheck1 == '1') {
-                set_allow_feedback($data->id, FEEDBACK_NOT_ALLOWED);
+                set_allow_feedback($data->id, FEEDBACK_CLOSED);
             }
             if (isset($entry->$check2) and $entry->$check2 == '1') {
                 set_allow_feedback($data->id, FEEDBACK_ALLOWED);
             } elseif (isset($entry->$uncheck2) and $entry->$uncheck2 == '1') {
-                set_allow_feedback($data->id, FEEDBACK_NOT_ALLOWED);
+                set_allow_feedback($data->id, FEEDBACK_CLOSED);
             }
 
         }
