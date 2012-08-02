@@ -304,7 +304,7 @@ function get_feedback_feedbacks_count($course_id, $type) {
             WHERE course_id ='".$course_id."'
             AND allow != '".FEEDBACK_NOT_ALLOWED."'
             AND type='".$type."'
-            AND which_way='".STUDENT_FOR_TEACHER."'");
+            AND which_way='".TEACHER_FOR_STUDENT."'");
 
 }
 
@@ -327,7 +327,7 @@ function user_completed_all_labs($course_id, $student_id) {
 
         $labs_total = get_feedback_feedbacks_count($course_id, FEEDBACK_TYPE_LAB);
 
-        return ($labs_done == $labs_total);
+        return ($labs_total and ($labs_done == $labs_total));
 }
 
 //  functie care obtine ratingul dat de cineva

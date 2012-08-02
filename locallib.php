@@ -244,7 +244,8 @@ class add_view_form extends moodleform {
 
             if ($something) {
 
-                if (has_capability('mod/feedbackccna:rateteacher', $context)) {
+                if (has_capability('mod/feedbackccna:rateteacher', $context)
+                    and (!has_capability('mod/feedbackccna:feededit', $context))) {
 
                     print_container_start(false, 'singlebutton');
                     $this->add_action_buttons(false, get_string('submitlabel', 'feedbackccna'));
