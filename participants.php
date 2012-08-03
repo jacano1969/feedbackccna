@@ -37,15 +37,15 @@
 
 
 
-    global $values;
-    global $checks;
+    global $val_prez;
+    global $val_lab;
     global $absent;
     global $absences;
     global $min_1_entry;
 
     $absent = array();
-    $values = array();
-    $checks = array();
+    $val_prez = array();
+    $val_lab = array();
     $absences = array();
     $min_1_entry = 0;
 
@@ -404,11 +404,15 @@
 		id += \'\';
 
                 if (document.getElementById("user".concat(id)).checked) {
-                        document.getElementById("lab".concat(id)).hidden = true;
-                        document.getElementById("stars".concat(id)).hidden = true;
+                        document.getElementById("lab_stars".concat(id)).hidden = true;
+                        document.getElementById("prez_stars".concat(id)).hidden = true;
+                        document.getElementById("Lab".concat(id)).value = 0;
+                        document.getElementById("Prez".concat(id)).value = 0;
+                        window["s_prez"+id].setValue(0, false);
+                        window["s_lab"+id].setValue(0, false);
                 } else {
-                        document.getElementById("lab".concat(id)).hidden = false;
-                        document.getElementById("stars".concat(id)).hidden = false;
+                        document.getElementById("lab_stars".concat(id)).hidden = false;
+                        document.getElementById("prez_stars".concat(id)).hidden = false;
                 }
 
 		return false;
@@ -426,7 +430,7 @@
 
     }
 
-if ($mode === MODE_USERDETAILS) {    // Print simple listing
+/*if ($mode === MODE_USERDETAILS) {    // Print simple listing
     if ($totalcount < 1) {
         echo $OUTPUT->heading(get_string('nothingtodisplay'));
     } else {
@@ -613,7 +617,7 @@ if ($mode === MODE_USERDETAILS) {    // Print simple listing
     }
 
 } else {
-
+*/
     $countrysort = (strpos($sort, 'country') !== false);
     $timeformat = get_string('strftimedate');
 
@@ -676,12 +680,14 @@ if ($mode === MODE_USERDETAILS) {    // Print simple listing
                     $data[] = $user->{$field};
                 }
             }
+            /*
             if ($mode === MODE_BRIEF && !isset($hiddenfields['city'])) {
                 //$data[] = $user->city;
             }
             if ($mode === MODE_BRIEF && !isset($hiddenfields['country'])) {
                 //$data[] = $country;
             }
+             */
             if (!isset($hiddenfields['lastaccess'])) {
                 $data[] = $lastaccess;
             }
@@ -712,10 +718,6 @@ if ($mode === MODE_USERDETAILS) {    // Print simple listing
 
                 $bulk_records = get_feedback_answer_records($course->id, $user->id, $cm->section, $f_id, TEACHER_FOR_STUDENT);
 
-                //echo '- '.$user->id.'<br/>';
-                //print_r($bulk_records);
-                //echo '<br/>';
-
                 if ($bulk_records) {
 
                     $absences[$user->id] = '';
@@ -725,19 +727,11 @@ if ($mode === MODE_USERDETAILS) {    // Print simple listing
 
                         if ($bulk_record->type == 1) {
 
-                            $values[$user->id] = $bulk_record->answer;
+                            $val_prez[$user->id] = $bulk_record->answer;
 
                         } elseif ($bulk_record->type == 2) {
 
-                            if ($bulk_record->answer == 1) {
-
-                                $checks[$user->id] = 'checked';
-
-                            } else {
-
-                                $checks[$user->id] = '';
-
-                            }
+                            $val_lab[$user->id] = $bulk_record->answer;
 
                         }
 
@@ -757,24 +751,35 @@ if ($mode === MODE_USERDETAILS) {    // Print simple listing
 
                     }
 
-                    $values[$user->id] = 1;
-                    $checks[$user->id] = '';
+                    $val_prez[$user->id] = 0;
+                    $val_lab[$user->id] = 0;
 
                 }
 
-                $data[] .= "<input id='Rating".$user->id."' type='hidden' value='' name='Rating".$user->id."' size='0' />
-                            <div id='stars".$user->id."' ".$absent[$user->id]."></div>
+                $data[] .= "<input id='Prez".$user->id."' type='hidden' value='' name='Prez".$user->id."' size='0' />
+                            <div id='prez_stars".$user->id."' ".$absent[$user->id]."></div>
 
                             <script type='text/javascript'>
-                                     var s".$user->id." = new Stars({
-                                          maxRating: 5,
+                                     var s_prez".$user->id." = new Stars({
+                                          maxRating: 3,
                                           imagePath: 'images/',
-                                          value: ".$values[$user->id].",
-                                          bindField: Rating".$user->id.",
-                                          container: stars".$user->id."});
+                                          value: ".$val_prez[$user->id].",
+                                          bindField: Prez".$user->id.",
+                                          container: prez_stars".$user->id."});
                             </script>";
-                $data[] .= '<input type="checkbox" class="labcheckbox" name="lab'.$user->id.'" id = "lab'.$user->id .
-                    '" '.$checks[$user->id].' '.$absent[$user->id].'/>';
+
+                $data[] .= "<input id='Lab".$user->id."' type='hidden' value='' name='Lab".$user->id."' size='0' />
+                            <div id='lab_stars".$user->id."' ".$absent[$user->id]."></div>
+
+                            <script type='text/javascript'>
+                                     var s_lab".$user->id." = new Stars({
+                                          maxRating: 3,
+                                          imagePath: 'images/',
+                                          value: ".$val_prez[$user->id].",
+                                          bindField: Lab".$user->id.",
+                                          container: lab_stars".$user->id."});
+                            </script>";
+
                 $data[] .= '<input type="checkbox" class="usercheckbox" name="user'.$user->id.'" id = "user'.$user->id .
                     '" onclick = unclick('.$user->id.') '.$absences[$user->id].'/>';
             }
@@ -783,7 +788,7 @@ if ($mode === MODE_USERDETAILS) {    // Print simple listing
             $bundle[] = $user->id;
         }
     }
-}
+//}
     $table->print_html();
 
 

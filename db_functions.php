@@ -15,7 +15,10 @@ define('STUDENT_FOR_TEACHER', 2);
 define('FEEDBACK_TYPE_PRE', 1);
 define('FEEDBACK_TYPE_LAB', 2);
 define('FEEDBACK_STUDENT_LAB_NOT_DONE', 2);
-define('LAB_DONE', 1);
+define('LAB_ABSENT', 0);
+define('LAB_STARTED', 1);
+define('LAB_HALFWAY', 2);
+define('LAB_DONE', 3);
 
 //	functie care insereaza un modul de feedback
 //	- instructor_id - id-ul instructorului care adauga modulul
