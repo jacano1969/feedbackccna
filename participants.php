@@ -460,8 +460,12 @@
 
                 for (i = 0; i < str.length; i ++) {
 
-                    document.getElementById("Prez"+str[i]).value = new_val;
-                    window["s_prez"+str[i]].setValue(new_val, false);
+                    if (document.getElementById("user"+str[i]).checked == false) {
+
+                        document.getElementById("Prez"+str[i]).value = new_val;
+                        window["s_prez"+str[i]].setValue(new_val, false);
+
+                    }
 
                 }
 
@@ -471,8 +475,12 @@
 
                     for (i = 0; i < str.length; i ++) {
 
-                        document.getElementById("Lab"+str[i]).value = new_val;
-                        window["s_lab"+str[i]].setValue(new_val, false);
+                        if (document.getElementById("user"+str[i]).checked == false) {
+
+                            document.getElementById("Lab"+str[i]).value = new_val;
+                            window["s_lab"+str[i]].setValue(new_val, false);
+
+                        }
 
                     }
 

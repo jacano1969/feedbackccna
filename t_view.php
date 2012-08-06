@@ -71,7 +71,7 @@ if(has_capability('mod/feedbackccna:ratestudent', $context)) {
 
                 $user = 'user'.$user_id;
 
-                if (!isset($_POST[$user]) or ($_POST[$feed] != 0 or $_POST[$lab] != 0)) {
+                if (!isset($_POST[$user])) {
 
                     $feed = 'Prez'.$user_id;
                     $lab = 'Lab'.$user_id;
