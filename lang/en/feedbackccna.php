@@ -1,16 +1,16 @@
 <?php
 
-$string['feedbackccna'] = 'Feedbackccna';
+$string['feedbackccna'] = 'Feedback CCNA';
 
-$string['modulename'] = 'Feedbackccna';
-$string['modulenameplural'] = 'Feedbackccna modules';
+$string['modulename'] = 'Feedback CCNA';
+$string['modulenameplural'] = 'Feedback CCNA modules';
 
 $string['modulename_help'] = 'Use the feedbackccna module for... | The feedbackccna module allows...';
 $string['feedbackccnafieldset'] = 'Custom example fieldset';
 $string['feedbackccnaname'] = 'Name';
 $string['feedbackccnaname_help'] = 'This is the content of the help tooltip associated with the feedbackccnaname field. Markdown syntax is supported.';
 $string['pluginadministration'] = 'feedbackccna administration';
-$string['pluginname'] = 'feedbackccna';
+$string['pluginname'] = 'Feedback_CCNA';
 
 $string['feedbackccnafieldset'] = 'Custom example fieldset';
 $string['feedbackccnaintro'] = 'feedbackccna Intro';
@@ -25,13 +25,14 @@ $string['view'] = 'Feedback';
 $string['viewdesc'] = 'Rate your teacher!';
 $string['add'] = 'Add new feedback';
 $string['adddesc'] = 'Add feedback';
-$string['t_view'] = 'Student feedback';
+$string['t_view'] = 'Teacher';
 $string['t_viewdesc'] = 'Rate your students!';
 $string['feedback_values'] = 'Your rating:';
 $string['feedback_sent'] = 'Your feedback has been successfully sent! Thank you!';
 $string['feedback_allowed'] = 'The feedback has been allowed';
 $string['no_select'] = 'Absent';
-$string['laborator'] = 'Laborator<br/>complet';
+$string['presentation'] = 'Prezentare';
+$string['laborator'] = 'Laborator';
 $string['checkbox'] = 'Allow this feedback';
 $string['checkbox2'] = 'End this feedback';
 $string['text'] = ' students have answered';

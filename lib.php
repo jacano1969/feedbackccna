@@ -131,7 +131,7 @@ function feedbackccna_delete_instance($id) {
     $section_id = $DB->get_field_sql(
        "SELECT section FROM {course_modules}
        WHERE instance ='$feedbackccna->id'
-       AND timecreated = '$feedbackccna->timecreated'");
+       AND added = '$feedbackccna->timecreated'");
 
     $section = get_correct_section($section_id);
 
