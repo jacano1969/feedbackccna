@@ -1,5 +1,6 @@
 <?php
 
+require_once(dirname(__FILE__).'/extra.php');
 require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
 require_once(dirname(__FILE__).'/lib.php');
 require_once(dirname(__FILE__).'/locallib.php');
@@ -10,7 +11,10 @@ require_once($CFG->dirroot.'/lib/accesslib.php');
 $id = optional_param('id', 0, PARAM_INT); // course_module ID, or
 $n  = optional_param('n', 0, PARAM_INT);  // feedbackccna instance ID - it should be named as the first character of the module
 
+global $CFG;
 global $DB;
+global $string_from_view1;
+global $string_from_view2;
 
 if ($id) {
     $cm         = get_coursemodule_from_id('feedbackccna', $id, 0, false, MUST_EXIST);
@@ -27,11 +31,10 @@ if ($id) {
 require_login($course, true, $cm);
 
 $context = get_context_instance(CONTEXT_MODULE, $cm->id);
-
 add_to_log($course->id, 'feedbackccna', 'view', "view.php?id={$cm->id}", $feedbackccna->name, $cm->id);
+$f_id = $feedbackccna->id;
 
 /// Print the page header
-
 
 $PAGE->set_url('/mod/feedbackccna/view.php', array('id' => $cm->id));
 $PAGE->set_title(format_string($feedbackccna->name));
@@ -40,23 +43,51 @@ $PAGE->set_context($context);
 
 global $USER;
 
-//print_r($feedbackccna);
+$arr1 = array();
+$arr2 = array();
+
+$list1 = get_role_users(5, $context, true);
+$list2 = get_role_users(5, $context, true);
+
+foreach ($list1 as $object1) {
+
+    if (!get_user_answer_true($course->id, $object1->id, FEEDBACK_TYPE_PRE, $f_id)) {
+        $arr1[] = $object1->firstname.' '.$object1->lastname;
+    }
+
+}
+
+foreach ($list2 as $object2) {
+
+    if (!get_user_answer_true($course->id, $object2->id, FEEDBACK_TYPE_LAB, $f_id)) {
+        $arr2[] = $object2->firstname.' '.$object2->lastname;
+    }
+
+}
+
+$string_from_view1 = implode('<br />', $arr1);
+$string_from_view2 = implode('<br />', $arr2);
+
+echo '<script type="text/javascript" src="prototype.js"></script>
+      <script type="text/javascript" src="stars.js"></script>';
+
+echo $OUTPUT->header();
+
+
+if(has_capability('mod/feedbackccna:ratestudent', $context)) {
+    build_tabs('view', $id, $n, $context);
+}
 
 $form = new add_view_form(null, array('id' => $id, 'n' => $n, 'courseid' => $course->id,
     'cm' => $cm, 'user_id' => $USER->id, 'f_id' => $feedbackccna->id));
-$entry = $form->get_data();
 
-//print_r($entry); echo '<br/>';
-
-if (!empty($entry) and confirm_sesskey($USER->sesskey)) {
+if ($entry = $form->get_data() and confirm_sesskey($USER->sesskey)) {
 
     foreach ($new_array as $data) {
 
+        $answer = 'value'.$data->id.$data->type;
+
         if (has_capability('mod/feedbackccna:rateteacher', $context)) {
-
-            //print_r($data); echo '<br/>';
-
-            $answer = 'value'.$data->id.$data->type;
 
             if (isset($entry->$answer) and $entry->$answer) {
 
@@ -93,19 +124,8 @@ if (!empty($entry) and confirm_sesskey($USER->sesskey)) {
 
     }
 
-}
+    go($cm->id);
 
-if ($_POST) go($cm->id);
-
-
-echo '<script type="text/javascript" src="prototype.js"></script>
-	  <script type="text/javascript" src="stars.js"></script>';
-
-echo $OUTPUT->header();
-
-
-if(has_capability('mod/feedbackccna:ratestudent', $context)) {
-    build_tabs('view', $id, $n, $context);
 }
 
 $form->display();
@@ -124,14 +144,13 @@ if ($_POST) {
 
 }
 
-
 // Finish the page
 echo $OUTPUT->footer();
 
 function go($cm_id) {
 
     global $CFG;
-    redirect($CFG->wwwroot.'/mod/feedbackccna/view.php?id='.$cm_id);
+    redirect("$CFG->wwwroot/mod/feedbackccna/view.php?id=$cm_id");
 
 }
 

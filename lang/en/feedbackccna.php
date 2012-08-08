@@ -1,5 +1,10 @@
 <?php
 
+require_once(dirname(dirname(dirname(__FILE__))).'/extra.php');
+
+global $string_from_view1;
+global $string_from_view2;
+
 $string['feedbackccna'] = 'Feedback CCNA';
 
 $string['modulename'] = 'Feedback CCNA';
@@ -36,6 +41,11 @@ $string['laborator'] = 'Laborator';
 $string['checkbox'] = 'Allow this feedback';
 $string['checkbox2'] = 'End this feedback';
 $string['text'] = ' students have answered';
+
+$string['student_number1'] = 'These students have not yet submitted the feedback:';
+$string['student_number2'] = 'These students have not yet submitted the feedback:';
+$string['student_number1_help'] = $string_from_view1;
+$string['student_number2_help'] = $string_from_view2;
 
 $string['viewtitle'] = 'View feedbackccna';
 $string['headerlabel_presentation'] = 'Please submit your feedback for the presentation:';

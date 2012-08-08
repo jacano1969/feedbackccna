@@ -5,6 +5,8 @@ defined('MOODLE_INTERNAL') || die();
 require_once("$CFG->libdir/formslib.php");
 require_once($CFG->dirroot.'/lib/accesslib.php');
 require_once(dirname(__FILE__).'/db_functions.php');
+require_once($CFG->dirroot.'/lib/outputcomponents.php');
+require_once($CFG->dirroot.'/lib/outputrenderers.php');
 
 echo '<script type="text/javascript" src="prototype.js"></script>
       <script type="text/javascript" src="stars.js"></script>';
@@ -59,7 +61,7 @@ class add_view_form extends moodleform {
         $f_id = $this->_customdata['f_id'];
         $user_id = $this->_customdata['user_id'];
 
-        $mform =& $this->_form;
+        $mform = &$this->_form;
 
         $mform->addElement('hidden', 'action');
         $mform->setType('action', PARAM_TEXT);
@@ -85,6 +87,9 @@ class add_view_form extends moodleform {
             }
 
         }
+
+
+        get_string_manager()->reset_caches();
 
         $nothing = 1;
         $something = 0;
@@ -140,11 +145,14 @@ class add_view_form extends moodleform {
 
                     } else {
 
+
+
                         $number1 = get_user_answer_count($course_id, 1, $f_id);
 
                         $mform->addElement('header', 'editorheader', get_string('headerlabel3_presentation', 'feedbackccna'));
 
                         $mform->addElement('static', 'text1', null, $number1.get_string('text', 'feedbackccna'));
+                        $mform->addHelpButton('text1', 'student_number1', 'feedbackccna');
                         $mform->addElement('html', '<br/>');
                         $mform->addElement('advcheckbox', 'uncheck'.$data->id.'1', get_string('checkbox2', 'feedbackccna'), null,
                             null, array(0, 1));
@@ -200,11 +208,13 @@ class add_view_form extends moodleform {
 
                     } else {
 
+
                         $number2 = get_user_answer_count($course_id, 2, $f_id);
 
                         $mform->addElement('header', 'editorheader', get_string('headerlabel3_lab', 'feedbackccna'));
 
                         $mform->addElement('static', 'text2', null, $number2.get_string('text', 'feedbackccna'));
+                        $mform->addHelpButton('text2', 'student_number2', 'feedbackccna');
                         $mform->addElement('html', '<br/>');
                         $mform->addElement('advcheckbox', 'uncheck'.$data->id.'2', get_string('checkbox2', 'feedbackccna'), null,
                             null, array(0, 1));
@@ -268,3 +278,4 @@ class add_view_form extends moodleform {
     }
 
 }
+
