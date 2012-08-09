@@ -11,7 +11,6 @@ $n  = optional_param('n', 0, PARAM_INT);
 
 global $f_id;
 global $bla_array;
-global $CFG;
 global $DB;
 global $USER;
 
@@ -61,8 +60,8 @@ if (has_capability('mod/feedbackccna:ratestudent', $context)) {
 
             foreach ($bundle as $user_id) {
 
-                $old_id_1 = get_answer_id_by_type(FEEDBACK_TYPE_PRE);
-                $old_id_2 = get_answer_id_by_type(FEEDBACK_TYPE_LAB);
+                $old_id_1 = get_feedback_answer_id($courseid, $user_id, $cm->section, $f_id, TEACHER_FOR_STUDENT, FEEDBACK_TYPE_PRE);
+                $old_id_2 = get_feedback_answer_id($courseid, $user_id, $cm->section, $f_id, TEACHER_FOR_STUDENT, FEEDBACK_TYPE_LAB);
 
                 $user = 'user'.$user_id;
 
@@ -160,14 +159,8 @@ echo $OUTPUT->footer();
 
 function go($cm_id) {
 
+    global $CFG;
     redirect($CFG->wwwroot.'/mod/feedbackccna/t_view.php?id='.$cm_id);
-
-}
-
-function get_answer_id_by_type($type) {
-
-     return get_feedback_answer_id($courseid, $user_id, $cm->section, $f_id, TEACHER_FOR_STUDENT, $type);
-
 
 }
 
