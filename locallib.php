@@ -101,7 +101,9 @@ class add_view_form extends moodleform {
 
                 if (has_capability('mod/feedbackccna:rateteacher', $context)
                     and $data->allow == FEEDBACK_ALLOWED
-                    and (!has_capability('mod/feedbackccna:feededit', $context))) {
+                    and (!has_capability('mod/feedbackccna:feededit', $context))
+                    and (!get_user_absent($course_id, $user_id, FEEDBACK_TYPE_PRE, $f_id)
+                        or !class_graded($course_id, FEEDBACK_TYPE_PRE, $f_id))) {
 
 
                     $feedback_sent_1 = get_user_answer_true($course_id, $user_id, FEEDBACK_TYPE_PRE, $f_id);
@@ -167,7 +169,9 @@ class add_view_form extends moodleform {
 
                 if (has_capability('mod/feedbackccna:rateteacher', $context)
                     and $data->allow == FEEDBACK_ALLOWED
-                    and (!has_capability('mod/feedbackccna:feededit', $context))) {
+                    and (!has_capability('mod/feedbackccna:feededit', $context))
+                    and (!get_user_absent($course_id, $user_id, FEEDBACK_TYPE_PRE, $f_id)
+                        or !class_graded($course_id, FEEDBACK_TYPE_PRE, $f_id))) {
 
                     $feedback_sent_2 = get_user_answer_true($course_id, $user_id, FEEDBACK_TYPE_LAB, $f_id);
 

@@ -5,6 +5,7 @@
     require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
     require_once($CFG->libdir.'/tablelib.php');
     require_once($CFG->libdir.'/filelib.php');
+    require_once(dirname(__FILE__).'/extra.php');
 
     define('USER_SMALL_CLASS', 20);   // Below this is considered small
     define('USER_LARGE_CLASS', 200);  // Above this is considered large
@@ -727,7 +728,8 @@
 		"\n//]]>\n".'</script>';
 	echo '</div>';
 
-        echo '<br /><div class="buttons">';
+        echo '<br />';
+        echo '<div class="buttons">';
         echo '<input type="submit" id = "formsubmit" value = "'.get_string('submit').'" /> ';
         echo '<input type = "button" id = "formreset" onclick = resetAll() value = "Reset" />';
         echo '</div>';
