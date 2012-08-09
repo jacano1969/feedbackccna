@@ -34,12 +34,12 @@ Stars.prototype = {
 		 * @var (Object)
 		 */
 		this.options = {
-			bindField: null,			// Form Field to bind the value to
-			maxRating: 5,				// Maximum rating, determines number of stars
-			container: null,			// Container of stars
-			imagePath: 'images/',		// Path to star images
-			callback: null,				// Callback function, fires when the stars are clicked
-			actionURL: null,			// URL to call when clicked. The rating will be appended to the end of the URL (eg: /rate.php?id=5&rating=)
+			bindField: null,	    // Form Field to bind the value to
+			maxRating: 5,   	    // Maximum rating, determines number of stars
+			container: null,	    // Container of stars
+			imagePath: 'images/',	    // Path to star images
+			callback: null,	    	    // Callback function, fires when the stars are clicked
+			actionURL: null,	    // URL to call when clicked. The rating will be appended to the end of the URL (eg: /rate.php?id=5&rating=)
 			value: 0,					// Initial Value
 			locked: false
 		};
@@ -51,7 +51,6 @@ Stars.prototype = {
 		this._starSrc = {
 			empty: this.options.imagePath + "star-empty.gif",
 			full: this.options.imagePath + "star.gif",
-			half: this.options.imagePath + "star-half.gif"
 		};
 		/**
 		 * Preload images
@@ -69,8 +68,7 @@ Stars.prototype = {
 		 */
 		this._setStarSrc = {
 			empty: this.options.imagePath + "star-ps-empty.gif",
-			full: this.options.imagePath + "star-ps.gif",
-			half: this.options.imagePath + "star-ps-half.gif"
+			full: this.options.imagePath + "star-ps.gif"
 		};
 
 		/**
@@ -153,9 +151,9 @@ Stars.prototype = {
 		{
 			if(i > this.value) greater = true;
 			if((this._initialized && this._clicked) || this.value == -1)
-				this.stars[i].src = greater ? (this.value + .5 == i) ? this._starSrc.half : this._starSrc.empty : this._starSrc.full;
+				this.stars[i].src = greater ? this._starSrc.empty : this._starSrc.full;
 			else
-				this.stars[i].src = greater ? (this.value + .5 == i) ? this._setStarSrc.half : this._setStarSrc.empty : this._setStarSrc.full;
+				this.stars[i].src = greater ? this._setStarSrc.empty : this._setStarSrc.full;
 		}
 	},
 	/**
