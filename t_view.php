@@ -6,24 +6,26 @@ require_once(dirname(__FILE__).'/mod_form.php');
 require_once(dirname(__FILE__).'/db_functions.php');
 require_once($CFG->dirroot.'/lib/accesslib.php');
 
-$id = optional_param('id', 0, PARAM_INT); // course_module ID, or
-$n  = optional_param('n', 0, PARAM_INT);  // feedbackccna instance ID - it should be named as the first character of the module
+$id = optional_param('id', 0, PARAM_INT);
+$n  = optional_param('n', 0, PARAM_INT);
 
 global $f_id;
+global $bla_array;
+global $CFG;
+global $DB;
+global $USER;
 
 if ($id) {
-    $cm         = get_coursemodule_from_id('feedbackccna', $id, 0, false, MUST_EXIST);
-    $course     = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
-    $feedbackccna  = $DB->get_record('feedbackccna', array('id' => $cm->instance), '*', MUST_EXIST);
+    $cm       = get_coursemodule_from_id('feedbackccna', $id, 0, false, MUST_EXIST);
+    $course   = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
+    $feedback = $DB->get_record('feedbackccna', array('id' => $cm->instance), '*', MUST_EXIST);
 } elseif ($n) {
-    $feedbackccna  = $DB->get_record('feedbackccna', array('id' => $n), '*', MUST_EXIST);
-    $course     = $DB->get_record('course', array('id' => $feedbackccna->course), '*', MUST_EXIST);
-    $cm         = get_coursemodule_from_instance('feedbackccna', $f_id, $course->id, false, MUST_EXIST);
+    $feedback = $DB->get_record('feedbackccna', array('id' => $n), '*', MUST_EXIST);
+    $course   = $DB->get_record('course', array('id' => $feedback->course), '*', MUST_EXIST);
+    $cm       = get_coursemodule_from_instance('feedbackccna', $f_id, $course->id, false, MUST_EXIST);
 } else {
     print_error('You must specify a course_module ID or an instance ID');
 }
-
-$f_id = $feedbackccna->id;
 
 require_login($course, true, $cm);
 
@@ -31,42 +33,36 @@ $context = get_context_instance(CONTEXT_MODULE, $cm->id);
 
 $contextid = $context->id;
 $courseid = $course->id;
+$f_id = $feedback->id;
 
-add_to_log($course->id, 'feedbackccna', 't_view', "view.php?id={$cm->id}", $feedbackccna->name, $cm->id);
-
-/// Print the page header
+add_to_log($course->id, 'feedbackccna', 't_view', "view.php?id={$cm->id}", $feedback->name, $cm->id);
 
 $PAGE->set_url('/mod/feedbackccna/t_view.php', array('id' => $cm->id));
-$PAGE->set_title(format_string($feedbackccna->name));
+$PAGE->set_title(format_string($feedback->name));
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($context);
 
 echo '<script type="text/javascript" src="prototype.js"></script>
       <script type="text/javascript" src="stars.js"></script>';
 
-
 echo $OUTPUT->header();
 
-if(has_capability('mod/feedbackccna:ratestudent', $context)) {
 
-    global $bla_array;
-    $bla_array = get_feedback_module_teacher($courseid, $cm->section, $f_id, TEACHER_FOR_STUDENT);
+if (has_capability('mod/feedbackccna:ratestudent', $context)) {
 
     build_tabs('t_view', $id, $n, $context);
+    require_once('participants.php');
 
-    global $DB;
-    global $USER;
+    $bla_array = get_feedback_module_teacher($courseid, $cm->section, $f_id, TEACHER_FOR_STUDENT);
 
     foreach ($bla_array as $t_module) {
-
-        require_once('participants.php');
 
         if (!empty($_POST) and confirm_sesskey($USER->sesskey)) {
 
             foreach ($bundle as $user_id) {
 
-                $old_id_1 = get_feedback_answer_id($courseid, $user_id, $cm->section, $f_id, TEACHER_FOR_STUDENT, FEEDBACK_TYPE_PRE);
-                $old_id_2 = get_feedback_answer_id($courseid, $user_id, $cm->section, $f_id, TEACHER_FOR_STUDENT, FEEDBACK_TYPE_LAB);
+                $old_id_1 = get_answer_id_by_type(FEEDBACK_TYPE_PRE);
+                $old_id_2 = get_answer_id_by_type(FEEDBACK_TYPE_LAB);
 
                 $user = 'user'.$user_id;
 
@@ -150,22 +146,28 @@ if(has_capability('mod/feedbackccna:ratestudent', $context)) {
     if ($_POST) {
 
         go($cm->id);
-        echo $OUTPUT->notification(get_string('feedback_sent', 'feedbackccna'), 'notifysuccess');
 
     }
 
 } else {
+
     die('You are not allowed to see this page!');
+
 }
 
-// Finish the page
 echo $OUTPUT->footer();
+
 
 function go($cm_id) {
 
-    global $CFG;
     redirect($CFG->wwwroot.'/mod/feedbackccna/t_view.php?id='.$cm_id);
 
 }
 
-?>
+function get_answer_id_by_type($type) {
+
+     return get_feedback_answer_id($courseid, $user_id, $cm->section, $f_id, TEACHER_FOR_STUDENT, $type);
+
+
+}
+
