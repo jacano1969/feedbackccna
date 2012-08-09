@@ -44,15 +44,23 @@ $PAGE->set_context($context);
 global $USER;
 
 $arr1 = array();
+$arr10 = array();
 $arr2 = array();
+$arr20 = array();
 
-$list1 = get_role_users(5, $context, true);
-$list2 = get_role_users(5, $context, true);
+$list1 = get_role_users(STUDENT_ROLE, $context, true);
+$list2 = get_role_users(STUDENT_ROLE, $context, true);
 
 foreach ($list1 as $object1) {
 
     if (!get_user_answer_true($course->id, $object1->id, FEEDBACK_TYPE_PRE, $f_id)) {
-        $arr1[] = $object1->firstname.' '.$object1->lastname;
+
+        if (get_user_absent($course->id, $object1->id, FEEDBACK_TYPE_PRE, $f_id)) {
+            $arr10[] = $object1->firstname.' '.$object1->lastname;
+        } else {
+            $arr1[] = $object1->firstname.' '.$object1->lastname;
+        }
+
     }
 
 }
@@ -60,13 +68,24 @@ foreach ($list1 as $object1) {
 foreach ($list2 as $object2) {
 
     if (!get_user_answer_true($course->id, $object2->id, FEEDBACK_TYPE_LAB, $f_id)) {
-        $arr2[] = $object2->firstname.' '.$object2->lastname;
+
+        if (get_user_absent($course->id, $object1->id, FEEDBACK_TYPE_PRE, $f_id)) {
+            $arr20[] = $object1->firstname.' '.$object1->lastname;
+        } else {
+            $arr2[] = $object2->firstname.' '.$object2->lastname;
+        }
+
     }
 
 }
 
-$string_from_view1 = implode('<br />', $arr1);
-$string_from_view2 = implode('<br />', $arr2);
+$string_from_view1 = implode('<br />', $arr1).
+                     '<br /><br /><br /><strong>These are absent:</strong><br /><br />'.
+                     implode('<br />', $arr10);
+
+$string_from_view2 = implode('<br />', $arr2).
+                     '<br /><br /><br /><strong>These are absent:</strong><br /><br />'.
+                     implode('<br />', $arr20);
 
 echo '<script type="text/javascript" src="prototype.js"></script>
       <script type="text/javascript" src="stars.js"></script>';
@@ -109,14 +128,14 @@ if ($entry = $form->get_data() and confirm_sesskey($USER->sesskey)) {
             $check2 = 'check'.$data->id.'2';
             $uncheck2 = 'uncheck'.$data->id.'2';
 
-            if (isset($entry->$check1) and $entry->$check1 == '1') {
+            if (isset($entry->$check1) and $entry->$check1 == CHECKED) {
                 set_allow_feedback($data->id, FEEDBACK_ALLOWED);
-            } elseif (isset($entry->$uncheck1) and $entry->$uncheck1 == '1') {
+            } elseif (isset($entry->$uncheck1) and $entry->$uncheck1 == CHECKED) {
                 set_allow_feedback($data->id, FEEDBACK_CLOSED);
             }
-            if (isset($entry->$check2) and $entry->$check2 == '1') {
+            if (isset($entry->$check2) and $entry->$check2 == CHECKED) {
                 set_allow_feedback($data->id, FEEDBACK_ALLOWED);
-            } elseif (isset($entry->$uncheck2) and $entry->$uncheck2 == '1') {
+            } elseif (isset($entry->$uncheck2) and $entry->$uncheck2 == CHECKED) {
                 set_allow_feedback($data->id, FEEDBACK_CLOSED);
             }
 

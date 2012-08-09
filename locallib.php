@@ -97,14 +97,14 @@ class add_view_form extends moodleform {
         // numarul de tipuri este considerat hard-coded = 2 in view.php
         foreach ($new_array as $data) {
 
-            if ($data->type == 1) {
+            if ($data->type == FEEDBACK_TYPE_PRE) {
 
                 if (has_capability('mod/feedbackccna:rateteacher', $context)
-                    and $data->allow == '1'
+                    and $data->allow == FEEDBACK_ALLOWED
                     and (!has_capability('mod/feedbackccna:feededit', $context))) {
 
 
-                    $feedback_sent_1 = get_user_answer_true($course_id, $user_id, 1, $f_id);
+                    $feedback_sent_1 = get_user_answer_true($course_id, $user_id, FEEDBACK_TYPE_PRE, $f_id);
 
                     if (!$feedback_sent_1) {
 
@@ -136,7 +136,7 @@ class add_view_form extends moodleform {
 
                     $nothing = 0;
 
-                    if ($data->allow != 1) {
+                    if ($data->allow != FEEDBACK_ALLOWED) {
 
                         $mform->addElement('header', 'editorheader', get_string('headerlabel2_presentation', 'feedbackccna'));
 
@@ -147,11 +147,13 @@ class add_view_form extends moodleform {
 
 
 
-                        $number1 = get_user_answer_count($course_id, 1, $f_id);
+                        $number1 = get_user_answer_count($course_id, FEEDBACK_TYPE_PRE, $f_id);
+                        $number_total = get_user_total($context);
 
                         $mform->addElement('header', 'editorheader', get_string('headerlabel3_presentation', 'feedbackccna'));
 
-                        $mform->addElement('static', 'text1', null, $number1.get_string('text', 'feedbackccna'));
+                        $mform->addElement('static', 'text1', null, $number1 . get_string('text_mid', 'feedbackccna') .
+                                $number_total . get_string('text_last', 'feedbackccna'));
                         $mform->addHelpButton('text1', 'student_number1', 'feedbackccna');
                         $mform->addElement('html', '<br/>');
                         $mform->addElement('advcheckbox', 'uncheck'.$data->id.'1', get_string('checkbox2', 'feedbackccna'), null,
@@ -161,13 +163,13 @@ class add_view_form extends moodleform {
 
                 }
 
-            } elseif ($data->type == 2) {
+            } elseif ($data->type == FEEDBACK_TYPE_LAB) {
 
                 if (has_capability('mod/feedbackccna:rateteacher', $context)
-                    and $data->allow == '1'
+                    and $data->allow == FEEDBACK_ALLOWED
                     and (!has_capability('mod/feedbackccna:feededit', $context))) {
 
-                    $feedback_sent_2 = get_user_answer_true($course_id, $user_id, 2, $f_id);
+                    $feedback_sent_2 = get_user_answer_true($course_id, $user_id, FEEDBACK_TYPE_LAB, $f_id);
 
                     if (!$feedback_sent_2) {
 
@@ -199,7 +201,7 @@ class add_view_form extends moodleform {
 
                     $nothing = 0;
 
-                    if ($data->allow != 1) {
+                    if ($data->allow != FEEDBACK_ALLOWED) {
 
                         $mform->addElement('header', 'editorheader', get_string('headerlabel2_lab', 'feedbackccna'));
 
@@ -209,11 +211,13 @@ class add_view_form extends moodleform {
                     } else {
 
 
-                        $number2 = get_user_answer_count($course_id, 2, $f_id);
+                        $number2 = get_user_answer_count($course_id, FEEDBACK_TYPE_LAB, $f_id);
+                        $number_total = get_user_total($context);
 
                         $mform->addElement('header', 'editorheader', get_string('headerlabel3_lab', 'feedbackccna'));
 
-                        $mform->addElement('static', 'text2', null, $number2.get_string('text', 'feedbackccna'));
+                        $mform->addElement('static', 'text2', null, $number2 . get_string('text_mid', 'feedbackccna') .
+                                $number_total . get_string('text_last', 'feedbackccna'));
                         $mform->addHelpButton('text2', 'student_number2', 'feedbackccna');
                         $mform->addElement('html', '<br/>');
                         $mform->addElement('advcheckbox', 'uncheck'.$data->id.'2', get_string('checkbox2', 'feedbackccna'), null,

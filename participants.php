@@ -492,17 +492,39 @@
 
                             document.getElementById("user"+str[i]).checked = new_val;
                             unclick(str[i]);
-                            document.getElementById("all_prez").checked = false;
-                            document.getElementById("all_lab").checked = false;
 
                         }
 
                     }
 
-
                 }
 
             }
+
+        }
+
+        function resetAll() {
+
+            var str = new Array('.implode(",", $list).');
+
+            document.getElementById("all_prez").innerHTML = "Check All";
+            document.getElementById("all_lab").innerHTML = "Check All";
+            document.getElementById("all_abs").innerHTML = "Check All";
+
+            new_val = 0;
+
+                for (i = 0; i < str.length; i ++) {
+
+                    document.getElementById("Prez"+str[i]).value = new_val;
+                    window["s_prez"+str[i]].setValue(new_val, false);
+
+                    document.getElementById("Lab"+str[i]).value = new_val;
+                    window["s_lab"+str[i]].setValue(new_val, false);
+
+                    document.getElementById("user"+str[i]).checked = new_val;
+                    unclick(str[i]);
+
+                }
 
         }
 
@@ -707,6 +729,7 @@
 
         echo '<br /><div class="buttons">';
         echo '<input type="submit" id = "formsubmit" value = "'.get_string('submit').'" /> ';
+        echo '<input type = "button" id = "formreset" onclick = resetAll() value = "Reset" />';
         echo '</div>';
 
 	echo '</form>';

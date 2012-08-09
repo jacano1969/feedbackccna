@@ -1,24 +1,8 @@
 <?php
 
-defined('MOODLE_INTERNAL') || die();
+require_once('defines.php');
 
-// 0/1 nu se poate/se poate raspunde la feedback
-define('FEEDBACK_ALLOWED', 1); // valoare care permite feedback
-define('FEEDBACK_NOT_ALLOWED', 0); // valoare care nu permite feedback
-define('FEEDBACK_CLOSED', -1); // valoare care desemneaza faptul ca feedback-ul a fost inchis
-define('DEFAULT_FEEDBACK_ALLOWED', FEEDBACK_NOT_ALLOWED); // valoarea implicita la adaugarea in DB
-// define-uri pt which_way
-// feedback-ul se da de profesor pentru elev
-define('TEACHER_FOR_STUDENT', 1);
-// feedback-ul se da de elev pentru profesor
-define('STUDENT_FOR_TEACHER', 2);
-define('FEEDBACK_TYPE_PRE', 1);
-define('FEEDBACK_TYPE_LAB', 2);
-define('FEEDBACK_STUDENT_LAB_NOT_DONE', 2);
-define('LAB_ABSENT', 0);
-define('LAB_STARTED', 1);
-define('LAB_HALFWAY', 2);
-define('LAB_DONE', 3);
+defined('MOODLE_INTERNAL') || die();
 
 //	functie care insereaza un modul de feedback
 //	- instructor_id - id-ul instructorului care adauga modulul
@@ -296,6 +280,21 @@ function get_user_answer_true($course_id, $student_id, $type, $f_id) {
             AND m.feedback_id = '".$f_id."'");
 }
 
+function get_user_absent($course_id, $student_id, $type, $f_id) {
+        global $DB;
+
+        return !($DB->count_records_sql(
+            "SELECT COUNT(*) FROM {feedbackccna_module} m
+            INNER JOIN {feedbackccna_answer} a
+            ON m.id = a.module_id
+            WHERE m.which_way ='".TEACHER_FOR_STUDENT."'
+            AND a.student_id = '".$student_id."'
+            AND m.type='".$type."'
+            AND m.course_id='".$course_id."'
+            AND m.feedback_id = '".$f_id."'"));
+
+}
+
 //	functie de obtinut nr total de feedback-uri care au fost activate pe curs
 //	- course_id
 //  - type - laborator sau prezentare
@@ -374,3 +373,10 @@ function get_feedback_answer_id($course_id, $student_id, $section, $f_id, $which
     return 0;
 
 }
+
+function get_user_total($context) {
+
+    return count(get_role_users(5, $context, true));
+
+}
+

@@ -50,13 +50,12 @@ echo $OUTPUT->header();
 if(has_capability('mod/feedbackccna:ratestudent', $context)) {
 
     global $bla_array;
-    $bla_array = get_feedback_module_teacher($courseid, $cm->section, $f_id, 1);
+    $bla_array = get_feedback_module_teacher($courseid, $cm->section, $f_id, TEACHER_FOR_STUDENT);
 
     build_tabs('t_view', $id, $n, $context);
 
     global $DB;
     global $USER;
-
 
     foreach ($bla_array as $t_module) {
 
@@ -66,8 +65,8 @@ if(has_capability('mod/feedbackccna:ratestudent', $context)) {
 
             foreach ($bundle as $user_id) {
 
-                $old_id_1 = get_feedback_answer_id($courseid, $user_id, $cm->section, $f_id, 1, 1);
-                $old_id_2 = get_feedback_answer_id($courseid, $user_id, $cm->section, $f_id, 1, 2);
+                $old_id_1 = get_feedback_answer_id($courseid, $user_id, $cm->section, $f_id, TEACHER_FOR_STUDENT, FEEDBACK_TYPE_PRE);
+                $old_id_2 = get_feedback_answer_id($courseid, $user_id, $cm->section, $f_id, TEACHER_FOR_STUDENT, FEEDBACK_TYPE_LAB);
 
                 $user = 'user'.$user_id;
 
@@ -76,7 +75,7 @@ if(has_capability('mod/feedbackccna:ratestudent', $context)) {
                     $feed = 'Prez'.$user_id;
                     $lab = 'Lab'.$user_id;
 
-                    if($t_module->type == 1) {
+                    if($t_module->type == FEEDBACK_TYPE_PRE) {
 
                         if ($old_id_1) {
 
@@ -97,7 +96,7 @@ if(has_capability('mod/feedbackccna:ratestudent', $context)) {
 
                         }
 
-                    } elseif ($t_module->type == 2) {
+                    } elseif ($t_module->type == FEEDBACK_TYPE_LAB) {
 
                         if ($old_id_2) {
 
@@ -122,7 +121,7 @@ if(has_capability('mod/feedbackccna:ratestudent', $context)) {
 
                 } else {
 
-                    if($t_module->type == 1) {
+                    if($t_module->type == FEEDBACK_TYPE_PRE) {
 
                         if ($old_id_1) {
 
@@ -130,7 +129,7 @@ if(has_capability('mod/feedbackccna:ratestudent', $context)) {
 
                         }
 
-                    } elseif ($t_module->type == 2) {
+                    } elseif ($t_module->type == FEEDBACK_TYPE_LAB) {
 
                         if ($old_id_2) {
 
