@@ -6,7 +6,6 @@
     require_once($CFG->libdir.'/tablelib.php');
     require_once($CFG->libdir.'/filelib.php');
     require_once(dirname(__FILE__).'/extra.php');
-    require_once(dirname(__FILE__).'/script.js');
 
     define('USER_SMALL_CLASS', 20);   // Below this is considered small
     define('USER_LARGE_CLASS', 200);  // Above this is considered large
@@ -394,6 +393,8 @@
             $ii += 1;
 
         }
+
+        require_once(dirname(__FILE__).'/script.js');
 
         echo '<form action="t_view.php?id='.$cm->id.'" method="post" id="participantsform">';
 	echo '<div>';

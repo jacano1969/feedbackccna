@@ -68,8 +68,8 @@ function checkAll(name) {
 
             if (name == "abs") {
 
-                document.getElementById("all_prez").innerHTML == "Check All";
-                document.getElementById("all_lab").innerHTML == "Check All";
+                document.getElementById("all_prez").innerHTML = "Check All";
+                document.getElementById("all_lab").innerHTML = "Check All";
 
                 for (i = 0; i < str.length; i ++) {
 
