@@ -1,44 +1,8 @@
 <?php
 
-// This file is part of Moodle - http://moodle.org/
-//
-// Moodle is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// Moodle is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-
-/**
- * Library of interface functions and constants for module feedbackccna
- *
- * All the core Moodle functions, neeeded to allow the module to work
- * integrated in Moodle should be placed here.
- * All the feedbackccna specific functions, needed to implement all the module
- * logic, should go to locallib.php. This will help to save some memory when
- * Moodle is performing actions across all modules.
- *
- * @package    mod
- * @subpackage feedbackccna
- * @copyright  2011 Your Name
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-
 defined('MOODLE_INTERNAL') || die();
-require_once("db_functions.php");
 
-/** example constant */
-//define('NEWMODULE_ULTIMATE_ANSWER', 42);
-
-////////////////////////////////////////////////////////////////////////////////
-// Moodle core API                                                            //
-////////////////////////////////////////////////////////////////////////////////
+require_once('db_functions.php');
 
 /**
  * Returns the information on whether the module supports a feature
@@ -49,8 +13,8 @@ require_once("db_functions.php");
  */
 function feedbackccna_supports($feature) {
     switch($feature) {
-        case FEATURE_MOD_INTRO:         return true;
-        default:                        return null;
+    case FEATURE_MOD_INTRO:         return true;
+    default:                        return null;
     }
 }
 
@@ -67,27 +31,27 @@ function feedbackccna_supports($feature) {
  * @return int The id of the newly inserted feedbackccna record
  */
 function feedbackccna_add_instance(stdClass $feedbackccna, mod_feedbackccna_mod_form $mform = null) {
-	global $DB, $USER;
+    global $DB, $USER;
 
-        $feedbackccna->timecreated = time();
+    $feedbackccna->timecreated = time();
 
-        setup_feedback_module($feedbackccna, $USER->id);
+    setup_feedback_module($feedbackccna, $USER->id);
 
-        $id = $DB->insert_record('feedbackccna', $feedbackccna);
+    $id = $DB->insert_record('feedbackccna', $feedbackccna);
 
-        $modules = $DB->get_records_sql(
-           "SELECT * FROM {feedbackccna_module}
-            WHERE course_id = ?
-            AND section = ?
-            AND feedback_id = ?",
-            array($feedbackccna->course, $feedbackccna->section, 0));
+    $modules = $DB->get_records_sql(
+        "SELECT * FROM {feedbackccna_module}
+        WHERE course_id = ?
+        AND section = ?
+        AND feedback_id = ?",
+        array($feedbackccna->course, $feedbackccna->section, 0));
 
-        foreach ($modules as $module) {
-            $module->feedback_id = $id;
-            $DB->update_record("feedbackccna_module", $module);
-        }
+    foreach ($modules as $module) {
+        $module->feedback_id = $id;
+        $DB->update_record("feedbackccna_module", $module);
+    }
 
-        return $id;
+    return $id;
 }
 
 /**
@@ -106,8 +70,6 @@ function feedbackccna_update_instance(stdClass $feedbackccna, mod_feedbackccna_m
 
     $feedbackccna->timemodified = time();
     $feedbackccna->id = $feedbackccna->instance;
-
-    # You may have to add extra stuff in here #
 
     return $DB->update_record('feedbackccna', $feedbackccna);
 }
@@ -129,9 +91,10 @@ function feedbackccna_delete_instance($id) {
         return false;
     }
     $section_id = $DB->get_field_sql(
-       "SELECT section FROM {course_modules}
-       WHERE instance ='$feedbackccna->id'
-       AND added = '$feedbackccna->timecreated'");
+        "SELECT section FROM {course_modules}
+        WHERE instance = ?
+        AND added = ?",
+        array($feedbackccna->id, $feedbackccna->timecreated));
 
     $section = get_correct_section($section_id);
 
@@ -412,3 +375,4 @@ function feedbackccna_extend_navigation(navigation_node $navref, stdclass $cours
  */
 function feedbackccna_extend_settings_navigation(settings_navigation $settingsnav, navigation_node $feedbackccnanode=null) {
 }
+
