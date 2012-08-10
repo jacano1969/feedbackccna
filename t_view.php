@@ -1,4 +1,5 @@
 <?php
+
 require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
 require_once(dirname(__FILE__).'/lib.php');
 require_once(dirname(__FILE__).'/locallib.php');
@@ -13,6 +14,7 @@ global $f_id;
 global $bla_array;
 global $DB;
 global $USER;
+global $CFG;
 
 if ($id) {
     $cm       = get_coursemodule_from_id('feedbackccna', $id, 0, false, MUST_EXIST);
@@ -144,7 +146,7 @@ if (has_capability('mod/feedbackccna:ratestudent', $context)) {
 
     if ($_POST) {
 
-        go($cm->id);
+        redirect($CFG->wwwroot.'/mod/feedbackccna/t_view.php?id='.$cm->id);
 
     }
 
@@ -155,12 +157,4 @@ if (has_capability('mod/feedbackccna:ratestudent', $context)) {
 }
 
 echo $OUTPUT->footer();
-
-
-function go($cm_id) {
-
-    global $CFG;
-    redirect($CFG->wwwroot.'/mod/feedbackccna/t_view.php?id='.$cm_id);
-
-}
 

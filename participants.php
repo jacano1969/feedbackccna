@@ -6,6 +6,7 @@
     require_once($CFG->libdir.'/tablelib.php');
     require_once($CFG->libdir.'/filelib.php');
     require_once(dirname(__FILE__).'/extra.php');
+    require_once(dirname(__FILE__).'/script.js');
 
     define('USER_SMALL_CLASS', 20);   // Below this is considered small
     define('USER_LARGE_CLASS', 200);  // Above this is considered large
@@ -381,163 +382,23 @@
 
     if ($bulkoperations) {
 
-        global $mortii_ma_tii;
+        global $ii;
         $list = array();
-        $mortii_ma_tii = 0;
+        $ii = 0;
 
         $user_list = $DB->get_recordset_sql("$select $from $where $sort", $params, $table->get_page_start(), $table->get_page_size());
 
         foreach ($user_list as $script_user) {
 
-            $list[$mortii_ma_tii] = $script_user->id;
-            $mortii_ma_tii += 1;
+            $list[$ii] = $script_user->id;
+            $ii += 1;
 
         }
 
-        // print_r($list);
-
-        echo '
-	<script type="text/javascript">
-        //<![CDATA[
-	function checksubmit(form) {
-		var destination = form.formaction.options[form.formaction.selectedIndex].value;
-		if (destination == "" || !checkchecked(form)) {
-			form.formaction.selectedIndex = 0;
-			return false;
-		} else {
-			return true;
-		}
-	}
-
-	function checkchecked(form) {
-		var inputs = document.getElementsByTagName(\'INPUT\');
-		var checked = false;
-		inputs = filterByParent(inputs, function() {return form;});
-		for(var i = 0; i < inputs.length; ++i) {
-			if (inputs[i].type == \'checkbox\' && inputs[i].checked) {
-				checked = true;
-			}
-		}
-		return checked;
-	}
-
-	function unclick(id) {
-
-                id += \'\';
-
-                if (document.getElementById("user".concat(id)).checked) {
-                        document.getElementById("lab_stars".concat(id)).hidden = true;
-                        document.getElementById("prez_stars".concat(id)).hidden = true;
-                        document.getElementById("Lab".concat(id)).value = 0;
-                        document.getElementById("Prez".concat(id)).value = 0;
-                        window["s_prez"+id].setValue(0, false);
-                        window["s_lab"+id].setValue(0, false);
-                } else {
-                        document.getElementById("lab_stars".concat(id)).hidden = false;
-                        document.getElementById("prez_stars".concat(id)).hidden = false;
-                }
-
-                return false;
-
-        }
-
-        function checkAll(name) {
-
-            var str = new Array('.implode(",", $list).');
-
-            if (document.getElementById("all_"+name).innerHTML == "Check All") {
-
-                document.getElementById("all_"+name).innerHTML = "Uncheck All"
-                new_val = 1;
-
-            } else {
-
-                document.getElementById("all_"+name).innerHTML = "Check All"
-                new_val = 0;
-
-            }
-
-            if (name == "prez") {
-
-                for (i = 0; i < str.length; i ++) {
-
-                    if (document.getElementById("user"+str[i]).checked == false) {
-
-                        document.getElementById("Prez"+str[i]).value = new_val;
-                        window["s_prez"+str[i]].setValue(new_val, false);
-
-                    }
-
-                }
-
-            } else {
-
-                if (name == "lab") {
-
-                    for (i = 0; i < str.length; i ++) {
-
-                        if (document.getElementById("user"+str[i]).checked == false) {
-
-                            document.getElementById("Lab"+str[i]).value = new_val;
-                            window["s_lab"+str[i]].setValue(new_val, false);
-
-                        }
-
-                    }
-
-                } else {
-
-                    if (name == "abs") {
-
-                        for (i = 0; i < str.length; i ++) {
-
-                            document.getElementById("user"+str[i]).checked = new_val;
-                            unclick(str[i]);
-
-                        }
-
-                    }
-
-                }
-
-            }
-
-        }
-
-        function resetAll() {
-
-            var str = new Array('.implode(",", $list).');
-
-            document.getElementById("all_prez").innerHTML = "Check All";
-            document.getElementById("all_lab").innerHTML = "Check All";
-            document.getElementById("all_abs").innerHTML = "Check All";
-
-            new_val = 0;
-
-                for (i = 0; i < str.length; i ++) {
-
-                    document.getElementById("Prez"+str[i]).value = new_val;
-                    window["s_prez"+str[i]].setValue(new_val, false);
-
-                    document.getElementById("Lab"+str[i]).value = new_val;
-                    window["s_lab"+str[i]].setValue(new_val, false);
-
-                    document.getElementById("user"+str[i]).checked = new_val;
-                    unclick(str[i]);
-
-                }
-
-        }
-
-	//]]>
-	</script>
-		';
-
-	echo '<form action="t_view.php?id='.$cm->id.'" method="post" id="participantsform">';// onsubmit="return checksubmit(this);">';
+        echo '<form action="t_view.php?id='.$cm->id.'" method="post" id="participantsform">';
 	echo '<div>';
 	echo '<input type="hidden" name="sesskey" value="'.$USER->sesskey.'" />';
 	echo '<input type="hidden" name="returnto" value="'.s(me()).'" />';
-
 
     }
 
@@ -604,14 +465,7 @@
                     $data[] = $user->{$field};
                 }
             }
-            /*
-            if ($mode === MODE_BRIEF && !isset($hiddenfields['city'])) {
-                //$data[] = $user->city;
-            }
-            if ($mode === MODE_BRIEF && !isset($hiddenfields['country'])) {
-                //$data[] = $country;
-            }
-             */
+
             if (!isset($hiddenfields['lastaccess'])) {
                 $data[] = $lastaccess;
             }
@@ -632,7 +486,6 @@
                 }
                 $data[] = $rastring;
                 if ($groupmode != 0) {
-                    // htmlescape with s() and implode the array
                     $data[] = implode(', ', array_map('s',$userlist_extra[$user->id]['group']));
                     $data[] = implode(', ', array_map('s', $userlist_extra[$user->id]['gping']));
                 }
@@ -715,7 +568,7 @@
             $bundle[] = $user->id;
         }
     }
-//}
+
     $table->print_html();
 
 
@@ -799,3 +652,4 @@ function get_entries($ch_userlist, $course, $cm, $f_id) {
     return 0;
 
 }
+

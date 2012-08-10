@@ -8,13 +8,19 @@ require_once(dirname(__FILE__).'/mod_form.php');
 require_once($CFG->dirroot.'/lib/accesslib.php');
 
 
-$id = optional_param('id', 0, PARAM_INT); // course_module ID, or
-$n  = optional_param('n', 0, PARAM_INT);  // feedbackccna instance ID - it should be named as the first character of the module
+$id = optional_param('id', 0, PARAM_INT);
+$n  = optional_param('n', 0, PARAM_INT);
 
 global $CFG;
+global $USER;
 global $DB;
 global $string_from_view1;
 global $string_from_view2;
+
+$arr1 = array();
+$arr10 = array();
+$arr2 = array();
+$arr20 = array();
 
 if ($id) {
     $cm         = get_coursemodule_from_id('feedbackccna', $id, 0, false, MUST_EXIST);
@@ -25,7 +31,7 @@ if ($id) {
     $course     = $DB->get_record('course', array('id' => $feedbackccna->course), '*', MUST_EXIST);
     $cm         = get_coursemodule_from_instance('feedbackccna', $feedbackccna->id, $course->id, false, MUST_EXIST);
 } else {
-    error('You must specify a course_module ID or an instance ID');
+    print_error('You must specify a course_module ID or an instance ID');
 }
 
 require_login($course, true, $cm);
@@ -34,19 +40,11 @@ $context = get_context_instance(CONTEXT_MODULE, $cm->id);
 add_to_log($course->id, 'feedbackccna', 'view', "view.php?id={$cm->id}", $feedbackccna->name, $cm->id);
 $f_id = $feedbackccna->id;
 
-/// Print the page header
-
 $PAGE->set_url('/mod/feedbackccna/view.php', array('id' => $cm->id));
 $PAGE->set_title(format_string($feedbackccna->name));
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($context);
 
-global $USER;
-
-$arr1 = array();
-$arr10 = array();
-$arr2 = array();
-$arr20 = array();
 
 $list1 = get_role_users(STUDENT_ROLE, $context, true);
 $list2 = get_role_users(STUDENT_ROLE, $context, true);
@@ -143,7 +141,7 @@ if ($entry = $form->get_data() and confirm_sesskey($USER->sesskey)) {
 
     }
 
-    go($cm->id);
+    redirect($CFG->wwwroot.'/mod/feedbackccna/view.php?id='.$cm->id);
 
 }
 
@@ -163,14 +161,5 @@ if ($_POST) {
 
 }
 
-// Finish the page
 echo $OUTPUT->footer();
 
-function go($cm_id) {
-
-    global $CFG;
-    redirect("$CFG->wwwroot/mod/feedbackccna/view.php?id=$cm_id");
-
-}
-
-?>
