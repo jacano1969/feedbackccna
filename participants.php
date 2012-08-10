@@ -554,7 +554,7 @@
                                      var s_lab'.$user->id.' = new Stars({
                                           maxRating: 3,
                                           imagePath: "images/",
-                                          value: '.$val_prez[$user->id].',
+                                          value: '.$val_lab[$user->id].',
                                           bindField: Lab'.$user->id.',
                                           container: lab_stars'.$user->id.'});
                             </script>';

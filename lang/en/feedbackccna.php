@@ -10,21 +10,21 @@ $string['feedbackccna'] = 'Feedback CCNA';
 $string['modulename'] = 'Feedback CCNA';
 $string['modulenameplural'] = 'Feedback CCNA modules';
 
-$string['modulename_help'] = 'Use the feedbackccna module for... | The feedbackccna module allows...';
+$string['modulename_help'] = 'Feedback help goes here';
 $string['feedbackccnafieldset'] = 'Custom example fieldset';
 $string['feedbackccnaname'] = 'Name';
 $string['feedbackccnaname_help'] = 'This is the content of the help tooltip associated with the feedbackccnaname field. Markdown syntax is supported.';
-$string['pluginadministration'] = 'feedbackccna administration';
+$string['pluginadministration'] = 'Feedbackccna administration';
 $string['pluginname'] = 'Feedback_CCNA';
 
 $string['feedbackccnafieldset'] = 'Custom example fieldset';
-$string['feedbackccnaintro'] = 'feedbackccna Intro';
+$string['feedbackccnaintro'] = 'Feedbackccna Intro';
 $string['feedbackccnaname'] = 'Feedbackccna Name';
 
-$string['wrongid']='Course Module ID was incorrect';
-$string['wrongcourse']='Course is misconfigured';
-$string['wrongmodule']='Course module is incorrect';
-$string['wrongparams']='You must specify a course_module ID or an instance ID';
+$string['wrongid'] = 'Course Module ID was incorrect';
+$string['wrongcourse'] = 'Course is misconfigured';
+$string['wrongmodule'] = 'Course module is incorrect';
+$string['wrongparams'] = 'You must specify a course_module ID or an instance ID';
 
 $string['view'] = 'Feedback';
 $string['viewdesc'] = 'Rate your teacher!';
@@ -63,7 +63,7 @@ $string['submitlabel'] = 'Submit';
 $string['resetlabel'] = 'Reset';
 $string['desclabel'] = 'Description';
 $string['achadded'] = 'The feedbackccna was added successfully';
-$string['assadded'] = 'The feedbackccna was asigned successfully';
+$string['assadded'] = 'The feedbackccna was assigned successfully';
 
 $string['nofeedback'] = 'No feedback has been entered in the database';
 

@@ -353,6 +353,10 @@ class add_view_form extends moodleform {
                 $mform->addElement('header', 'editorheader',
                     get_string('headerlabel_nothing', 'feedbackccna'));
 
+                // and help them get to da choppa
+                $mform->addElement('html', '<a href = "'.$CFG->wwwroot.
+                    '/course/view.php?id='.$course_id.'" >Back to course </a>');
+
             // if there were none, send some error (you'll hate this one >:) )
             } else {
 
