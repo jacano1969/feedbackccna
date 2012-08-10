@@ -14,9 +14,9 @@ function insert_feedback_module($instructor_id, $feedback_id, $course_id, $secti
 	global $DB;
 
 	// inserez modulul de feedback cu drepturile care trebuie, pentru a fi afisat
-	$allow = FEEDBACK_NOT_ALLOWED;
-	if( $which_way == STUDENT_FOR_TEACHER) $allow = DEFAULT_FEEDBACK_ALLOWED;
-	elseif( $which_way == TEACHER_FOR_STUDENT) $allow = FEEDBACK_ALLOWED;
+	$allow = FEED_NOT_ALLOWED;
+	if( $which_way == STUDENT_FOR_TEACHER) $allow = DEFAULT_FEED_ALLOWED;
+	elseif( $which_way == TEACHER_FOR_STUDENT) $allow = FEED_ALLOWED;
 
         $record = new stdClass();
         $record->feedback_id = $feedback_id;
@@ -46,16 +46,16 @@ function setup_feedback_module($feedback, $instructor_id) {
 
     insert_feedback_module($instructor_id, 0,
         $feedback->course, $feedback->section,
-        $feedback->name, STUDENT_FOR_TEACHER, FEEDBACK_TYPE_PRE);
+        $feedback->name, STUDENT_FOR_TEACHER, FEED_TYPE_PRE);
     insert_feedback_module($instructor_id, 0,
         $feedback->course, $feedback->section,
-        $feedback->name, TEACHER_FOR_STUDENT, FEEDBACK_TYPE_PRE);
+        $feedback->name, TEACHER_FOR_STUDENT, FEED_TYPE_PRE);
     insert_feedback_module($instructor_id, 0,
         $feedback->course, $feedback->section,
-        $feedback->name, STUDENT_FOR_TEACHER, FEEDBACK_TYPE_LAB);
+        $feedback->name, STUDENT_FOR_TEACHER, FEED_TYPE_LAB);
     insert_feedback_module($instructor_id, 0,
         $feedback->course, $feedback->section,
-        $feedback->name, TEACHER_FOR_STUDENT, FEEDBACK_TYPE_LAB);
+        $feedback->name, TEACHER_FOR_STUDENT, FEED_TYPE_LAB);
 
 }
 
@@ -110,7 +110,7 @@ function set_allow_feedback($module_id, $allow) {
 function get_feedback_module($course_id, $section, $which_way) {
 	global $DB;
 
-	return $DB->get_records_sql("SELECT * FROM {feedbackccna_module} WHERE course_id = ? AND section = ? AND which_way = ? AND allow='".FEEDBACK_ALLOWED."'", array($course_id, $section, $which_way));
+	return $DB->get_records_sql("SELECT * FROM {feedbackccna_module} WHERE course_id = ? AND section = ? AND which_way = ? AND allow='".FEED_ALLOWED."'", array($course_id, $section, $which_way));
 }
 
 function get_feedback_module_id($course_id, $section, $feedback_id) {
@@ -280,7 +280,7 @@ function get_user_answer_true($course_id, $student_id, $type, $f_id) {
             AND m.feedback_id = '".$f_id."'");
 }
 
-function get_user_absent($course_id, $student_id, $type, $f_id) {
+function get_user_absent($course_id, $student_id, $f_id) {
         global $DB;
 
         return !($DB->count_records_sql(
@@ -289,7 +289,6 @@ function get_user_absent($course_id, $student_id, $type, $f_id) {
             ON m.id = a.module_id
             WHERE m.which_way ='".TEACHER_FOR_STUDENT."'
             AND a.student_id = '".$student_id."'
-            AND m.type='".$type."'
             AND m.course_id='".$course_id."'
             AND m.feedback_id = '".$f_id."'"));
 
@@ -304,7 +303,7 @@ function get_feedback_feedbacks_count($course_id, $type) {
         return $DB->count_records_sql(
             "SELECT COUNT(*) FROM {feedbackccna_module}
             WHERE course_id ='".$course_id."'
-            AND allow != '".FEEDBACK_NOT_ALLOWED."'
+            AND allow != '".FEED_NOT_ALLOWED."'
             AND type='".$type."'
             AND which_way='".TEACHER_FOR_STUDENT."'");
 
@@ -322,12 +321,12 @@ function user_completed_all_labs($course_id, $student_id) {
             INNER JOIN {feedbackccna_answer} a
             ON m.id = a.module_id
             WHERE m.which_way ='".TEACHER_FOR_STUDENT."'
-            AND m.type='".FEEDBACK_TYPE_LAB."'
+            AND m.type='".FEED_TYPE_LAB."'
             AND a.student_id = '".$student_id."'
             AND m.course_id='".$course_id."'
             AND a.answer = '".LAB_DONE."'");
 
-        $labs_total = get_feedback_feedbacks_count($course_id, FEEDBACK_TYPE_LAB);
+        $labs_total = get_feedback_feedbacks_count($course_id, FEED_TYPE_LAB);
 
         return ($labs_total and ($labs_done == $labs_total));
 }
@@ -380,7 +379,7 @@ function get_user_total($context) {
 
 }
 
-function class_graded($course_id, $type, $f_id) {
+function class_graded($course_id, $f_id) {
 
     global $DB;
 
@@ -389,7 +388,6 @@ function class_graded($course_id, $type, $f_id) {
         INNER JOIN {feedbackccna_answer} a
         ON m.id = a.module_id
         WHERE m.which_way ='".TEACHER_FOR_STUDENT."'
-        AND m.type='".$type."'
         AND m.course_id='".$course_id."'
         AND m.feedback_id = '".$f_id."'");
 

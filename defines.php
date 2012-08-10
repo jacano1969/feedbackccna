@@ -1,16 +1,16 @@
 <?php
 
 // valoare initiala pentru orice modul de feedback
-define('FEEDBACK_NOT_ALLOWED', 0);
+define('FEED_NOT_ALLOWED', 0);
 
 // valoare pentru modulele de feedback deschise
-define('FEEDBACK_ALLOWED', 1);
+define('FEED_ALLOWED', 1);
 
 // valoare pentru modulele de feedback inchise
-define('FEEDBACK_CLOSED', -1);
+define('FEED_CLOSED', -1);
 
 // valoarea implicita la adaugarea in DB
-define('DEFAULT_FEEDBACK_ALLOWED', FEEDBACK_NOT_ALLOWED);
+define('DEFAULT_FEED_ALLOWED', FEED_NOT_ALLOWED);
 
 // feedback-ul se da de catre instructor
 define('TEACHER_FOR_STUDENT', 1);
@@ -19,10 +19,10 @@ define('TEACHER_FOR_STUDENT', 1);
 define('STUDENT_FOR_TEACHER', 2);
 
 // feedback-ul vizeaza prezentarea
-define('FEEDBACK_TYPE_PRE', 1);
+define('FEED_TYPE_PRE', 1);
 
 // feedback-ul vizeaza laboratorul
-define('FEEDBACK_TYPE_LAB', 2);
+define('FEED_TYPE_LAB', 2);
 
 // scoruri pentru activitatea studentului in cadrul laboratorului
 define('LAB_ABSENT', 0);
