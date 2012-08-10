@@ -575,14 +575,16 @@
 
     if ($bulkoperations) {
 
-
+/* Trololololololololololo * /
 	echo '<script type="text/javascript">'.
 		"\n//<![CDATA[\n".
-		'document.getElementById("noscriptparticipantsform").style.display = "none";'.
-		"\n//]]>\n".'</script>';
+		'document.getElementById("participantsform").style.display = "none";'.
+                "\n//]]>\n".'</script>';
+/* Trolololololooooooo */
 	echo '</div>';
-
+/* oooooooooooo */
         echo '<br />';
+/* ooooooooo */
         echo '<div class="buttons">';
         echo '<input type="submit" id = "formsubmit" value = "'.get_string('submit').'" /> ';
         echo '<input type = "button" id = "formreset" onclick = resetAll() value = "Reset" />';
