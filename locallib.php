@@ -142,7 +142,7 @@ class add_view_form extends moodleform {
             if ($data->type == FEED_TYPE_PRE) {
 
                 // can we give ratings to the teacher?
-                if (has_capability('mod/feedbackccna:rateteacher', $context) {
+                if (has_capability('mod/feedbackccna:rateteacher', $context)
                     // and are we allowed to answer this specific question?
                     and $data->allow == FEED_ALLOWED
                     // let's not bother the admin by displaying this
@@ -183,8 +183,8 @@ class add_view_form extends moodleform {
                                     maxRating: 5,
                                     imagePath: "images/",
                                     value: '.$values[FEED_TYPE_PRE].',
-                                    container: "star'.$data->id.FEED_TYPE_PRE'",
-                                    bindField: "value'.$data->id.FEED_TYPE_PRE'"
+                                    container:"star'.$data->id.FEED_TYPE_PRE.'",
+                                    bindField:"value'.$data->id.FEED_TYPE_PRE.'"
                                 });
                             </script>');
                        //
@@ -192,8 +192,6 @@ class add_view_form extends moodleform {
                         // we only show one question at once. no flooding!
                         break;
                       //
-
-                    }
 
                 }
 
@@ -274,22 +272,22 @@ class add_view_form extends moodleform {
                             get_string('headerlabel_lab', 'feedbackccna'));
 
                         $mform->addElement('html', '<div id = "star'.$data->id.
-                            FEED_TYPE_LAB'"></div>');
+                            FEED_TYPE_LAB.'"></div>');
 
                         $mform->addElement('hidden', 'value'.$data->id.
                             FEED_TYPE_LAB, null, array('id' => 'value'.
                             $data->id.FEED_TYPE_LAB, 'type' => 'hidden'));
 
                         $mform->addElement('html',
-                            "<script type = 'text/javascript'>
+                            '<script type = "text/javascript">
                                 var s2 = new Stars({
                                     maxRating: 5,
-                                    imagePath: 'images/',
-                                    value: ".$values[FEED_TYPE_LAB].",
-                                    container: 'star".$data->id.FEED_TYPE_LAB"',
-                                    bindField: 'value".$data->id.FEED_TYPE_LAB"'
+                                    imagePath: "images/",
+                                    value: '.$values[FEED_TYPE_LAB].',
+                                    container:"star'.$data->id.FEED_TYPE_LAB.'",
+                                    bindField:"value'.$data->id.FEED_TYPE_LAB.'"
                                 });
-                            </script>");
+                            </script>');
 
                         break;
 
