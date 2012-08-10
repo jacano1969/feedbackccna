@@ -11,34 +11,34 @@ defined('MOODLE_INTERNAL') || die();
 //	- course_id - id-ul cursului unde se afla modulul
 //	- which_way - daca feedback-ul este dat de profesor studentului sau invers
 function insert_feedback_module($instructor_id, $feedback_id, $course_id, $section, $denumire, $which_way, $type) {
-	global $DB;
+    global $DB;
 
-	// inserez modulul de feedback cu drepturile care trebuie, pentru a fi afisat
-	$allow = FEED_NOT_ALLOWED;
-	if( $which_way == STUDENT_FOR_TEACHER) $allow = DEFAULT_FEED_ALLOWED;
-	elseif( $which_way == TEACHER_FOR_STUDENT) $allow = FEED_ALLOWED;
+    // inserez modulul de feedback cu drepturile care trebuie, pentru a fi afisat
+    $allow = FEED_NOT_ALLOWED;
+    if( $which_way == STUDENT_FOR_TEACHER) $allow = DEFAULT_FEED_ALLOWED;
+    elseif( $which_way == TEACHER_FOR_STUDENT) $allow = FEED_ALLOWED;
 
-        $record = new stdClass();
-        $record->feedback_id = $feedback_id;
-	$record->instructor_id = $instructor_id;
-	$record->denumire = $denumire;
-	$record->allow = $allow;
-	$record->section = $section;
-	$record->course_id = $course_id;
-	$record->which_way = $which_way;
-	$record->type = $type;
+    $record = new stdClass();
+    $record->feedback_id = $feedback_id;
+    $record->instructor_id = $instructor_id;
+    $record->denumire = $denumire;
+    $record->allow = $allow;
+    $record->section = $section;
+    $record->course_id = $course_id;
+    $record->which_way = $which_way;
+    $record->type = $type;
 
-	$DB->insert_record("feedbackccna_module", $record);
+    $DB->insert_record("feedbackccna_module", $record);
 }
 
 function delete_feedback_module($course_id, $section, $feedback_id) {
-	global $DB;
+    global $DB;
 
-	$modis = get_feedback_module_id($course_id, $section, $feedback_id);
-	foreach($modis as $id) {
-		$DB->delete_records('feedbackccna_answer', array('module_id'=>$id->id));
-                $DB->delete_records('feedbackccna_module', array('id'=>$id->id));
-	}
+    $modis = get_feedback_module_id($course_id, $section, $feedback_id);
+    foreach($modis as $id) {
+        $DB->delete_records('feedbackccna_answer', array('module_id'=>$id->id));
+        $DB->delete_records('feedbackccna_module', array('id'=>$id->id));
+    }
 }
 
 //  functie de inserat automat intrare unui modul
@@ -64,43 +64,43 @@ function setup_feedback_module($feedback, $instructor_id) {
 //	- student_id - id-ul studentului care a raspuns
 //	- answer - valoarea efectiva a raspunsului
 function insert_feedback_answer($module_id, $student_id, $answer) {
-	global $DB;
+    global $DB;
 
-	$record = new stdClass();
-	$record->module_id = $module_id;
-	$record->student_id = $student_id;
-	$record->answer = $answer;
+    $record = new stdClass();
+    $record->module_id = $module_id;
+    $record->student_id = $student_id;
+    $record->answer = $answer;
 
-	$DB->insert_record("feedbackccna_answer",$record);
+    $DB->insert_record("feedbackccna_answer",$record);
 }
 
 function update_feedback_answer($id, $module_id, $student_id, $answer) {
-	global $DB;
+    global $DB;
 
-        $record = new stdClass();
-        $record->id = $id;
-	$record->module_id = $module_id;
-	$record->student_id = $student_id;
-	$record->answer = $answer;
+    $record = new stdClass();
+    $record->id = $id;
+    $record->module_id = $module_id;
+    $record->student_id = $student_id;
+    $record->answer = $answer;
 
-	$DB->update_record("feedbackccna_answer", $record);
+    $DB->update_record("feedbackccna_answer", $record);
 }
 
 function delete_feedback_answer($id) {
-        global $DB;
+    global $DB;
 
-        $record = array('id' => $id);
+    $record = array('id' => $id);
 
-        $DB->delete_records("feedbackccna_answer", $record);
+    $DB->delete_records("feedbackccna_answer", $record);
 }
 
 //	functie de schimbat valoarea campului allow din modulul de feedback
 //	- module_id - id-ul modulului de modificat
 //	- allow - noua valoare a campului allow
 function set_allow_feedback($module_id, $allow) {
-	global $DB;
+    global $DB;
 
-        $DB->update_record("feedbackccna_module", array('id'=>$module_id, 'allow'=>$allow));
+    $DB->update_record("feedbackccna_module", array('id'=>$module_id, 'allow'=>$allow));
 }
 
 //	functie de obtinut modulul de feedback dintr-un curs si o sectiune
@@ -108,27 +108,33 @@ function set_allow_feedback($module_id, $allow) {
 //	- section - saptamana sau topicul
 //	- which_way - daca feedback-ul este dat de student pt profesor sau invers
 function get_feedback_module($course_id, $section, $which_way) {
-	global $DB;
+    global $DB;
 
-	return $DB->get_records_sql("SELECT * FROM {feedbackccna_module} WHERE course_id = ? AND section = ? AND which_way = ? AND allow='".FEED_ALLOWED."'", array($course_id, $section, $which_way));
+    return $DB->get_records_sql(
+        "SELECT * FROM {feedbackccna_module}
+        WHERE course_id = ?
+        AND section = ?
+        AND which_way = ?
+        AND allow='".FEED_ALLOWED."'",
+        array($course_id, $section, $which_way));
 }
 
 function get_feedback_module_id($course_id, $section, $feedback_id) {
-	global $DB;
+    global $DB;
 
-        return $DB->get_records_sql(
-            "SELECT id FROM {feedbackccna_module}
-            WHERE course_id = ?
-            AND section = ?
-            AND feedback_id = ?",
-            array($course_id, $section, $feedback_id));
+    return $DB->get_records_sql(
+        "SELECT id FROM {feedbackccna_module}
+        WHERE course_id = ?
+        AND section = ?
+        AND feedback_id = ?",
+        array($course_id, $section, $feedback_id));
 }
 
 // functie de hack - MihaiZ nu stie ce spune
 function get_correct_section($section_id) {
-	global $DB;
+    global $DB;
 
-	return $DB->get_field_sql("SELECT section FROM {course_sections} WHERE id='".$section_id."'");
+    return $DB->get_field_sql("SELECT section FROM {course_sections} WHERE id='".$section_id."'");
 }
 
 //	functie de obtinut modulul de feedback dintr-un curs si o sectiune
@@ -136,51 +142,78 @@ function get_correct_section($section_id) {
 //	- section - saptamana sau topicul
 //	- which_way - daca feedback-ul este dat de student pt profesor sau invers
 function get_feedback_module_teacher($course_id, $section, $f_id, $which_way) {
-	global $DB;
+    global $DB;
 
-	$section = get_correct_section($section);
-        return $DB->get_records_sql(
-            "SELECT * FROM {feedbackccna_module}
-            WHERE course_id = ?
-            AND section = ?
-            AND feedback_id = ?
-            AND which_way = ?",
-            array($course_id, $section, $f_id, $which_way));
+    $section = get_correct_section($section);
+    return $DB->get_records_sql(
+        "SELECT * FROM {feedbackccna_module}
+        WHERE course_id = ?
+        AND section = ?
+        AND feedback_id = ?
+        AND which_way = ?",
+        array($course_id, $section, $f_id, $which_way));
 }
 
 //	functie de obtinut rating mediu pentru un curs pe tip de intrebare
 //	- course_id - id-ul cursului
 //	- type - tipul itemului pt care se doreste rezultatul
 function average_course_rating_pertype($course_id, $type) {
-	global $DB;
+    global $DB;
 
-	return $DB->get_records_sql("SELECT AVG(a.answer) FROM {feedbackccna_answer} a  INNER JOIN {feedbackccna_module} m ON a.module_id = m.id WHERE m.course_id = ? AND m.which_way='".STUDENT_FOR_TEACHER."' AND m.type = ?", array($course_id, $type));
+    return $DB->get_records_sql(
+        "SELECT AVG(a.answer) FROM {feedbackccna_answer} a
+        INNER JOIN {feedbackccna_module} m
+        ON a.module_id = m.id
+        WHERE m.course_id = ?
+        AND m.which_way='".STUDENT_FOR_TEACHER."'
+        AND m.type = ?", array($course_id, $type));
 }
 
 //	functie de obtinut rating mediu pentru un curs
 //	- course_id - id-ul cursului
 function average_course_rating($course_id) {
-	global $DB;
+    global $DB;
 
-	return $DB->get_records_sql("SELECT AVG(a.answer) FROM {feedbackccna_answer} a  INNER JOIN {feedbackccna_module} m ON a.module_id = m.id WHERE m.course_id = ? AND m.which_way='".STUDENT_FOR_TEACHER."'", array($course_id));
+    return $DB->get_records_sql(
+        "SELECT AVG(a.answer)
+        FROM {feedbackccna_answer} a
+        INNER JOIN {feedbackccna_module} m
+        ON a.module_id = m.id
+        WHERE m.course_id = ?
+        AND m.which_way='".STUDENT_FOR_TEACHER."'",
+        array($course_id));
 }
 
 //	functie de obtinut rating mediu pentru un profesor pe fiecare tip de feedback
 //	- instructor_id - id-ul instructorului
 //	- type - tipul itemului pt care se doreste rezultatul
 function average_instructor_rating_pertype($instructor_id, $type) {
-	global $DB;
+    global $DB;
 
-	return $DB->get_records_sql("SELECT AVG(a.answer) FROM {feedbackccna_answer} a  INNER JOIN {feedbackccna_module} m ON a.module_id = m.id WHERE m.instructor_id = ? AND m.which_way='".STUDENT_FOR_TEACHER."' AND m.type = ?", array($instructor_id, $type));
+    return $DB->get_records_sql(
+        "SELECT AVG(a.answer)
+        FROM {feedbackccna_answer} a
+        INNER JOIN {feedbackccna_module} m
+        ON a.module_id = m.id
+        WHERE m.instructor_id = ?
+        AND m.which_way='".STUDENT_FOR_TEACHER."'
+        AND m.type = ?", array($instructor_id, $type));
 }
 
 //	functie de obtinut rating mediu pentru un profesor
 //	- instructor_id - id-ul instructorului
 //	- type - tipul itemului pt care se doreste rezultatul
 function average_instructor_rating($instructor_id) {
-	global $DB;
+    global $DB;
 
-	return $DB->get_records_sql("SELECT AVG(a.answer) FROM {feedbackccna_answer} a  INNER JOIN {feedbackccna_module} m ON a.module_id = m.id WHERE m.instructor_id = ? AND m.which_way='".STUDENT_FOR_TEACHER."'" , array($instructor_id));
+    return $DB->get_records_sql(
+        "SELECT AVG(a.answer)
+        FROM {feedbackccna_answer} a
+        INNER JOIN {feedbackccna_module} m
+        ON a.module_id = m.id
+        WHERE m.instructor_id = ?
+        AND m.which_way='".STUDENT_FOR_TEACHER."'" ,
+        array($instructor_id));
 }
 
 //	functie de obtinut rating mediu pentru un profesor pe fiecare tip de feedback pe fiecare curs
@@ -188,43 +221,81 @@ function average_instructor_rating($instructor_id) {
 //	- type - tipul itemului pt care se doreste rezultatul
 //	- course_id - id-ul cursului
 function average_instructor_rating_pertype_percourse($instructor_id, $type, $course_id) {
-	global $DB;
+    global $DB;
 
-	return $DB->get_records_sql("SELECT AVG(a.answer) FROM {feedbackccna_answer} a  INNER JOIN {feedbackccna_module} m ON a.module_id = m.id WHERE m.instructor_id = ? AND m.which_way='".STUDENT_FOR_TEACHER."' AND m.type = ? AND m.course_id = ?", array($instructor_id, $type, $course_id));
+    return $DB->get_records_sql(
+        "SELECT AVG(a.answer)
+        FROM {feedbackccna_answer} a
+        INNER JOIN {feedbackccna_module} m
+        ON a.module_id = m.id
+        WHERE m.instructor_id = ?
+        AND m.which_way='".STUDENT_FOR_TEACHER."'
+        AND m.type = ?
+        AND m.course_id = ?",
+        array($instructor_id, $type, $course_id));
 }
 
 //	functie de obtinut rating mediu pentru un profesor pe fiecare curs
 //	- instructor_id - id-ul instructorului
 //	- course_id - tipul itemului pt care se doreste rezultatul
 function average_instructor_rating_percourse($instructor_id, $course_id) {
-	global $DB;
+    global $DB;
 
-	return $DB->get_records_sql("SELECT AVG(a.answer) FROM {feedbackccna_answer} a  INNER JOIN {feedbackccna_module} m ON a.module_id = m.id WHERE m.instructor_id = ? AND m.which_way='".STUDENT_FOR_TEACHER."' AND m.course_id = ?", array($instructor_id, $course_id));
+    return $DB->get_records_sql(
+        "SELECT AVG(a.answer)
+        FROM {feedbackccna_answer} a
+        INNER JOIN {feedbackccna_module} m
+        ON a.module_id = m.id
+        WHERE m.instructor_id = ?
+        AND m.which_way='".STUDENT_FOR_TEACHER."'
+        AND m.course_id = ?",
+        array($instructor_id, $course_id));
 }
 
 //  functie de obtinut valoare medie feedback student
 //  - student_id
 function average_rating_student($student_id) {
-	global $DB;
+    global $DB;
 
-	return $DB->get_records_sql("SELECT AVG(a.answer) FROM {feedbackccna_answer} a INNER JOIN {feedbackccna_module} m ON a.module_id = m_id WHERE  m.which_way='".TEACHER_FOR_STUDENT."' AND a.student_id = ?", array($student_id));
+    return $DB->get_records_sql(
+        "SELECT AVG(a.answer)
+        FROM {feedbackccna_answer} a
+        INNER JOIN {feedbackccna_module} m
+        ON a.module_id = m_id
+        WHERE  m.which_way='".TEACHER_FOR_STUDENT."'
+        AND a.student_id = ?", array($student_id));
 }
 
 //  functie de obtinut valoare medie feedback student pe fiecare item
 //  - student_id
 //  - type
 function average_rating_student_pertype($student_id, $type) {
-	global $DB;
+    global $DB;
 
-	return $DB->get_records_sql("SELECT AVG(a.answer) FROM {feedbackccna_answer} a INNER JOIN {feedbackccna_module} m ON a.module_id = m_id WHERE  m.which_way='".TEACHER_FOR_STUDENT."' AND a.student_id = ? AND m.type = ?", array($student_id, $type));
+    return $DB->get_records_sql(
+        "SELECT AVG(a.answer)
+        FROM {feedbackccna_answer} a
+        INNER JOIN {feedbackccna_module} m
+        ON a.module_id = m_id
+        WHERE  m.which_way='".TEACHER_FOR_STUDENT."'
+        AND a.student_id = ?
+        AND m.type = ?", array($student_id, $type));
 }
 //  functie de obtinut valoare medie
 //  - student_id
 //  - course_id
 function average_rating_student_percourse($student_id, $course_id) {
-	global $DB;
+    global $DB;
 
-	return $DB->get_records_sql("SELECT AVG(a.answer) FROM {feedbackccna_answer} a INNER JOIN {feedbackccna_module} m ON a.module_id = m_id WHERE  m.which_way='".TEACHER_FOR_STUDENT."' AND a.student_id = ? AND m.course_id = ?", array($student_id, $course_id));
+    return $DB->get_records_sql(
+        "SELECT AVG(a.answer)
+        FROM {feedbackccna_answer} a
+        INNER JOIN {feedbackccna_module} m
+        ON a.module_id = m_id
+        WHERE  m.which_way='".TEACHER_FOR_STUDENT."'
+        AND a.student_id = ?
+        AND m.course_id = ?",
+        array($student_id, $course_id));
 }
 
 //  functie de obtinut valoare medie feedback student
@@ -232,65 +303,74 @@ function average_rating_student_percourse($student_id, $course_id) {
 //  - type
 //  - course_id
 function average_rating_student_pertype_percourse($student_id, $type, $course_id) {
-	global $DB;
+    global $DB;
 
-	return $DB->get_records_sql("SELECT AVG(a.answer) FROM {feedbackccna_answer} a INNER JOIN {feedbackccna_module} m ON a.module_id = m_id WHERE  m.which_way='".TEACHER_FOR_STUDENT."' AND a.student_id = ? AND m.type = ? AND m.course_id = ?", array($student_id, $type, $course_id));
+    return $DB->get_records_sql(
+        "SELECT AVG(a.answer)
+        FROM {feedbackccna_answer} a
+        INNER JOIN {feedbackccna_module} m
+        ON a.module_id = m_id
+        WHERE m.which_way='".TEACHER_FOR_STUDENT."'
+        AND a.student_id = ?
+        AND m.type = ?
+        AND m.course_id = ?",
+        array($student_id, $type, $course_id));
 }
 
 //	functie de obtinut nr de laboratoare completate de un utilizator
 //	- course_id
 //	- student_id
 function get_user_feedback_count($course_id, $student_id, $type) {
-	global $DB;
+    global $DB;
 
-        return $DB->count_records_sql(
-            "SELECT COUNT(*) FROM {feedbackccna_module} m
-            INNER JOIN {feedbackccna_answer} a
-            ON m.id = a.module_id
-            WHERE m.which_way ='".STUDENT_FOR_TEACHER."'
-            AND m.type='".$type."'
-            AND a.student_id = '".$student_id."'
-            AND m.course_id='".$course_id."'");
+    return $DB->count_records_sql(
+        "SELECT COUNT(*) FROM {feedbackccna_module} m
+        INNER JOIN {feedbackccna_answer} a
+        ON m.id = a.module_id
+        WHERE m.which_way ='".STUDENT_FOR_TEACHER."'
+        AND m.type='".$type."'
+        AND a.student_id = '".$student_id."'
+        AND m.course_id='".$course_id."'");
 }
 
 function get_user_answer_count($course_id, $type, $f_id) {
-	global $DB;
+    global $DB;
 
-        return $DB->count_records_sql(
-            "SELECT COUNT(*) FROM {feedbackccna_module} m
-            INNER JOIN {feedbackccna_answer} a
-            ON m.id = a.module_id
-            WHERE m.which_way ='".STUDENT_FOR_TEACHER."'
-            AND m.type='".$type."'
-            AND m.course_id='".$course_id."'
-            AND m.feedback_id = '".$f_id."'");
+    return $DB->count_records_sql(
+        "SELECT COUNT(*) FROM {feedbackccna_module} m
+        INNER JOIN {feedbackccna_answer} a
+        ON m.id = a.module_id
+        WHERE m.which_way ='".STUDENT_FOR_TEACHER."'
+        AND m.type='".$type."'
+        AND m.course_id='".$course_id."'
+        AND m.feedback_id = '".$f_id."'");
 }
 
 function get_user_answer_true($course_id, $student_id, $type, $f_id) {
-	global $DB;
+    global $DB;
 
-        return $DB->count_records_sql(
-            "SELECT COUNT(*) FROM {feedbackccna_module} m
-            INNER JOIN {feedbackccna_answer} a
-            ON m.id = a.module_id
-            WHERE m.which_way ='".STUDENT_FOR_TEACHER."'
-            AND a.student_id = '".$student_id."'
-            AND m.type='".$type."'
-            AND m.course_id='".$course_id."'
-            AND m.feedback_id = '".$f_id."'");
+    return $DB->count_records_sql(
+        "SELECT COUNT(*) FROM {feedbackccna_module} m
+        INNER JOIN {feedbackccna_answer} a
+        ON m.id = a.module_id
+        WHERE m.which_way ='".STUDENT_FOR_TEACHER."'
+        AND a.student_id = '".$student_id."'
+        AND m.type='".$type."'
+        AND m.course_id='".$course_id."'
+        AND m.feedback_id = '".$f_id."'");
 }
 
 function get_user_absent($course_id, $student_id, $f_id) {
-        global $DB;
+    global $DB;
 
-        return !($DB->count_records_sql(
-            "SELECT COUNT(*) FROM {feedbackccna_module} m
-            INNER JOIN {feedbackccna_answer} a
-            ON m.id = a.module_id
-            WHERE m.which_way ='".TEACHER_FOR_STUDENT."'
-            AND a.student_id = '".$student_id."'
-            AND m.course_id='".$course_id."'
-            AND m.feedback_id = '".$f_id."'"));
+    return !($DB->count_records_sql(
+        "SELECT COUNT(*) FROM {feedbackccna_module} m
+        INNER JOIN {feedbackccna_answer} a
+        ON m.id = a.module_id
+        WHERE m.which_way ='".TEACHER_FOR_STUDENT."'
+        AND a.student_id = '".$student_id."'
+        AND m.course_id='".$course_id."'
+        AND m.feedback_id = '".$f_id."'"));
 
 }
 
@@ -298,14 +378,14 @@ function get_user_absent($course_id, $student_id, $f_id) {
 //	- course_id
 //  - type - laborator sau prezentare
 function get_feedback_feedbacks_count($course_id, $type) {
-	global $DB;
+    global $DB;
 
-        return $DB->count_records_sql(
-            "SELECT COUNT(*) FROM {feedbackccna_module}
-            WHERE course_id ='".$course_id."'
-            AND allow != '".FEED_NOT_ALLOWED."'
-            AND type='".$type."'
-            AND which_way='".TEACHER_FOR_STUDENT."'");
+    return $DB->count_records_sql(
+        "SELECT COUNT(*) FROM {feedbackccna_module}
+        WHERE course_id ='".$course_id."'
+        AND allow != '".FEED_NOT_ALLOWED."'
+        AND type='".$type."'
+        AND which_way='".TEACHER_FOR_STUDENT."'");
 
 }
 
@@ -314,21 +394,21 @@ function get_feedback_feedbacks_count($course_id, $type) {
 //	- id_student
 function user_completed_all_labs($course_id, $student_id) {
 
-	global $DB;
+    global $DB;
 
-        $labs_done = $DB->count_records_sql(
-            "SELECT COUNT(*) FROM {feedbackccna_module} m
-            INNER JOIN {feedbackccna_answer} a
-            ON m.id = a.module_id
-            WHERE m.which_way ='".TEACHER_FOR_STUDENT."'
-            AND m.type='".FEED_TYPE_LAB."'
-            AND a.student_id = '".$student_id."'
-            AND m.course_id='".$course_id."'
-            AND a.answer = '".LAB_DONE."'");
+    $labs_done = $DB->count_records_sql(
+        "SELECT COUNT(*) FROM {feedbackccna_module} m
+        INNER JOIN {feedbackccna_answer} a
+        ON m.id = a.module_id
+        WHERE m.which_way ='".TEACHER_FOR_STUDENT."'
+        AND m.type='".FEED_TYPE_LAB."'
+        AND a.student_id = '".$student_id."'
+        AND m.course_id='".$course_id."'
+        AND a.answer = '".LAB_DONE."'");
 
-        $labs_total = get_feedback_feedbacks_count($course_id, FEED_TYPE_LAB);
+    $labs_total = get_feedback_feedbacks_count($course_id, FEED_TYPE_LAB);
 
-        return ($labs_total and ($labs_done == $labs_total));
+    return ($labs_total and ($labs_done == $labs_total));
 }
 
 //  functie care obtine ratingul dat de cineva
@@ -337,21 +417,21 @@ function user_completed_all_labs($course_id, $student_id) {
 //  - section -
 //  - which_way -
 function get_feedback_answer_records($course_id, $student_id, $section, $f_id, $which_way) {
-	global $DB;
+    global $DB;
 
-        $section = get_correct_section($section);
+    $section = get_correct_section($section);
 
-        $ans_records = $DB->get_records_sql(
-            "SELECT * FROM {feedbackccna_answer} a JOIN {feedbackccna_module} m
-            ON a.module_id = m.id
-            AND a.student_id = ?
-            AND m.section = ?
-            AND m.feedback_id = ?
-            AND m.course_id = ?
-            AND m.which_way = ?",
-            array($student_id, $section, $f_id, $course_id, $which_way));
+    $ans_records = $DB->get_records_sql(
+        "SELECT * FROM {feedbackccna_answer} a JOIN {feedbackccna_module} m
+        ON a.module_id = m.id
+        AND a.student_id = ?
+        AND m.section = ?
+        AND m.feedback_id = ?
+        AND m.course_id = ?
+        AND m.which_way = ?",
+        array($student_id, $section, $f_id, $course_id, $which_way));
 
-        return $ans_records;
+    return $ans_records;
 }
 
 function get_feedback_answer_id($course_id, $student_id, $section, $f_id, $which_way, $type) {
@@ -360,10 +440,16 @@ function get_feedback_answer_id($course_id, $student_id, $section, $f_id, $which
 
     $section = get_correct_section($section);
 
-    $id_records = $DB->get_records_sql("SELECT a.id FROM {feedbackccna_answer} a JOIN {feedbackccna_module} m
-                                     ON a.module_id = m.id AND a.student_id = ? AND m.section = ?
-                                     AND m.course_id = ? AND m.which_way = ? AND type = ?",
-                                     array($student_id, $section, $course_id, $which_way, $type));
+    $id_records = $DB->get_records_sql(
+        "SELECT a.id FROM {feedbackccna_answer} a
+        JOIN {feedbackccna_module} m
+        ON a.module_id = m.id
+        AND a.student_id = ?
+        AND m.section = ?
+        AND m.course_id = ?
+        AND m.which_way = ?
+        AND type = ?",
+        array($student_id, $section, $course_id, $which_way, $type));
 
     foreach ($id_records as $id_record) {
         return $id_record->id;
