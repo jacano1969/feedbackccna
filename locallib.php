@@ -9,8 +9,8 @@ require_once($CFG->dirroot.'/lib/outputcomponents.php');
 require_once($CFG->dirroot.'/lib/outputrenderers.php');
 
 // needed for rendering the stars
-echo '<script type="text/javascript" src="prototype.js"></script>
-      <script type="text/javascript" src="stars.js"></script>';
+//echo '<script type="text/javascript" src="prototype.js"></script>
+//      <script type="text/javascript" src="stars.js"></script>';
 
 // we need this in order to display the tabs, in view.php and t_view.php
 function build_tabs($active, $id, $n, $context) {
@@ -47,6 +47,30 @@ function build_tabs($active, $id, $n, $context) {
     // this is a moodle function
     print_tabs($tabs, $currenttab, $inactive, $activetwo);
    //
+}
+
+function build_tabs_local($active, $number){
+
+    global $CFG;
+
+    $options = array();
+    $inactive = array();
+    $activetwo = array();
+    $currenttab = $active;
+
+    for ($i = 1; $i <= $number; $i ++) {
+
+        $options[] = new tabobject('dash_'.$i,
+            $CFG->wwwroot . '/mod/feedbackccna/dashboard.php?type='.$i,
+            get_string('name_'.$i,'feedbackccna'),
+            get_string('desc_'.$i,'feedbackccna'),
+            true);
+
+    }
+
+    $tabs = array($options);
+
+    print_tabs($tabs, $currenttab, $inactive, $activetwo);
 }
 
 // creates a moodleform instance, with a few added functionalities
@@ -169,7 +193,8 @@ class add_view_form extends moodleform {
 
                        // so, here are the fabled stars
                         // first of all, a container
-                        $mform->addElement('html', '<div id = "star'.$data->id.
+                        $mform->addElement('html', '<script type="text/javascript" src="prototype.js"></script>
+      <script type="text/javascript" src="stars.js"></script><div id = "star'.$data->id.
                             '1" ></div>');
                         // keep the value in a hidden element
                         $mform->addElement('hidden', 'value'.$data->id.
@@ -271,7 +296,8 @@ class add_view_form extends moodleform {
                         $mform->addElement('header', 'editorheader',
                             get_string('headerlabel_lab', 'feedbackccna'));
 
-                        $mform->addElement('html', '<div id = "star'.$data->id.
+                        $mform->addElement('html', '<script type="text/javascript" src="prototype.js"></script>
+      <script type="text/javascript" src="stars.js"></script><div id = "star'.$data->id.
                             FEED_TYPE_LAB.'"></div>');
 
                         $mform->addElement('hidden', 'value'.$data->id.
