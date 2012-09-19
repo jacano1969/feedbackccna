@@ -64,8 +64,18 @@ $string['resetlabel'] = 'Reset';
 $string['desclabel'] = 'Description';
 $string['achadded'] = 'The feedbackccna was added successfully';
 $string['assadded'] = 'The feedbackccna was assigned successfully';
+$string['dashboard_name'] = 'Deșboord';
 
 $string['nofeedback'] = 'No feedback has been entered in the database';
 
 $string['imagelabel'] = 'Poza';
+
+$string['name_1'] = 'Best students';
+$string['desc_1'] = 'Classified by feedback ratings';
+$string['name_2'] = 'Most feedback';
+$string['desc_2'] = 'The students who gave the most feedback';
+$string['name_3'] = 'Best attendance';
+$string['desc_3'] = 'Classified by number of classes attended';
+
 ?>
+
