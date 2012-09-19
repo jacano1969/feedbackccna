@@ -387,7 +387,7 @@ function get_active_feedbacks_count($course_id, $type) {
 				AND which_way = '".STUDENT_FOR_TEACHER."'");
 }
 
-//	functie determina daca un student a primit toate feedback-urile posibile
+//	functie care returneaza nr de laboratoare la care a participat studentul
 //	- id_curs
 //	- id_student
 function user_completed_labs_count($course_id, $student_id) {
@@ -404,6 +404,8 @@ function user_completed_labs_count($course_id, $student_id) {
 			AND a.answer != '".LAB_ABSENT."'");
 }
 
+//  functie care returneaza nr total de laboratoare sustinute in cadrul cursului
+//  - course_id 
 function user_active_labs_count($course_id) {
 	return get_active_feedbacks_count($course_id, FEED_TYPE_LAB);
 }
