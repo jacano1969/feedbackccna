@@ -400,11 +400,6 @@ function user_completed_feedbacks_count($course_id, $student_id, $type) {
         INNER JOIN {feedbackccna_answer} a
         ON m.id = a.module_id
         WHERE m.which_way ='".TEACHER_FOR_STUDENT."'
-		AND m.feedback_id IN (SELECT feedback_id FROM {feedbackccna_module} 
-					  WHERE m.type = '".$type."'
-						AND course_id = '".$course_id."'
-						AND which_way = ".STUDENT_FOR_TEACHER."
-						AND allow != ".FEED_NOT_ALLOWED.")
         AND m.type='".$type."'
         AND a.student_id = '".$student_id."'
         AND m.course_id='".$course_id."'
