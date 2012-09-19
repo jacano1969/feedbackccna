@@ -535,8 +535,9 @@
                 }
 
                 $data[] .= '<input id="Prez'.$user->id.'" type="hidden" value="" name="Prez'.$user->id.'" size="0" />
-							<script type="text/javascript" src="prototype.js"></script>
-      <script type="text/javascript" src="stars.js"></script>
+			    <script type="text/javascript" src="prototype.js"></script>
+                            <script type="text/javascript" src="stars.js"></script>
+
                             <div id="prez_stars'.$user->id.'" '.$absent[$user->id].'></div>
 
                             <script type="text/javascript">
@@ -550,8 +551,9 @@
 
 
                 $data[] .= '<input id="Lab'.$user->id.'" type="hidden" value="" name="Lab'.$user->id.'" size="0" />
-<script type="text/javascript" src="prototype.js"></script>
-      <script type="text/javascript" src="stars.js"></script>
+                            <script type="text/javascript" src="prototype.js"></script>
+                            <script type="text/javascript" src="stars.js"></script>
+
                             <div id="lab_stars'.$user->id.'" '.$absent[$user->id].'></div>
 
                             <script type="text/javascript">

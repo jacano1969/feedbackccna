@@ -23,13 +23,13 @@ $arr2 = array();
 $arr20 = array();
 
 if ($id) {
-    $cm         = get_coursemodule_from_id('feedbackccna', $id, 0, false, MUST_EXIST);
-    $course     = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
+    $cm = get_coursemodule_from_id('feedbackccna', $id, 0, false, MUST_EXIST);
+    $course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
     $feedbackccna  = $DB->get_record('feedbackccna', array('id' => $cm->instance), '*', MUST_EXIST);
 } elseif ($n) {
     $feedbackccna  = $DB->get_record('feedbackccna', array('id' => $n), '*', MUST_EXIST);
-    $course     = $DB->get_record('course', array('id' => $feedbackccna->course), '*', MUST_EXIST);
-    $cm         = get_coursemodule_from_instance('feedbackccna', $feedbackccna->id, $course->id, false, MUST_EXIST);
+    $course = $DB->get_record('course', array('id' => $feedbackccna->course), '*', MUST_EXIST);
+    $cm = get_coursemodule_from_instance('feedbackccna', $feedbackccna->id, $course->id, false, MUST_EXIST);
 } else {
     print_error('You must specify a course_module ID or an instance ID');
 }
@@ -51,12 +51,16 @@ $list2 = get_role_users(STUDENT_ROLE, $context, true);
 
 foreach ($list1 as $object1) {
 
-    if (!get_user_answer_true($course->id, $object1->id, FEED_TYPE_PRE, $f_id)) {
+    if (get_user_absent($course->id, $object1->id, $f_id)) {
 
-        if (get_user_absent($course->id, $object1->id, FEED_TYPE_PRE, $f_id)) {
-            $arr10[] = $object1->firstname.' '.$object1->lastname;
-        } else {
+        $arr10[] = $object1->firstname.' '.$object1->lastname;
+
+    } else {
+
+        if (!get_user_answer_true($course->id, $object1->id, FEED_TYPE_PRE, $f_id)) {
+
             $arr1[] = $object1->firstname.' '.$object1->lastname;
+
         }
 
     }
@@ -65,12 +69,16 @@ foreach ($list1 as $object1) {
 
 foreach ($list2 as $object2) {
 
-    if (!get_user_answer_true($course->id, $object2->id, FEED_TYPE_LAB, $f_id)) {
+    if (get_user_absent($course->id, $object2->id, $f_id)) {
 
-        if (get_user_absent($course->id, $object1->id, FEED_TYPE_PRE, $f_id)) {
-            $arr20[] = $object1->firstname.' '.$object1->lastname;
-        } else {
+        $arr20[] = $object2->firstname.' '.$object2->lastname;
+
+    } else {
+
+        if (!get_user_answer_true($course->id, $object2->id, FEED_TYPE_LAB, $f_id)) {
+
             $arr2[] = $object2->firstname.' '.$object2->lastname;
+
         }
 
     }
@@ -84,9 +92,6 @@ $string_from_view1 = implode('<br />', $arr1).
 $string_from_view2 = implode('<br />', $arr2).
                      '<br /><br /><br /><strong>These are absent:</strong><br /><br />'.
                      implode('<br />', $arr20);
-
-echo '<script type="text/javascript" src="prototype.js"></script>
-      <script type="text/javascript" src="stars.js"></script>';
 
 echo $OUTPUT->header();
 

@@ -43,9 +43,6 @@ $PAGE->set_title(format_string($feedback->name));
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($context);
 
-echo '<script type="text/javascript" src="prototype.js"></script>
-      <script type="text/javascript" src="stars.js"></script>';
-
 echo $OUTPUT->header();
 
 
@@ -120,7 +117,7 @@ if (has_capability('mod/feedbackccna:ratestudent', $context)) {
 
                     if($t_module->type == FEED_TYPE_PRE) {
 
-                        if ($old_id_1) {
+                        if ($old_id_1 and !(get_user_answer_true($courseid, $user_id, FEED_TYPE_PRE, $f_id))) {
 
                             delete_feedback_answer($old_id_1);
 
@@ -128,7 +125,7 @@ if (has_capability('mod/feedbackccna:ratestudent', $context)) {
 
                     } elseif ($t_module->type == FEED_TYPE_LAB) {
 
-                        if ($old_id_2) {
+                        if ($old_id_2 and !(get_user_answer_true($courseid, $user_id, FEED_TYPE_LAB, $f_id))) {
 
                             delete_feedback_answer($old_id_2);
 
