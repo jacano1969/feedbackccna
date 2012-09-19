@@ -379,31 +379,33 @@ function get_user_absent($course_id, $student_id, $f_id) {
 //  - type - laborator sau prezentare
 function get_active_feedbacks_count($course_id, $type) {
     global $DB;
-
     return $DB->count_records_sql(
-        "SELECT COUNT(*) FROM {feedbackccna_module}
-        WHERE course_id ='".$course_id."'
-        AND allow != '".FEED_NOT_ALLOWED."'
-        AND type='".$type."'
-        AND which_way='".STUDENT_FOR_TEACHER."'");
-
+			"SELECT COUNT(*) FROM {feedbackccna_module}
+			  WHERE type ='".$type."'
+				AND course_id='".$course_id."'
+				AND allow != '".FEED_NOT_ALLOWED."' 
+				AND which_way = '".STUDENT_FOR_TEACHER."'");
 }
 
-//	functie care determina daca un student a terminat toate laboratoarele
+//	functie determina daca un student a primit toate feedback-urile posibile
 //	- id_curs
 //	- id_student
-function user_completed_feedbacks_count($course_id, $student_id, $type) {
+function user_completed_labs_count($course_id, $student_id) {
 	global $DB;
 
     return $DB->count_records_sql(
         "SELECT COUNT(*) FROM {feedbackccna_module} m
-        INNER JOIN {feedbackccna_answer} a
-        ON m.id = a.module_id
-        WHERE m.which_way ='".TEACHER_FOR_STUDENT."'
-        AND m.type='".$type."'
-        AND a.student_id = '".$student_id."'
-        AND m.course_id='".$course_id."'
-        AND a.answer = '".LAB_DONE."'");
+          INNER JOIN {feedbackccna_answer} a
+        	 ON m.id = a.module_id
+          WHERE m.which_way ='".TEACHER_FOR_STUDENT."'
+        	AND m.type='".FEED_TYPE_LAB."'
+        	AND a.student_id = '".$student_id."'
+        	AND m.course_id= '".$course_id."'
+			AND a.answer != '".LAB_ABSENT."'");
+}
+
+function user_active_labs_count($course_id) {
+	return get_active_feedbacks_count($course_id, FEED_TYPE_LAB);
 }
 
 //  functie care obtine ratingul dat de cineva
