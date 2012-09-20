@@ -161,7 +161,7 @@ function average_course_rating_pertype($course_id, $type) {
     global $DB;
 
     return $DB->get_records_sql(
-        "SELECT AVG(a.answer) FROM {feedbackccna_answer} a
+        "SELECT AVG(a.answer) rez FROM {feedbackccna_answer} a
         INNER JOIN {feedbackccna_module} m
         ON a.module_id = m.id
         WHERE m.course_id = ?
@@ -175,7 +175,7 @@ function average_course_rating($course_id) {
     global $DB;
 
     return $DB->get_records_sql(
-        "SELECT AVG(a.answer)
+        "SELECT AVG(a.answer) rez
         FROM {feedbackccna_answer} a
         INNER JOIN {feedbackccna_module} m
         ON a.module_id = m.id
@@ -191,7 +191,7 @@ function average_instructor_rating_pertype($instructor_id, $type) {
     global $DB;
 
     return $DB->get_records_sql(
-        "SELECT AVG(a.answer)
+        "SELECT AVG(a.answer) rez
         FROM {feedbackccna_answer} a
         INNER JOIN {feedbackccna_module} m
         ON a.module_id = m.id
@@ -207,7 +207,7 @@ function average_instructor_rating($instructor_id) {
     global $DB;
 
     return $DB->get_records_sql(
-        "SELECT AVG(a.answer)
+        "SELECT AVG(a.answer) rez
         FROM {feedbackccna_answer} a
         INNER JOIN {feedbackccna_module} m
         ON a.module_id = m.id
@@ -224,7 +224,7 @@ function average_instructor_rating_pertype_percourse($instructor_id, $type, $cou
     global $DB;
 
     return $DB->get_records_sql(
-        "SELECT AVG(a.answer)
+        "SELECT AVG(a.answer) rez
         FROM {feedbackccna_answer} a
         INNER JOIN {feedbackccna_module} m
         ON a.module_id = m.id
@@ -242,7 +242,7 @@ function average_instructor_rating_percourse($instructor_id, $course_id) {
     global $DB;
 
     return $DB->get_records_sql(
-        "SELECT AVG(a.answer)
+        "SELECT AVG(a.answer) rez
         FROM {feedbackccna_answer} a
         INNER JOIN {feedbackccna_module} m
         ON a.module_id = m.id
@@ -258,10 +258,10 @@ function average_rating_student($student_id) {
     global $DB;
 
     return $DB->get_records_sql(
-        "SELECT AVG(a.answer)
+        "SELECT AVG(a.answer) rez
         FROM {feedbackccna_answer} a
         INNER JOIN {feedbackccna_module} m
-        ON a.module_id = m_id
+        ON a.module_id = m.id
         WHERE  m.which_way='".TEACHER_FOR_STUDENT."'
         AND a.student_id = ?", array($student_id));
 }
@@ -273,10 +273,10 @@ function average_rating_student_pertype($student_id, $type) {
     global $DB;
 
     return $DB->get_records_sql(
-        "SELECT AVG(a.answer)
+        "SELECT AVG(a.answer) rez
         FROM {feedbackccna_answer} a
         INNER JOIN {feedbackccna_module} m
-        ON a.module_id = m_id
+        ON a.module_id = m.id
         WHERE  m.which_way='".TEACHER_FOR_STUDENT."'
         AND a.student_id = ?
         AND m.type = ?", array($student_id, $type));
@@ -288,10 +288,10 @@ function average_rating_student_percourse($student_id, $course_id) {
     global $DB;
 
     return $DB->get_records_sql(
-        "SELECT AVG(a.answer)
+        "SELECT AVG(a.answer) rez
         FROM {feedbackccna_answer} a
         INNER JOIN {feedbackccna_module} m
-        ON a.module_id = m_id
+        ON a.module_id = m.id
         WHERE  m.which_way='".TEACHER_FOR_STUDENT."'
         AND a.student_id = ?
         AND m.course_id = ?",
@@ -306,10 +306,10 @@ function average_rating_student_pertype_percourse($student_id, $type, $course_id
     global $DB;
 
     return $DB->get_records_sql(
-        "SELECT AVG(a.answer)
+        "SELECT AVG(a.answer) rez
         FROM {feedbackccna_answer} a
         INNER JOIN {feedbackccna_module} m
-        ON a.module_id = m_id
+        ON a.module_id = m.id
         WHERE m.which_way='".TEACHER_FOR_STUDENT."'
         AND a.student_id = ?
         AND m.type = ?
