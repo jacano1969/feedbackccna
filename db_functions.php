@@ -377,38 +377,37 @@ function get_user_absent($course_id, $student_id, $f_id) {
 //	functie de obtinut nr total de feedback-uri care au fost activate pe curs
 //	- course_id
 //  - type - laborator sau prezentare
-function get_feedback_feedbacks_count($course_id, $type) {
+function get_active_feedbacks_count($course_id, $type) {
     global $DB;
-
     return $DB->count_records_sql(
-        "SELECT COUNT(*) FROM {feedbackccna_module}
-        WHERE course_id ='".$course_id."'
-        AND allow != '".FEED_NOT_ALLOWED."'
-        AND type='".$type."'
-        AND which_way='".TEACHER_FOR_STUDENT."'");
-
+			"SELECT COUNT(*) FROM {feedbackccna_module}
+			  WHERE type ='".$type."'
+				AND course_id='".$course_id."'
+				AND allow != '".FEED_NOT_ALLOWED."' 
+				AND which_way = '".STUDENT_FOR_TEACHER."'");
 }
 
-//	functie care determina daca un student a terminat toate laboratoarele
+//	functie care returneaza nr de laboratoare la care a participat studentul
 //	- id_curs
 //	- id_student
-function user_completed_all_labs($course_id, $student_id) {
+function user_completed_labs_count($course_id, $student_id) {
+	global $DB;
 
-    global $DB;
-
-    $labs_done = $DB->count_records_sql(
+    return $DB->count_records_sql(
         "SELECT COUNT(*) FROM {feedbackccna_module} m
-        INNER JOIN {feedbackccna_answer} a
-        ON m.id = a.module_id
-        WHERE m.which_way ='".TEACHER_FOR_STUDENT."'
-        AND m.type='".FEED_TYPE_LAB."'
-        AND a.student_id = '".$student_id."'
-        AND m.course_id='".$course_id."'
-        AND a.answer = '".LAB_DONE."'");
+          INNER JOIN {feedbackccna_answer} a
+        	 ON m.id = a.module_id
+          WHERE m.which_way ='".TEACHER_FOR_STUDENT."'
+        	AND m.type='".FEED_TYPE_LAB."'
+        	AND a.student_id = '".$student_id."'
+        	AND m.course_id= '".$course_id."'
+			AND a.answer != '".LAB_ABSENT."'");
+}
 
-    $labs_total = get_feedback_feedbacks_count($course_id, FEED_TYPE_LAB);
-
-    return ($labs_total and ($labs_done == $labs_total));
+//  functie care returneaza nr total de laboratoare sustinute in cadrul cursului
+//  - course_id 
+function user_active_labs_count($course_id) {
+	return get_active_feedbacks_count($course_id, FEED_TYPE_LAB);
 }
 
 //  functie care obtine ratingul dat de cineva
