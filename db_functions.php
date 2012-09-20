@@ -480,3 +480,26 @@ function class_graded($course_id, $f_id) {
 
 }
 
+// this function gets all the user ids from users with a specific role,
+ // who are enrolled in an array of courses
+function get_user_ids_in_courses_by_role($course_array, $role) {
+
+    global $DB;
+
+    return $DB->get_records_sql(
+        "SELECT DISTINCT us.id, us.email FROM {user} us
+        INNER JOIN {user_enrolments} us_en
+        ON us.id = us_en.userid
+        INNER JOIN {enrol} en
+        ON us_en.enrolid = en.id
+        INNER JOIN {context} con
+        ON en.courseid = con.instanceid
+        INNER JOIN {role_assignments} ro_as
+        ON ro_as.contextid = con.id
+        AND ro_as.userid = us.id
+        WHERE con.contextlevel = 50
+        AND ro_as.roleid = ".$role."
+        AND en.courseid IN (".implode($course_array, ', ').")");
+
+}
+

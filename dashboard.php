@@ -31,28 +31,30 @@ build_tabs_local('dash_'.$type, $no_of_tabs);
 $groups = $DB->get_records('course_categories', null, 'path ASC');
 $groups2 = $DB->get_records('course');
 
+$gr_array = array();
+$gr_array_id = array();
 $group_array = array();
 $groups_array = array();
 $groups_array2 = array();
 
 $temp = new stdClass();
 $temp->name = 'All courses';
-$group_array[] = $temp->name;
 $temp->id = 0;
 $temp->category = 1;
 $temp->parent = 0;
-$groups_array['10'] = $temp;
+$group_array['10'] = $temp->name;
+//$groups_array['10'] = $temp;
 $groups_array2['10'] = $temp;
 
 foreach ($groups as $group) {
 
     $temp = new stdClass();
     $temp->name = $group->name;
-    $group_array[] = $temp->name;
     $temp->id = $group->id;
     $temp->category = 1;
     $temp->parent = $group->parent;
-    $groups_array[$temp->category.$temp->id] = $temp;
+    $group_array[$temp->category.$temp->id] = $temp->name;
+    //$groups_array[$temp->category.$temp->id] = $temp;
     $groups_array2[$temp->category.$temp->id] = $temp;
 
 }
@@ -61,51 +63,56 @@ foreach ($groups2 as $group) {
 
     $temp = new stdClass();
     $temp->name = $group->fullname;
-    $group_array[] = $temp->name;
     $temp->id = $group->id;
     $temp->category = 0;
     $temp->parent = $group->category;
+    $group_array[$temp->category.$temp->id] = $temp->name;
     $groups_array[$temp->category.$temp->id] = $temp;
     $groups_array2[$temp->category.$temp->id] = $temp;
 
 }
-
+/*
+print_r($groups_array);
+echo "<br />";
+ */
 $course_id = 0;
 $category = 1;
 
 $form = new dash_1_form(null, array('group_array' => $group_array));
 if ($entry = $form->get_data() and confirm_sesskey($USER->sesskey)) {
 
-    $course_id = $groups_array2[$entry->category.$entry->id]->id;
-    $category = $groups_array2[$entry->category.$entry->id]->category;
+    $var = "select-one";
+    $course_id = $groups_array2[$entry->$var]->id;
+    $category = $groups_array2[$entry->$var]->category;
 
 }
 
+/*
 if (isset($entry)) {
 
-    echo $course_id." ".$category;
+    echo $course_id." ".$category."<br />";
 
 }
-/*
-print_r($groups_array);
-echo '<br />';
- */
+*/
+
 foreach ($groups_array as $course) {
 
     $ok = 1;
 
+    $current = $course;
+
     if ($category == 1) {
 
-        while ($course->id != $course_id) {
+        while ($current->id != $course_id) {
 
-            if ($course->id == 0) {
+            if ($current->id == 0) {
 
                 $ok = 0;
                 break;
 
             } else {
 
-                $course = $groups_array2['1'.$course->parent];
+                $current = $groups_array2['1'.$current->parent];
 
             }
 
@@ -115,6 +122,7 @@ foreach ($groups_array as $course) {
 
             // get all the courses that are sub-categories of the above mentioned
             $gr_array[$course->id] = $course;
+            $gr_array_id[] .= $course->id;
 
         }
 
@@ -128,8 +136,6 @@ foreach ($groups_array as $course) {
 
     }
 
-    //echo $ok." ";
-
 }
 
 // best student EU ^^
@@ -137,7 +143,9 @@ if ($type == 1) {
 
     if ($_POST) {
 
-        print_r($gr_array);
+        $new_array = get_user_ids_in_courses_by_role($gr_array_id, 5);
+
+        print_r($new_array);
 
     } else {
 
@@ -148,12 +156,12 @@ if ($type == 1) {
 // most feedback EU
 } elseif ($type == 2) {
 
-
+    //TODO 2
 
 // best attendance EU
 } elseif ($type == 3) {
 
-
+    //TODO 3
 
 }
 
