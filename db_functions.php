@@ -487,7 +487,7 @@ function get_user_ids_in_courses_by_role($course_array, $role) {
     global $DB;
 
     return $DB->get_records_sql(
-        "SELECT DISTINCT us.id, us.email FROM {user} us
+        "SELECT DISTINCT us.id, us.firstname, us.lastname FROM {user} us
         INNER JOIN {user_enrolments} us_en
         ON us.id = us_en.userid
         INNER JOIN {enrol} en
