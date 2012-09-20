@@ -340,7 +340,7 @@ function get_user_answer_count($course_id, $type, $f_id) {
         "SELECT COUNT(*) FROM {feedbackccna_module} m
         INNER JOIN {feedbackccna_answer} a
         ON m.id = a.module_id
-        WHERE m.which_way ='".TEACHER_FOR_STUDENT."'
+        WHERE m.which_way ='".STUDENT_FOR_TEACHER."'
         AND m.type='".$type."'
         AND m.course_id='".$course_id."'
         AND m.feedback_id = '".$f_id."'");
