@@ -662,3 +662,5 @@ function get_entries($ch_userlist, $course, $cm, $f_id) {
 
 }
 
+?>
+

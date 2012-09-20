@@ -41,9 +41,10 @@ add_to_log($course->id, 'feedbackccna', 'view', "view.php?id={$cm->id}", $feedba
 $f_id = $feedbackccna->id;
 
 $PAGE->set_url('/mod/feedbackccna/view.php', array('id' => $cm->id));
+$PAGE->set_context($context);
 $PAGE->set_title(format_string($feedbackccna->name));
 $PAGE->set_heading(format_string($course->fullname));
-$PAGE->set_context($context);
+$PAGE->set_pagelayout('standard');
 
 
 $list1 = get_role_users(STUDENT_ROLE, $context, true);

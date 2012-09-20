@@ -18,9 +18,9 @@ $context = get_context_instance(CONTEXT_SYSTEM);
 
 $url = new moodle_url('/mod/feedbackccna/dashboard.php', array('type'=>$type));
 $PAGE->set_url($url);
+$PAGE->set_context($context);
 $PAGE->set_title('Dashboard');
 $PAGE->set_heading('Dashboard');
-$PAGE->set_context($context);
 $PAGE->set_pagelayout('standard');
 $PAGE->navbar->add('Dashboard');
 
@@ -28,81 +28,84 @@ echo $OUTPUT->header();
 
 build_tabs_local('dash_'.$type, $no_of_tabs);
 
-$groups = $DB->get_records('course_categories',null,'path ASC');
+$groups = $DB->get_records('course_categories', null, 'path ASC');
+$groups2 = $DB->get_records('course');
+
+$group_array = array();
+$groups_array = array();
+$groups_array2 = array();
+
+$temp = new stdClass();
+$temp->name = 'All courses';
+$group_array[] = $temp->name;
+$temp->id = 0;
+$temp->category = 1;
+$temp->parent = 0;
+$groups_array['10'] = $temp;
+$groups_array2['10'] = $temp;
 
 foreach ($groups as $group) {
 
-    if ($group->parent == 0) {
-
-        $hierarchy[$group->id] = $group->name;
-
-    } else {
-
-        $i = $group->id;
-        $tok = strtok($group->path,'/');
-        $hierarchy[$i] = '';
-
-        while ($tok !== false) {
-
-            foreach ($groups as $group) {
-
-                if ($group->id == $tok) {
-
-                    $hierarchy[$i].= $group->name.'/';
-
-                }
-
-            }
-
-            $tok = strtok("/");
-
-        }
-
-    }
+    $temp = new stdClass();
+    $temp->name = $group->name;
+    $group_array[] = $temp->name;
+    $temp->id = $group->id;
+    $temp->category = 1;
+    $temp->parent = $group->parent;
+    $groups_array[$temp->category.$temp->id] = $temp;
+    $groups_array2[$temp->category.$temp->id] = $temp;
 
 }
 
-asort($hierarchy);
+foreach ($groups2 as $group) {
 
-// aici bagam un select - id 0 pentru toate cursurile, id-ul cursului/categoriei pentru toti copiii
-// also, daca am selectat o categorie, category trebuie sa fie 1
-// presupunem, for starters:
+    $temp = new stdClass();
+    $temp->name = $group->fullname;
+    $group_array[] = $temp->name;
+    $temp->id = $group->id;
+    $temp->category = 0;
+    $temp->parent = $group->category;
+    $groups_array[$temp->category.$temp->id] = $temp;
+    $groups_array2[$temp->category.$temp->id] = $temp;
+
+}
+
 $course_id = 0;
-$category = 0;
+$category = 1;
 
-$categories = $DB->get_records('course_categories');
-$courses = $DB->get_records('course');
+$form = new dash_1_form(null, array('group_array' => $group_array));
+if ($entry = $form->get_data() and confirm_sesskey($USER->sesskey)) {
 
-foreach ($courses as $course) {
+    $course_id = $groups_array2[$entry->category.$entry->id]->id;
+    $category = $groups_array2[$entry->category.$entry->id]->category;
+
+}
+
+if (isset($entry)) {
+
+    echo $course_id." ".$category;
+
+}
+/*
+print_r($groups_array);
+echo '<br />';
+ */
+foreach ($groups_array as $course) {
 
     $ok = 1;
 
-    $current = $DB->get_records_sql("SELECT * FROM {course} WHERE id = ?", array($course->id));
-    $current = $current[$course->id];
-
     if ($category == 1) {
 
-        while ($current->id != $course_id) {
+        while ($course->id != $course_id) {
 
-            if ($current->id == 0) {
+            if ($course->id == 0) {
 
                 $ok = 0;
                 break;
 
             } else {
 
-                if (isset($current->parent)) {
-
-                    $parent = $current->parent;
-
-                } else {
-
-                    $parent = $current->category;
-
-                }
-
-                $current = $DB->get_records_sql("SELECT * FROM {course_categories} WHERE id = ?", array($parent));
-                $current = $current[$parent];
+                $course = $groups_array2['1'.$course->parent];
 
             }
 
@@ -111,13 +114,13 @@ foreach ($courses as $course) {
         if ($ok) {
 
             // get all the courses that are sub-categories of the above mentioned
-            $group_array[$course->id] = $course;
+            $gr_array[$course->id] = $course;
 
         }
 
     } else {
 
-        if (($current->id != $course_id) and ($course_id != 0)) {
+        if ($current->id != $course_id) {
 
             $ok = 0;
 
@@ -125,14 +128,22 @@ foreach ($courses as $course) {
 
     }
 
-    echo $ok." ";
+    //echo $ok." ";
 
 }
 
 // best student EU ^^
 if ($type == 1) {
 
+    if ($_POST) {
 
+        print_r($gr_array);
+
+    } else {
+
+        $form->display();
+
+    }
 
 // most feedback EU
 } elseif ($type == 2) {

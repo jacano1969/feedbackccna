@@ -39,9 +39,10 @@ $f_id = $feedback->id;
 add_to_log($course->id, 'feedbackccna', 't_view', "view.php?id={$cm->id}", $feedback->name, $cm->id);
 
 $PAGE->set_url('/mod/feedbackccna/t_view.php', array('id' => $cm->id));
+$PAGE->set_context($context);
 $PAGE->set_title(format_string($feedback->name));
 $PAGE->set_heading(format_string($course->fullname));
-$PAGE->set_context($context);
+$PAGE->set_pagelayout('standard');
 
 echo $OUTPUT->header();
 
