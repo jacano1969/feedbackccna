@@ -383,7 +383,7 @@ function get_active_feedbacks_count($course_id, $type) {
 			"SELECT COUNT(*) FROM {feedbackccna_module}
 			  WHERE type ='".$type."'
 				AND course_id='".$course_id."'
-				AND allow != '".FEED_NOT_ALLOWED."' 
+				AND allow != '".FEED_NOT_ALLOWED."'
 				AND which_way = '".STUDENT_FOR_TEACHER."'");
 }
 
@@ -391,21 +391,23 @@ function get_active_feedbacks_count($course_id, $type) {
 //	- id_curs
 //	- id_student
 function user_completed_labs_count($course_id, $student_id) {
-	global $DB;
+
+    global $DB;
 
     return $DB->count_records_sql(
-        "SELECT COUNT(*) FROM {feedbackccna_module} m
-          INNER JOIN {feedbackccna_answer} a
-        	 ON m.id = a.module_id
-          WHERE m.which_way ='".TEACHER_FOR_STUDENT."'
-        	AND m.type='".FEED_TYPE_LAB."'
-        	AND a.student_id = '".$student_id."'
-        	AND m.course_id= '".$course_id."'
-			AND a.answer != '".LAB_ABSENT."'");
+        "SELECT COUNT(*)
+        FROM {feedbackccna_module} m
+        INNER JOIN {feedbackccna_answer} a
+        ON m.id = a.module_id
+        WHERE m.which_way ='".TEACHER_FOR_STUDENT."'
+        AND m.type='".FEED_TYPE_LAB."'
+        AND a.student_id = '".$student_id."'
+        AND m.course_id= '".$course_id."'
+	AND a.answer != '".LAB_ABSENT."'");
 }
 
 //  functie care returneaza nr total de laboratoare sustinute in cadrul cursului
-//  - course_id 
+//  - course_id
 function user_active_labs_count($course_id) {
 	return get_active_feedbacks_count($course_id, FEED_TYPE_LAB);
 }
