@@ -486,6 +486,17 @@ function get_user_ids_in_courses_by_role($course_array, $role) {
 
     global $DB;
 
+    $string = implode($course_array, ', ');
+    if (strlen($string)) {
+
+        $string = ' AND en.courseid IN ('.$string.')';
+
+    } else {
+
+        return;
+
+    }
+
     return $DB->get_records_sql(
         "SELECT DISTINCT us.id, us.firstname, us.lastname FROM {user} us
         INNER JOIN {user_enrolments} us_en
@@ -498,8 +509,7 @@ function get_user_ids_in_courses_by_role($course_array, $role) {
         ON ro_as.contextid = con.id
         AND ro_as.userid = us.id
         WHERE con.contextlevel = 50
-        AND ro_as.roleid = ".$role."
-        AND en.courseid IN (".implode($course_array, ', ').")");
+        AND ro_as.roleid = ".$role.$string);
 
 }
 

@@ -124,7 +124,7 @@ foreach ($groups_array as $course) {
 
 }
 
-function sortByOrder($a, $b) {
+function sortByValue($a, $b) {
 
     return ($b->value)*100 - ($a->value)*100;
 
@@ -133,57 +133,62 @@ function sortByOrder($a, $b) {
 // best student EU ^^
 if ($type == 1) {
 
+    $form->display();
+
     if ($_POST) {
 
         $new_array = get_user_ids_in_courses_by_role($gr_array_id, 5);
-        $new_array2 = get_user_ids_in_courses_by_role($gr_array_id, 5);
+        $new_array2 = $new_array;
 
         $count = 0;
 
         echo "<table>";
         echo "<strong><tr><td>Pozitie</td><td>ID student</td><td>Prenume</td><td>Nume</td><td>Medie</td></tr></strong>";
 
-        foreach ($new_array as $object) {
+        if (!isset($new_array)) {
 
-            if ($count == 10) {
+            echo '</table><br />';
+            echo 'Nu exista studenti inrolati in cursurile selectate';
 
-                break;
+        } else {
+
+            foreach ($new_array as $object) {
+
+                if ($count == 10) {
+
+                    break;
+
+                }
+
+                foreach (average_rating_student($object->id) as $avg_object) {
+
+                    $result = round($avg_object->rez, 3);
+
+                }
+
+                $new_array2[$object->id]->value = $result;
+
+                $count ++;
 
             }
 
-            foreach (average_rating_student($object->id) as $avg_object) {
+            usort($new_array2, 'sortByValue');
 
-                $result = round($avg_object->rez, 3);
+            $count = 1;
+            foreach ($new_array2 as $object2) {
+
+                echo '<tr><td>'.($count++);
+                echo '</td><td>'.$object2->id;
+                echo '</td><td>'.$object2->firstname;
+                echo '</td><td>'.$object2->lastname;
+                echo '</td><td>'.$object2->value;
+                echo '</td></tr>';
 
             }
 
-            $new_array2[$object->id]->value = $result;
-
-            $count ++;
+            echo "</table>";
 
         }
-
-        usort($new_array2, 'sortByOrder');
-
-        $count = 1;
-        foreach ($new_array2 as $object2) {
-
-            echo '<tr><td>'.($count++);
-            echo '</td><td>'.$object2->id;
-            echo '</td><td>'.$object2->firstname;
-            echo '</td><td>'.$object2->lastname;
-            echo '</td><td>'.$object2->value;
-            echo '</td></tr>';
-
-        }
-
-        echo "</table>";
-/*
-        print_r($new_array2);
- */
-    } else {
-
-        $form->display();
 
     }
 
