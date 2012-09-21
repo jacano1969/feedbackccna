@@ -90,8 +90,6 @@ class dash_1_form extends moodleform {
 
         $mform->addElement('select', 'select-one', 'Course/category:', $group, array('method' => 'post'));
 
-        // $mform->addElement('hidden', 'value', null, array('id' => 'value', 'type' => 'hidden'));
-
         print_container_start(false, 'singlebutton');
         $this->add_action_buttons(false, 'Display');
         print_container_end();
@@ -133,6 +131,11 @@ class add_view_form extends moodleform {
 
         $mform->addElement('hidden', 'id', $id);
         $mform->setType('id', PARAM_INT);
+       //
+
+       // includes and s... tuff
+        $mform->addElement('html', '<script type="text/javascript" src="prototype.js"></script>');
+        $mform->addElement('html', '<script type="text/javascript" src="stars.js"></script>');
        //
 
         $context = get_context_instance(CONTEXT_MODULE, $cm->id);
@@ -220,11 +223,7 @@ class add_view_form extends moodleform {
                        // so, here are the fabled stars
                         // first of all, a container
                         $mform->addElement('html',
-                            '<script type="text/javascript" src="prototype.js">
-                            </script>
-                            <script type="text/javascript" src="stars.js">
-                            </script>
-                            <div id="star'.$data->id.'1"></div>');
+                            '<div id="star'.$data->id.'1"></div>');
                         // keep the value in a hidden element
                         $mform->addElement('hidden', 'value'.$data->id.
                             FEED_TYPE_PRE, null, array('id' => 'value'.
@@ -326,11 +325,7 @@ class add_view_form extends moodleform {
                             get_string('headerlabel_lab', 'feedbackccna'));
 
                         $mform->addElement('html',
-                            '<script type="text/javascript" src="prototype.js">
-                            </script>
-                            <script type="text/javascript" src="stars.js">
-                            </script>
-                            <div id="star'.$data->id.FEED_TYPE_LAB.'"></div>');
+                            '<div id="star'.$data->id.FEED_TYPE_LAB.'"></div>');
 
                         $mform->addElement('hidden', 'value'.$data->id.
                             FEED_TYPE_LAB, null, array('id' => 'value'.
