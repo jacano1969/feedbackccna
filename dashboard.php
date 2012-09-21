@@ -16,8 +16,7 @@ $no_of_tabs = 3;
 $type = optional_param('type', 1, PARAM_INT);
 $context = get_context_instance(CONTEXT_SYSTEM);
 
-$url = new moodle_url('/mod/feedbackccna/dashboard.php', array('type'=>$type));
-$PAGE->set_url($url);
+$PAGE->set_url('/mod/feedbackccna/dashboard.php?type='.$type);
 $PAGE->set_context($context);
 $PAGE->set_title('Dashboard');
 $PAGE->set_heading('Dashboard');
@@ -73,7 +72,7 @@ foreach ($groups2 as $group) {
 $course_id = 0;
 $category = 1;
 
-$form = new dash_1_form(null, array('group_array' => $group_array));
+$form = new dash_1_form(null, array('group_array' => $group_array, 'type' => $type));
 if ($entry = $form->get_data() and confirm_sesskey($USER->sesskey)) {
 
     $var = "select-one";
@@ -196,11 +195,13 @@ if ($type == 1) {
 } elseif ($type == 2) {
 
     //TODO 2
+    $form->display();
 
 // best attendance EU
 } elseif ($type == 3) {
 
     //TODO 3
+    $form->display();
 
 }
 
