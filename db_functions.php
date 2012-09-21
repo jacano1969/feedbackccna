@@ -287,15 +287,15 @@ function average_rating_student_pertype($student_id, $type) {
 function average_rating_student_percourse($student_id, $course_id) {
     global $DB;
 
-    return $DB->get_records_sql(
-        "SELECT AVG(a.answer) rez
+	list($usql, $params) = $DB->get_in_or_equal($course_id);
+	$sql = "SELECT AVG(a.answer) rez
         FROM {feedbackccna_answer} a
         INNER JOIN {feedbackccna_module} m
         ON a.module_id = m.id
         WHERE  m.which_way='".TEACHER_FOR_STUDENT."'
-        AND a.student_id = ?
-        AND m.course_id = ?",
-        array($student_id, $course_id));
+        AND a.student_id = $student_id
+        AND m.course_id $usql";
+    return $DB->get_records_sql($sql, $params);
 }
 
 //  functie de obtinut valoare medie feedback student
@@ -379,31 +379,34 @@ function get_user_absent($course_id, $student_id, $f_id) {
 //  - type - laborator sau prezentare
 function get_active_feedbacks_count($course_id, $type) {
     global $DB;
-    return $DB->count_records_sql(
-			"SELECT COUNT(*) FROM {feedbackccna_module}
+
+	$sql = "SELECT COUNT(*) FROM {feedbackccna_module}
 			  WHERE type ='".$type."'
-				AND course_id='".$course_id."'
+				AND course_id $usql
 				AND allow != '".FEED_NOT_ALLOWED."'
-				AND which_way = '".STUDENT_FOR_TEACHER."'");
+				AND which_way = '".STUDENT_FOR_TEACHER."'";
+	return $DB->get_records_sql($sql, $params);
 }
 
 //	functie care returneaza nr de laboratoare la care a participat studentul
-//	- id_curs
+//	- id_curs[uri]
 //	- id_student
 function user_completed_labs_count($course_id, $student_id) {
 
     global $DB;
 
-    return $DB->count_records_sql(
-        "SELECT COUNT(*)
+	list($usql, $params) = $DB->get_in_or_equal($course_id);
+    $sql = "SELECT COUNT(*)
         FROM {feedbackccna_module} m
         INNER JOIN {feedbackccna_answer} a
         ON m.id = a.module_id
         WHERE m.which_way ='".TEACHER_FOR_STUDENT."'
         AND m.type='".FEED_TYPE_LAB."'
         AND a.student_id = '".$student_id."'
-        AND m.course_id= '".$course_id."'
-	AND a.answer != '".LAB_ABSENT."'");
+        AND m.course_id $usql
+	AND a.answer != '".LAB_ABSENT."'";
+
+    return $DB->count_records_sql($sql, $params);
 }
 
 //  functie care returneaza nr total de laboratoare sustinute in cadrul cursului
@@ -411,6 +414,65 @@ function user_completed_labs_count($course_id, $student_id) {
 function user_active_labs_count($course_id) {
 	return get_active_feedbacks_count($course_id, FEED_TYPE_LAB);
 }
+
+//  functie care returneaza nr total de prezentari sustinute in cadrul cursului
+//  - id_curs[uri]
+function user_active_prez_count($course_id) {
+	return get_active_feedbacks_count($course_id, FEED_TYPE_PRE);
+}
+
+//  functie care returneaza nr de feedback-uri date de un student per tip
+//  - id_curs[uri]
+//  - id_student
+function user_given_feedback_count_pertype($course_id, $student_id, $type) {
+
+    global $DB;
+
+    list($usql, $params) = $DB->get_in_or_equal($course_id);
+    $sql = "SELECT COUNT(*)
+        FROM {feedbackccna_module} m
+        INNER JOIN {feedbackccna_answer} a
+        ON m.id = a.module_id
+        WHERE m.which_way ='".STUDENT_FOR_TEACHER."'
+        AND m.type= '".$type."'
+        AND a.student_id = '".$student_id."'
+        AND m.course_id $usql";
+
+    return $DB->count_records_sql($sql, $params);
+}
+
+// functie care returneaza nr de feedback-uri pt laborator date de un student
+// - id_curs[uri]
+// - id_student
+function user_given_feedback_labs_count($course_id, $student_id) {
+	return user_given_feedback_count_pertype($course_id, $student_id, FEED_TYPE_LAB);
+}
+
+// functie care returneaza nr de feedback-uri pt prezentare date de un student
+// - id_curs[uri]
+// - id_student
+function user_given_feedback_prez_count($course_id, $student_id) {
+    return user_given_feedback_count_pertype($course_id, $student_id, FEED_TYPE_PRE);
+}
+
+//  functie care returneaza nr total de feedback-uri date de un student
+//  - id_curs[uri]
+//  - id_student
+function user_given_feedback_count($course_id, $student_id) {
+
+    global $DB;
+
+    list($usql, $params) = $DB->get_in_or_equal($course_id);
+    $sql = "SELECT COUNT(*)
+        FROM {feedbackccna_module} m
+        INNER JOIN {feedbackccna_answer} a
+        ON m.id = a.module_id
+        WHERE m.which_way ='".STUDENT_FOR_TEACHER."'
+        AND a.student_id = '".$student_id."'
+        AND m.course_id $usql";
+	return  $DB->count_records_sql($sql, $params);
+}
+
 
 //  functie care obtine ratingul dat de cineva
 //  - course_id -
@@ -500,6 +562,25 @@ function get_user_ids_in_courses_by_role($course_array, $role) {
         WHERE con.contextlevel = 50
         AND ro_as.roleid = ".$role."
         AND en.courseid IN (".implode($course_array, ', ').")");
-
 }
 
+//  functie care returneaza nr de prezente ale unui student
+//  - id_curs[uri]
+//  - id_student
+function user_presence_count($course_id, $student_id) {
+
+    global $DB;
+
+    list($usql, $params) = $DB->get_in_or_equal($course_id);
+    $sql = "SELECT COUNT(*) FROM (SELECT COUNT(*) rez
+        FROM {feedbackccna_module} m
+        INNER JOIN {feedbackccna_answer} a
+        ON m.id = a.module_id
+        WHERE m.which_way = '".TEACHER_FOR_STUDENT."'
+        AND a.student_id = '".$student_id."'
+        AND m.course_id $usql
+		AND a.answer != '0'
+		GROUP BY m.feedback_id
+		) R";
+    return  $DB->count_records_sql($sql, $params);
+}

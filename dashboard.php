@@ -72,22 +72,23 @@ foreach ($groups2 as $group) {
 
 $course_id = 0;
 $category = 1;
+switch($type) {
+	case 1: $form = new dash_1_form(new moodle_url('/mod/feedbackccna/dashboard.php', array('type'=>$type)), array('group_array' => $group_array)); break;
+	case 2: $form = new dash_2_form(new moodle_url('/mod/feedbackccna/dashboard.php', array('type'=>$type)), array('group_array' => $group_array)); break;
+	case 3: $form = new dash_3_form(new moodle_url('/mod/feedbackccna/dashboard.php', array('type'=>$type)), array('group_array' => $group_array)); break;
+}
 
-$form = new dash_1_form(null, array('group_array' => $group_array));
 if ($entry = $form->get_data() and confirm_sesskey($USER->sesskey)) {
 
     $var = "select-one";
     $course_id = $groups_array2[$entry->$var]->id;
     $category = $groups_array2[$entry->$var]->category;
-
 }
-
 foreach ($groups_array as $course) {
 
     $ok = 1;
 
     $current = $course;
-
     if ($category == 1) {
 
         while ($current->id != $course_id) {
@@ -98,7 +99,7 @@ foreach ($groups_array as $course) {
                 break;
 
             } else {
-
+				
                 $current = $groups_array2['1'.$current->parent];
 
             }
@@ -106,7 +107,6 @@ foreach ($groups_array as $course) {
         }
 
         if ($ok) {
-
             $gr_array[$course->id] = $course;
             $gr_array_id[] .= $course->id;
 
@@ -118,12 +118,16 @@ foreach ($groups_array as $course) {
 
             $ok = 0;
 
-        }
+        } // git blame Octavian
+		  // if there is a single course selected add it's id to gr_array_id
+		else {
+			$gr_array[$course->id] = $course;
+            $gr_array_id[] .= $course->id;
+		}
 
     }
 
 }
-
 function sortByOrder($a, $b) {
 
     return ($b->value)*100 - ($a->value)*100;
@@ -134,7 +138,6 @@ function sortByOrder($a, $b) {
 if ($type == 1) {
 
     if ($_POST) {
-
         $new_array = get_user_ids_in_courses_by_role($gr_array_id, 5);
         $new_array2 = get_user_ids_in_courses_by_role($gr_array_id, 5);
 
@@ -151,12 +154,108 @@ if ($type == 1) {
 
             }
 
-            foreach (average_rating_student($object->id) as $avg_object) {
+            foreach (average_rating_student_percourse($object->id, $gr_array_id) as $avg_object) {
+               	$result = round($avg_object->rez, 3);
+           	}
 
-                $result = round($avg_object->rez, 3);
+            $new_array2[$object->id]->value = $result;
+
+            $count ++;
+
+        }
+
+        usort($new_array2, 'sortByOrder');
+
+        $count = 1;
+        foreach ($new_array2 as $object2) {
+
+            echo '<tr><td>'.($count++);
+            echo '</td><td>'.$object2->id;
+            echo '</td><td>'.$object2->firstname;
+            echo '</td><td>'.$object2->lastname;
+            echo '</td><td>'.$object2->value;
+            echo '</td></tr>';
+
+        }
+
+        echo "</table>";
+    } else {
+
+        $form->display();
+
+    }
+
+// most feedback EU
+} elseif ($type == 2) {
+
+     if ($_POST) {
+        $new_array = get_user_ids_in_courses_by_role($gr_array_id, 5);
+        $new_array2 = get_user_ids_in_courses_by_role($gr_array_id, 5);
+
+        $count = 0;
+
+        echo "<table>";
+        echo "<strong><tr><td>Pozitie</td><td>ID student</td><td>Prenume</td><td>Nume</td><td>Nr Feedback-uri</td></tr></strong>";
+
+        foreach ($new_array as $object) {
+
+            if ($count == 10) {
+
+                break;
+
+            }
+			$result = user_given_feedback_count($gr_array_id, $object->id);
+			$new_array2[$object->id]->value = $result;
+            $count ++;
+
+        }
+
+        usort($new_array2, 'sortByOrder');
+
+        $count = 1;
+        foreach ($new_array2 as $object2) {
+
+            echo '<tr><td>'.($count++);
+            echo '</td><td>'.$object2->id;
+            echo '</td><td>'.$object2->firstname;
+            echo '</td><td>'.$object2->lastname;
+            echo '</td><td>'.$object2->value;
+            echo '</td></tr>';
+
+        }
+
+        echo "</table>";
+/*
+        print_r($new_array2);
+ */
+    } else {
+        $form->display();
+
+    }
+
+   
+
+// best attendance EU
+} elseif ($type == 3) {
+
+    if ($_POST) {
+        $new_array = get_user_ids_in_courses_by_role($gr_array_id, 5);
+        $new_array2 = get_user_ids_in_courses_by_role($gr_array_id, 5);
+
+        $count = 0;
+
+        echo "<table>";
+        echo "<strong><tr><td>Pozitie</td><td>ID student</td><td>Prenume</td><td>Nume</td><td>Nr prezente</td></tr></strong>";
+
+        foreach ($new_array as $object) {
+
+            if ($count == 10) {
+
+                break;
 
             }
 
+			$result = user_presence_count($gr_array_id, $object->id);
             $new_array2[$object->id]->value = $result;
 
             $count ++;
@@ -187,15 +286,6 @@ if ($type == 1) {
 
     }
 
-// most feedback EU
-} elseif ($type == 2) {
-
-    //TODO 2
-
-// best attendance EU
-} elseif ($type == 3) {
-
-    //TODO 3
 
 }
 

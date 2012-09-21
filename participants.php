@@ -335,6 +335,7 @@
     // list of users at the current visible page - paging makes it relatively short
     $userlist = $DB->get_recordset_sql("$select $from $where $sort", $params, $table->get_page_start(), $table->get_page_size());
 
+    echo "$select $from $where $sort <br /> <br /> $params";
 
     if ($roleid > 0) {
         $a = new stdClass();
