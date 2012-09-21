@@ -64,7 +64,7 @@ $string['resetlabel'] = 'Reset';
 $string['desclabel'] = 'Description';
 $string['achadded'] = 'The feedbackccna was added successfully';
 $string['assadded'] = 'The feedbackccna was assigned successfully';
-$string['dashboard_name'] = 'Deșboord';
+$string['dashboard_name'] = 'Dashboard';
 
 $string['nofeedback'] = 'No feedback has been entered in the database';
 
