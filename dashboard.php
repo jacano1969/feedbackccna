@@ -78,11 +78,9 @@ switch($type) {
 }
 
 if ($entry = $form->get_data() and confirm_sesskey($USER->sesskey)) {
-
     $var = "select-one";
     $course_id = $groups_array2[$entry->$var]->id;
     $category = $groups_array2[$entry->$var]->category;
-
 }
 
 foreach ($groups_array as $course) {
@@ -159,6 +157,7 @@ if ($type == 1) {
         }
         echo "</table>";
     } 
+}
 // most feedback EU
 } elseif ($type == 2) {
      if ($_POST) {
@@ -178,7 +177,7 @@ if ($type == 1) {
 			$new_array2[$object->id]->value = $result;
             $count ++;
         }
-        usort($new_array2, 'sortByOrder');
+        usort($new_array2, 'sortByValue');
         $count = 1;
         foreach ($new_array2 as $object2) {
             echo '<tr><td>'.($count++);
@@ -208,7 +207,7 @@ if ($type == 1) {
             $new_array2[$object->id]->value = $result;
             $count ++;
         }
-        usort($new_array2, 'sortByOrder');
+        usort($new_array2, 'sortByValue');
         $count = 1;
         foreach ($new_array2 as $object2) {
             echo '<tr><td>'.($count++);
@@ -225,4 +224,5 @@ if ($type == 1) {
 }
 
 echo $OUTPUT->footer();
+
 
