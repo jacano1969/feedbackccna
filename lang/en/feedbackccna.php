@@ -84,8 +84,8 @@ $string['id_student'] = "ID student";
 $string['nume'] = "Nume";
 $string['prenume'] = "Prenume";
 $string['points'] = "Punctaj";
-$string['feedcount'] = "Nr. feedback-uri";
-$string['attendance'] = "Nr. prezente";
+$string['feedcount'] = "Nr raspunsuri";
+$string['attendance'] = "Nr prezente";
 
 ?>
 

@@ -72,7 +72,7 @@ foreach ($groups2 as $group) {
 $course_id = 0;
 $category = 1;
 
-$form = new dash_1_4_form(new moodle_url('/mod/feedbackccna/dashboard.php', array('type'=>$type)), array('group_array' => $group_array));
+$form = new dash_form(new moodle_url('/mod/feedbackccna/dashboard.php', array('type'=>$type)), array('group_array' => $group_array));
 
 if ($entry = $form->get_data() and confirm_sesskey($USER->sesskey)) {
 
@@ -164,19 +164,20 @@ function sortByVN($a, $b) {
 
 }
 
-// best student EU ^^
-if ($type == 1) {
+$form->display();
 
-    $form->display();
+if ($_POST) {
 
-    if ($_POST) {
+    $table =  new html_table();
+    $table->tablealign = "center";
+
+    // best student EU ^^
+    if ($type == 1) {
+
+        $table->head = array("Pozitie", "ID", "Prenume", "Nume", "Medie");
 
         $new_array = get_user_ids_in_courses_by_role($gr_array_id, 5);
         $new_array2 = $new_array;
-
-        $table =  new html_table();
-	$table->tablealign = "center";
-	$table->head = array("Pozitie", "ID", "Prenume", "Nume", "Medie");
 
         foreach ($new_array as $object) {
 
@@ -205,79 +206,57 @@ if ($type == 1) {
 
         }
 
-    }
+    // most feedback EU
+    } elseif ($type == 2) {
 
-// most feedback EU
-} elseif ($type == 2) {
+        $table->head = array("Pozitie", "ID", "Prenume", "Nume", "Nr raspunsuri");
 
-	$form->display();
-    if ($_POST) {
-    	$new_array = get_user_ids_in_courses_by_role($gr_array_id, 5);
-        $new_array2 = $new_array;
-
-		$table =  new html_table();
-		$table->tablealign = "center";
-		$table->head = array(get_string("pozitie","feedbackccna"),
-                             get_string("id_student","feedbackccna"),
-                             get_string("prenume","feedbackccna"),
-                             get_string("nume","feedbackccna"),
-                             get_string("feedcount","feedbackccna"));
-
-        foreach ($new_array as $object) {
-			$result = user_given_feedback_count($gr_array_id, $object->id);
-			$new_array2[$object->id]->value = $result;
-        }
-        usort($new_array2, 'sortByVFL');
-        $count = 1;
-        foreach ($new_array2 as $object2) {
-	    $table->data[] = array($count++, $object2->id, $object2->firstname,
-	    $object2->lastname, $object2->value);
-        }
-		if($count > 1)
-			echo html_writer::table($table);
-		else
-            echo get_string('absents','feedbackccna');
-    }
-
-// best attendance EU
-} elseif ($type == 3) {
-
-    $form->display();
-    if ($_POST) {
         $new_array = get_user_ids_in_courses_by_role($gr_array_id, 5);
         $new_array2 = $new_array;
 
-		$table =  new html_table();
-		$table->tablealign = "center";
-		$table->head = array(get_string("pozitie","feedbackccna"),
-                             get_string("id_student","feedbackccna"),
-                             get_string("prenume","feedbackccna"),
-                             get_string("nume","feedbackccna"),
-                             get_string("attendance","feedbackccna"));
-
         foreach ($new_array as $object) {
-			$result = user_presence_count($gr_array_id, $object->id);
+            $result = user_given_feedback_count($gr_array_id, $object->id);
             $new_array2[$object->id]->value = $result;
         }
         usort($new_array2, 'sortByVFL');
         $count = 1;
         foreach ($new_array2 as $object2) {
-	    $table->data[] = array($count++, $object2->id, $object2->firstname,
-	    $object2->lastname, $object2->value);
+            $table->data[] = array($count++, $object2->id, $object2->firstname,
+                $object2->lastname, $object2->value);
         }
-		if($count > 1){
-			echo html_writer::table($table);}
-		else{
+        if($count > 1){
+            echo html_writer::table($table);
+        }else{
+            echo get_string('absents','feedbackccna');
+        }
+
+    // best attendance EU
+    } elseif ($type == 3) {
+
+        $table->head = array("Pozitie", "ID", "Prenume", "Nume", "Nr prezente");
+
+        $new_array = get_user_ids_in_courses_by_role($gr_array_id, 5);
+        $new_array2 = $new_array;
+
+        foreach ($new_array as $object) {
+            $result = user_presence_count($gr_array_id, $object->id);
+            $new_array2[$object->id]->value = $result;
+        }
+        usort($new_array2, 'sortByVFL');
+        $count = 1;
+        foreach ($new_array2 as $object2) {
+            $table->data[] = array($count++, $object2->id, $object2->firstname,
+                $object2->lastname, $object2->value);
+        }
+        if($count > 1){
+            echo html_writer::table($table);}
+        else{
             echo get_string('absents','feedbackccna');}
 
-    }
+    // best team EU
+    } elseif ($type == 4) {
 
-// best team EU
-} elseif ($type == 4) {
-
-    $form->display();
-
-    if ($_POST) {
+        $table->head = array("Pozitie", "ID", "Nume curs", "Medie");
 
         $new_array = average_team_rating($gr_array_id);
         $new_array2 = $new_array;
@@ -287,10 +266,6 @@ if ($type == 1) {
             $new_array2[$object->value]->value = round($object->value, 2);
 
         }
-
-        $table =  new html_table();
-	$table->tablealign = "center";
-	$table->head = array("Pozitie", "ID", "Nume curs", "Medie");
 
         usort($new_array2, 'sortByVN');
 

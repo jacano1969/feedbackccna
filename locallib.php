@@ -70,7 +70,7 @@ function build_tabs_local($active, $number) {
 }
 
 // a specialized form for selecting the desired course category
-class dash_1_4_form extends moodleform {
+class dash_form extends moodleform {
 
     function definition() {
 
