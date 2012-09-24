@@ -16,8 +16,7 @@ $no_of_tabs = 3;
 $type = optional_param('type', 1, PARAM_INT);
 $context = get_context_instance(CONTEXT_SYSTEM);
 
-$url = new moodle_url('/mod/feedbackccna/dashboard.php', array('type'=>$type));
-$PAGE->set_url($url);
+$PAGE->set_url('/mod/feedbackccna/dashboard.php?type='.$type);
 $PAGE->set_context($context);
 $PAGE->set_title('Dashboard');
 $PAGE->set_heading('Dashboard');
@@ -83,61 +82,49 @@ if ($entry = $form->get_data() and confirm_sesskey($USER->sesskey)) {
     $var = "select-one";
     $course_id = $groups_array2[$entry->$var]->id;
     $category = $groups_array2[$entry->$var]->category;
+
 }
+
 foreach ($groups_array as $course) {
 
     $ok = 1;
-
     $current = $course;
+
     if ($category == 1) {
-
         while ($current->id != $course_id) {
-
             if ($current->id == 0) {
-
                 $ok = 0;
                 break;
-
             } else {
-				
                 $current = $groups_array2['1'.$current->parent];
-
             }
-
         }
-
         if ($ok) {
             $gr_array[$course->id] = $course;
             $gr_array_id[] .= $course->id;
-
         }
-
     } else {
-
         if ($current->id != $course_id) {
-
             $ok = 0;
-
-        } // git blame Octavian
-		  // if there is a single course selected add it's id to gr_array_id
+        }
 		else {
 			$gr_array[$course->id] = $course;
             $gr_array_id[] .= $course->id;
 		}
-
     }
-
 }
-function sortByOrder($a, $b) {
 
+function sortByValue($a, $b) {
     return ($b->value)*100 - ($a->value)*100;
-
 }
 
 // best student EU ^^
 if ($type == 1) {
 
+    $form->display();
+
     if ($_POST) {
+
         $new_array = get_user_ids_in_courses_by_role($gr_array_id, 5);
         $new_array2 = get_user_ids_in_courses_by_role($gr_array_id, 5);
 
@@ -146,48 +133,34 @@ if ($type == 1) {
         echo "<table>";
         echo "<strong><tr><td>Pozitie</td><td>ID student</td><td>Prenume</td><td>Nume</td><td>Medie</td></tr></strong>";
 
+        if (!isset($new_array)) {
+            echo '</table><br />';
+            echo 'Nu exista studenti inrolati in cursurile selectate';
+        } else {
         foreach ($new_array as $object) {
-
             if ($count == 10) {
-
                 break;
-
             }
-
             foreach (average_rating_student_percourse($object->id, $gr_array_id) as $avg_object) {
                	$result = round($avg_object->rez, 3);
            	}
-
             $new_array2[$object->id]->value = $result;
-
             $count ++;
-
         }
-
-        usort($new_array2, 'sortByOrder');
-
+        usort($new_array2, 'sortByValue');
         $count = 1;
         foreach ($new_array2 as $object2) {
-
             echo '<tr><td>'.($count++);
             echo '</td><td>'.$object2->id;
             echo '</td><td>'.$object2->firstname;
             echo '</td><td>'.$object2->lastname;
             echo '</td><td>'.$object2->value;
             echo '</td></tr>';
-
         }
-
         echo "</table>";
-    } else {
-
-        $form->display();
-
-    }
-
+    } 
 // most feedback EU
 } elseif ($type == 2) {
-
      if ($_POST) {
         $new_array = get_user_ids_in_courses_by_role($gr_array_id, 5);
         $new_array2 = get_user_ids_in_courses_by_role($gr_array_id, 5);
@@ -198,95 +171,57 @@ if ($type == 1) {
         echo "<strong><tr><td>Pozitie</td><td>ID student</td><td>Prenume</td><td>Nume</td><td>Nr Feedback-uri</td></tr></strong>";
 
         foreach ($new_array as $object) {
-
             if ($count == 10) {
-
                 break;
-
             }
 			$result = user_given_feedback_count($gr_array_id, $object->id);
 			$new_array2[$object->id]->value = $result;
             $count ++;
-
         }
-
         usort($new_array2, 'sortByOrder');
-
         $count = 1;
         foreach ($new_array2 as $object2) {
-
             echo '<tr><td>'.($count++);
             echo '</td><td>'.$object2->id;
             echo '</td><td>'.$object2->firstname;
             echo '</td><td>'.$object2->lastname;
             echo '</td><td>'.$object2->value;
             echo '</td></tr>';
-
         }
-
         echo "</table>";
-/*
-        print_r($new_array2);
- */
     } else {
         $form->display();
-
     }
-
-   
-
 // best attendance EU
 } elseif ($type == 3) {
-
     if ($_POST) {
         $new_array = get_user_ids_in_courses_by_role($gr_array_id, 5);
         $new_array2 = get_user_ids_in_courses_by_role($gr_array_id, 5);
-
         $count = 0;
-
         echo "<table>";
         echo "<strong><tr><td>Pozitie</td><td>ID student</td><td>Prenume</td><td>Nume</td><td>Nr prezente</td></tr></strong>";
-
         foreach ($new_array as $object) {
-
             if ($count == 10) {
-
                 break;
-
             }
-
 			$result = user_presence_count($gr_array_id, $object->id);
             $new_array2[$object->id]->value = $result;
-
             $count ++;
-
         }
-
         usort($new_array2, 'sortByOrder');
-
         $count = 1;
         foreach ($new_array2 as $object2) {
-
             echo '<tr><td>'.($count++);
             echo '</td><td>'.$object2->id;
             echo '</td><td>'.$object2->firstname;
             echo '</td><td>'.$object2->lastname;
             echo '</td><td>'.$object2->value;
             echo '</td></tr>';
-
         }
-
         echo "</table>";
-/*
-        print_r($new_array2);
- */
     } else {
-
         $form->display();
-
     }
-
-
 }
 
 echo $OUTPUT->footer();

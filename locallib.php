@@ -79,6 +79,7 @@ class dash_1_form extends moodleform {
 
        // we get these as parameters - that's what _customdata is for
         $group = $this->_customdata['group_array'];
+        $type = $this->_customdata['type'];
        //
 
        // I guess these are standard, but I'm not using them (maybe moodle is)
@@ -86,6 +87,9 @@ class dash_1_form extends moodleform {
 
         $mform->addElement('hidden', 'action');
         $mform->setType('action', PARAM_TEXT);
+
+        $mform->addElement('hidden', 'type', $type);
+        $mform->setType('type', PARAM_TEXT);
        //
 
         $mform->addElement('select', 'select-one', 'Course/category:', $group, array('method' => 'post'));

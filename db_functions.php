@@ -375,11 +375,12 @@ function get_user_absent($course_id, $student_id, $f_id) {
 }
 
 //	functie de obtinut nr total de feedback-uri care au fost activate pe curs
-//	- course_id
+//	- course_id -  id curs[uri]
 //  - type - laborator sau prezentare
 function get_active_feedbacks_count($course_id, $type) {
     global $DB;
 
+	list($usql, $params) = $DB->get_inor_equal($course_id);
 	$sql = "SELECT COUNT(*) FROM {feedbackccna_module}
 			  WHERE type ='".$type."'
 				AND course_id $usql
@@ -392,7 +393,6 @@ function get_active_feedbacks_count($course_id, $type) {
 //	- id_curs[uri]
 //	- id_student
 function user_completed_labs_count($course_id, $student_id) {
-
     global $DB;
 
 	list($usql, $params) = $DB->get_in_or_equal($course_id);
@@ -548,6 +548,17 @@ function get_user_ids_in_courses_by_role($course_array, $role) {
 
     global $DB;
 
+    $string = implode($course_array, ', ');
+    if (strlen($string)) {
+
+        $string = ' AND en.courseid IN ('.$string.')';
+
+    } else {
+
+        return;
+
+    }
+
     return $DB->get_records_sql(
         "SELECT DISTINCT us.id, us.firstname, us.lastname FROM {user} us
         INNER JOIN {user_enrolments} us_en
@@ -560,8 +571,8 @@ function get_user_ids_in_courses_by_role($course_array, $role) {
         ON ro_as.contextid = con.id
         AND ro_as.userid = us.id
         WHERE con.contextlevel = 50
-        AND ro_as.roleid = ".$role."
-        AND en.courseid IN (".implode($course_array, ', ').")");
+        AND ro_as.roleid = ".$role.$string);
+
 }
 
 //  functie care returneaza nr de prezente ale unui student
