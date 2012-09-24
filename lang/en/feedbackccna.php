@@ -72,11 +72,11 @@ $string['imagelabel'] = 'Poza';
 
 $string['name_1'] = 'Best students';
 $string['desc_1'] = 'Classified by feedback ratings';
-$string['name_2'] = 'Most feedback';
-$string['desc_2'] = 'The students who gave the most feedback';
+$string['name_2'] = 'Most feedback answers';
+$string['desc_2'] = 'The students who sent the most feedback';
 $string['name_3'] = 'Best attendance';
 $string['desc_3'] = 'Classified by number of classes attended';
-$string['name_4'] = 'Best team';
+$string['name_4'] = 'Best instructor team';
 $string['desc_4'] = 'Classified by feedback received';
 $string['absents'] = 'Nu exista studenti inrolati in cursurile selectate!';
 $string['pozitie'] = "Pozitie";
