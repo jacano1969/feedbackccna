@@ -168,7 +168,9 @@ function sortByVN($a, $b) {
 if ($type == 1) {
 
     $form->display();
+
     if ($_POST) {
+
         $new_array = get_user_ids_in_courses_by_role($gr_array_id, 5);
         $new_array2 = $new_array;
 
@@ -179,7 +181,7 @@ if ($type == 1) {
         foreach ($new_array as $object) {
 
             $result = average_rating_student_percourse($object->id, $gr_array_id);
-            $new_array2[$object->id]->value = reset($result)->rez;
+            $new_array2[$object->id]->value = round(reset($result)->rez, 2);
 
         }
 
@@ -228,8 +230,8 @@ if ($type == 1) {
         usort($new_array2, 'sortByVFL');
         $count = 1;
         foreach ($new_array2 as $object2) {
-	    $table->data[] = array($count++, $object2->id, $object2->lastname,
-	    $object2->firstname, $object2->value);
+	    $table->data[] = array($count++, $object2->id, $object2->firstname,
+	    $object2->lastname, $object2->value);
         }
 		if($count > 1)
 			echo html_writer::table($table);
@@ -260,8 +262,8 @@ if ($type == 1) {
         usort($new_array2, 'sortByVFL');
         $count = 1;
         foreach ($new_array2 as $object2) {
-	    $table->data[] = array($count++, $object2->id, $object2->lastname,
-	    $object2->firstname, $object2->value);
+	    $table->data[] = array($count++, $object2->id, $object2->firstname,
+	    $object2->lastname, $object2->value);
         }
 		if($count > 1){
 			echo html_writer::table($table);}
@@ -278,16 +280,23 @@ if ($type == 1) {
     if ($_POST) {
 
         $new_array = average_team_rating($gr_array_id);
+        $new_array2 = $new_array;
+
+        foreach ($new_array as $object) {
+
+            $new_array2[$object->value]->value = round($object->value, 2);
+
+        }
 
         $table =  new html_table();
 	$table->tablealign = "center";
-	$table->head = array("Pozitie", "ID", "Prenume", "Nume", "Medie");
+	$table->head = array("Pozitie", "ID", "Nume curs", "Medie");
 
-        usort($new_array, 'sortByVN');
+        usort($new_array2, 'sortByVN');
 
         $count = 1;
 
-        foreach ($new_array as $object) {
+        foreach ($new_array2 as $object) {
 
             $table->data[] = array($count++, $object->id, $object->fullname,
                 $object->value);
