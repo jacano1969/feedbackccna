@@ -168,50 +168,38 @@ function sortByVN($a, $b) {
 if ($type == 1) {
 
     $form->display();
-
     if ($_POST) {
-
         $new_array = get_user_ids_in_courses_by_role($gr_array_id, 5);
         $new_array2 = $new_array;
 
-        echo "<table>";
-        echo "<strong><tr><td>Pozitie</td><td>ID student</td><td>Prenume</td><td>Nume</td><td>Medie</td></tr></strong>";
+        $table =  new html_table();
+	$table->tablealign = "center";
+	$table->head = array("Pozitie", "ID", "Prenume", "Nume", "Medie");
 
-        if (!isset($new_array)) {
+        foreach ($new_array as $object) {
 
-            echo '</table><br />';
-            echo 'Nu exista studenti inrolati in cursurile selectate';
+            $result = average_rating_student_percourse($object->id, $gr_array_id);
+            $new_array2[$object->id]->value = reset($result)->rez;
+
+        }
+
+        usort($new_array2, 'sortByVFL');
+
+        $count = 1;
+
+        foreach ($new_array2 as $object2) {
+
+            $table->data[] = array($count++, $object2->id, $object2->firstname,
+                $object2->lastname, $object2->value);
+        }
+
+        if($count > 1) {
+
+            echo html_writer::table($table);
 
         } else {
 
-            foreach ($new_array as $object) {
-
-                foreach (average_rating_student_percourse($object->id, $gr_array_id) as $avg_object) {
-
-                    $result = round($avg_object->rez, 3);
-
-                }
-
-                $new_array2[$object->id]->value = $result;
-
-            }
-
-            usort($new_array2, 'sortByVFL');
-
-            $count = 1;
-
-            foreach ($new_array2 as $object2) {
-
-                echo '<tr><td>'.($count++);
-                echo '</td><td>'.$object2->id;
-                echo '</td><td>'.$object2->firstname;
-                echo '</td><td>'.$object2->lastname;
-                echo '</td><td>'.$object2->value;
-                echo '</td></tr>';
-
-            }
-
-            echo "</table>";
+            echo get_string('absents','feedbackccna');
 
         }
 
@@ -220,57 +208,69 @@ if ($type == 1) {
 // most feedback EU
 } elseif ($type == 2) {
 
-    $form->display();
-
+	$form->display();
     if ($_POST) {
-        $new_array = get_user_ids_in_courses_by_role($gr_array_id, 5);
+    	$new_array = get_user_ids_in_courses_by_role($gr_array_id, 5);
         $new_array2 = $new_array;
-        echo "<table>";
-        echo "<strong><tr><td>Pozitie</td><td>ID student</td><td>Prenume</td><td>Nume</td><td>Nr Feedback-uri</td></tr></strong>";
+
+		$table =  new html_table();
+		$table->tablealign = "center";
+		$table->head = array(get_string("pozitie","feedbackccna"),
+                             get_string("id_student","feedbackccna"),
+                             get_string("prenume","feedbackccna"),
+                             get_string("nume","feedbackccna"),
+                             get_string("feedcount","feedbackccna"));
+
         foreach ($new_array as $object) {
-            $result = user_given_feedback_count($gr_array_id, $object->id);
-            $new_array2[$object->id]->value = $result;
+			$result = user_given_feedback_count($gr_array_id, $object->id);
+			$new_array2[$object->id]->value = $result;
         }
         usort($new_array2, 'sortByVFL');
         $count = 1;
         foreach ($new_array2 as $object2) {
-            echo '<tr><td>'.($count++);
-            echo '</td><td>'.$object2->id;
-            echo '</td><td>'.$object2->firstname;
-            echo '</td><td>'.$object2->lastname;
-            echo '</td><td>'.$object2->value;
-            echo '</td></tr>';
+	    $table->data[] = array($count++, $object2->id, $object2->lastname,
+	    $object2->firstname, $object2->value);
         }
-        echo "</table>";
+		if($count > 1)
+			echo html_writer::table($table);
+		else
+            echo get_string('absents','feedbackccna');
     }
 
 // best attendance EU
 } elseif ($type == 3) {
 
     $form->display();
-
     if ($_POST) {
         $new_array = get_user_ids_in_courses_by_role($gr_array_id, 5);
-        $new_array2 = get_user_ids_in_courses_by_role($gr_array_id, 5);
-        echo "<table>";
-        echo "<strong><tr><td>Pozitie</td><td>ID student</td><td>Prenume</td><td>Nume</td><td>Nr prezente</td></tr></strong>";
+        $new_array2 = $new_array;
+
+		$table =  new html_table();
+		$table->tablealign = "center";
+		$table->head = array(get_string("pozitie","feedbackccna"),
+                             get_string("id_student","feedbackccna"),
+                             get_string("prenume","feedbackccna"),
+                             get_string("nume","feedbackccna"),
+                             get_string("attendance","feedbackccna"));
+
         foreach ($new_array as $object) {
-	    $result = user_presence_count($gr_array_id, $object->id);
+			$result = user_presence_count($gr_array_id, $object->id);
             $new_array2[$object->id]->value = $result;
         }
         usort($new_array2, 'sortByVFL');
         $count = 1;
         foreach ($new_array2 as $object2) {
-            echo '<tr><td>'.($count++);
-            echo '</td><td>'.$object2->id;
-            echo '</td><td>'.$object2->firstname;
-            echo '</td><td>'.$object2->lastname;
-            echo '</td><td>'.$object2->value;
-            echo '</td></tr>';
+	    $table->data[] = array($count++, $object2->id, $object2->lastname,
+	    $object2->firstname, $object2->value);
         }
-        echo "</table>";
+		if($count > 1){
+			echo html_writer::table($table);}
+		else{
+            echo get_string('absents','feedbackccna');}
+
     }
 
+// best team EU
 } elseif ($type == 4) {
 
     $form->display();
@@ -278,42 +278,35 @@ if ($type == 1) {
     if ($_POST) {
 
         $new_array = average_team_rating($gr_array_id);
-        $new_array2 = $new_array;
 
-        echo "<table>";
-        echo "<strong><tr><td>Pozitie</td><td>ID curs</td><td>Nume curs</td><td>Medie</td></tr></strong>";
+        $table =  new html_table();
+	$table->tablealign = "center";
+	$table->head = array("Pozitie", "ID", "Prenume", "Nume", "Medie");
 
-        if (!isset($new_array)) {
+        usort($new_array, 'sortByVN');
 
-            echo '</table><br />';
-            echo 'Nu s-a dat feedback pe cursurile selectate';
+        $count = 1;
+
+        foreach ($new_array as $object) {
+
+            $table->data[] = array($count++, $object->id, $object->fullname,
+                $object->value);
+
+        }
+
+        if($count > 1) {
+
+            echo html_writer::table($table);
 
         } else {
 
-            usort($new_array2, 'sortByVN');
-
-            $count = 1;
-
-            foreach ($new_array2 as $object2) {
-
-                echo '<tr><td>'.($count++);
-                echo '</td><td>'.$object2->id;
-                echo '</td><td>'.$object2->fullname;
-                echo '</td><td>'.$object2->value;
-                echo '</td></tr>';
-
-            }
-
-            echo "</table>";
+            echo 'Nu s-a dat feedback pe cursurile selectate';
 
         }
 
     }
 
-
-
 }
 
 echo $OUTPUT->footer();
-
 
