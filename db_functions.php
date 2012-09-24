@@ -594,7 +594,8 @@ function average_team_rating($course_array) {
         INNER JOIN {course} c
         ON m.course_id = c.id
         WHERE m.which_way = '".STUDENT_FOR_TEACHER."'
-        AND m.course_id IN (".$string.")");
+        AND m.course_id IN (".$string.")
+        GROUP BY c.id");
 }
 
 //  functie care returneaza nr de prezente ale unui student
