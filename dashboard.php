@@ -126,8 +126,8 @@ if ($type == 1) {
 		$table->tablealign = "center";
 		$table->head = array(get_string("pozitie","feedbackccna"), 
 							 get_string("id_student","feedbackccna"), 
-							 get_string("nume","feedbackccna"), 
 							 get_string("prenume","feedbackccna"), 
+							 get_string("nume","feedbackccna"), 
 							 get_string("points","feedbackccna"));
 
         foreach ($new_array as $object) {
@@ -139,8 +139,8 @@ if ($type == 1) {
         usort($new_array2, 'sortByValue');
         $count = 1;
         foreach ($new_array2 as $object2) {
-			$table->data[] = array($count++, $object2->id, $object2->lastname,
-									$object2->firstname, $object2->value);
+			$table->data[] = array($count++, $object2->id, $object2->firstname,
+									$object2->lastname, $object2->value);
         }
 		if($count > 1)
 			echo html_writer::table($table);
@@ -160,8 +160,8 @@ if ($type == 1) {
 		$table->tablealign = "center";
 		$table->head = array(get_string("pozitie","feedbackccna"), 
                              get_string("id_student","feedbackccna"), 
-                             get_string("nume","feedbackccna"), 
                              get_string("prenume","feedbackccna"), 
+                             get_string("nume","feedbackccna"), 
                              get_string("feedcount","feedbackccna"));
 
         foreach ($new_array as $object) {
@@ -172,8 +172,8 @@ if ($type == 1) {
         usort($new_array2, 'sortByValue');
         $count = 1;
         foreach ($new_array2 as $object2) {
-			$table->data[] = array($count++, $object2->id, $object2->firstname,
-									$object2->lastname, $object2->value);
+			$table->data[] = array($count++, $object2->id, $object2->lastname,
+									$object2->firstname, $object2->value);
         }
 		if($count > 1)
 			echo html_writer::table($table);
@@ -193,8 +193,8 @@ if ($type == 1) {
 		$table->tablealign = "center";
 		$table->head = array(get_string("pozitie","feedbackccna"), 
                              get_string("id_student","feedbackccna"), 
-                             get_string("nume","feedbackccna"), 
                              get_string("prenume","feedbackccna"), 
+                             get_string("nume","feedbackccna"), 
                              get_string("attendance","feedbackccna"));
 
         foreach ($new_array as $object) {
@@ -205,8 +205,8 @@ if ($type == 1) {
         usort($new_array2, 'sortByValue');
         $count = 1;
         foreach ($new_array2 as $object2) {
-			$table->data[] = array($count++, $object2->id, $object2->firstname,
-									$object2->lastname, $object2->value);
+			$table->data[] = array($count++, $object2->id, $object2->lastname,
+									$object2->firstname, $object2->value);
         }
 		if($count > 1)
 			echo html_writer::table($table);
