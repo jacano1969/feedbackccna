@@ -99,57 +99,6 @@ class dash_1_form extends moodleform {
 
 }
 
-class dash_2_form extends moodleform {
-
-    function definition() {
-
-        global $CFG;
-        global $DB;
-
-       // we get these as parameters - that's what _customdata is for
-        $group = $this->_customdata['group_array'];
-       //
-       // I guess these are standard, but I'm not using them (maybe moodle is)
-      $mform = &$this->_form;
-      $mform->addElement('hidden', 'action');
-      $mform->setType('action', PARAM_TEXT);
-       
-
-        $mform->addElement('select', 'select-one', 'Course/category:', $group, array('method' => 'post'));
-
-        print_container_start(false, 'singlebutton');
-        $this->add_action_buttons(false, 'Display');
-        print_container_end();
-    }
-
-}
-
-class dash_3_form extends moodleform {
-
-    function definition() {
-
-        global $CFG;
-        global $DB;
-
-       // we get these as parameters - that's what _customdata is for
-        $group = $this->_customdata['group_array'];
-       //
-       // I guess these are standard, but I'm not using them (maybe moodle is)
-      $mform = &$this->_form;
-      $mform->addElement('hidden', 'action');
-      $mform->setType('action', PARAM_TEXT);
-
-
-        $mform->addElement('select', 'select-one', 'Course/category:', $group, array('method' => 'post'));
-
-        print_container_start(false, 'singlebutton');
-        $this->add_action_buttons(false, 'Display');
-        print_container_end();
-    }
-
-}
-
-
 // creates a moodleform instance, with a few added functionalities
 class add_view_form extends moodleform {
 

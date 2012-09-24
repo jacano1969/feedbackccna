@@ -71,11 +71,8 @@ foreach ($groups2 as $group) {
 
 $course_id = 0;
 $category = 1;
-switch($type) {
-	case 1: $form = new dash_1_form(new moodle_url('/mod/feedbackccna/dashboard.php', array('type'=>$type)), array('group_array' => $group_array)); break;
-	case 2: $form = new dash_2_form(new moodle_url('/mod/feedbackccna/dashboard.php', array('type'=>$type)), array('group_array' => $group_array)); break;
-	case 3: $form = new dash_3_form(new moodle_url('/mod/feedbackccna/dashboard.php', array('type'=>$type)), array('group_array' => $group_array)); break;
-}
+
+$form = new dash_1_form(new moodle_url('/mod/feedbackccna/dashboard.php', array('type'=>$type)), array('group_array' => $group_array));
 
 if ($entry = $form->get_data() and confirm_sesskey($USER->sesskey)) {
     $var = "select-one";
@@ -120,109 +117,101 @@ function sortByValue($a, $b) {
 if ($type == 1) {
 
     $form->display();
-
     if ($_POST) {
-
         $new_array = get_user_ids_in_courses_by_role($gr_array_id, 5);
         $new_array2 = get_user_ids_in_courses_by_role($gr_array_id, 5);
 
         $count = 0;
+		$table =  new html_table();
+		$table->tablealign = "center";
+		$table->head = array(get_string("pozitie","feedbackccna"), 
+							 get_string("id_student","feedbackccna"), 
+							 get_string("nume","feedbackccna"), 
+							 get_string("prenume","feedbackccna"), 
+							 get_string("points","feedbackccna"));
 
-        echo "<table>";
-        echo "<strong><tr><td>Pozitie</td><td>ID student</td><td>Prenume</td><td>Nume</td><td>Medie</td></tr></strong>";
-
-        if (!isset($new_array)) {
-            echo '</table><br />';
-            echo 'Nu exista studenti inrolati in cursurile selectate';
-        } else {
         foreach ($new_array as $object) {
-            if ($count == 10) {
-                break;
-            }
-            foreach (average_rating_student_percourse($object->id, $gr_array_id) as $avg_object) {
-               	$result = round($avg_object->rez, 3);
-           	}
-            $new_array2[$object->id]->value = $result;
-            $count ++;
+            $result = average_rating_student_percourse($object->id, $gr_array_id);
+            $new_array2[$object->id]->value = reset($result)->rez;
+            $count++;
         }
+
         usort($new_array2, 'sortByValue');
         $count = 1;
         foreach ($new_array2 as $object2) {
-            echo '<tr><td>'.($count++);
-            echo '</td><td>'.$object2->id;
-            echo '</td><td>'.$object2->firstname;
-            echo '</td><td>'.$object2->lastname;
-            echo '</td><td>'.$object2->value;
-            echo '</td></tr>';
+			$table->data[] = array($count++, $object2->id, $object2->lastname,
+									$object2->firstname, $object2->value);
         }
-        echo "</table>";
+		if($count > 1)
+			echo html_writer::table($table);
+		else
+            echo get_string('absents','feedbackccna');
     } 
-}
 // most feedback EU
 } elseif ($type == 2) {
-     if ($_POST) {
-        $new_array = get_user_ids_in_courses_by_role($gr_array_id, 5);
+        
+	$form->display();
+    if ($_POST) {
+    	$new_array = get_user_ids_in_courses_by_role($gr_array_id, 5);
         $new_array2 = get_user_ids_in_courses_by_role($gr_array_id, 5);
-
-        $count = 0;
-
-        echo "<table>";
-        echo "<strong><tr><td>Pozitie</td><td>ID student</td><td>Prenume</td><td>Nume</td><td>Nr Feedback-uri</td></tr></strong>";
+        
+		$count = 0;
+		$table =  new html_table();
+		$table->tablealign = "center";
+		$table->head = array(get_string("pozitie","feedbackccna"), 
+                             get_string("id_student","feedbackccna"), 
+                             get_string("nume","feedbackccna"), 
+                             get_string("prenume","feedbackccna"), 
+                             get_string("feedcount","feedbackccna"));
 
         foreach ($new_array as $object) {
-            if ($count == 10) {
-                break;
-            }
 			$result = user_given_feedback_count($gr_array_id, $object->id);
 			$new_array2[$object->id]->value = $result;
-            $count ++;
+            $count++;
         }
         usort($new_array2, 'sortByValue');
         $count = 1;
         foreach ($new_array2 as $object2) {
-            echo '<tr><td>'.($count++);
-            echo '</td><td>'.$object2->id;
-            echo '</td><td>'.$object2->firstname;
-            echo '</td><td>'.$object2->lastname;
-            echo '</td><td>'.$object2->value;
-            echo '</td></tr>';
+			$table->data[] = array($count++, $object2->id, $object2->firstname,
+									$object2->lastname, $object2->value);
         }
-        echo "</table>";
-    } else {
-        $form->display();
+		if($count > 1)
+			echo html_writer::table($table);
+		else
+            echo get_string('absents','feedbackccna');
     }
 // best attendance EU
 } elseif ($type == 3) {
+
+    $form->display();
     if ($_POST) {
         $new_array = get_user_ids_in_courses_by_role($gr_array_id, 5);
         $new_array2 = get_user_ids_in_courses_by_role($gr_array_id, 5);
+
         $count = 0;
-        echo "<table>";
-        echo "<strong><tr><td>Pozitie</td><td>ID student</td><td>Prenume</td><td>Nume</td><td>Nr prezente</td></tr></strong>";
+		$table =  new html_table();
+		$table->tablealign = "center";
+		$table->head = array(get_string("pozitie","feedbackccna"), 
+                             get_string("id_student","feedbackccna"), 
+                             get_string("nume","feedbackccna"), 
+                             get_string("prenume","feedbackccna"), 
+                             get_string("attendance","feedbackccna"));
+
         foreach ($new_array as $object) {
-            if ($count == 10) {
-                break;
-            }
 			$result = user_presence_count($gr_array_id, $object->id);
             $new_array2[$object->id]->value = $result;
-            $count ++;
+            $count++;
         }
         usort($new_array2, 'sortByValue');
         $count = 1;
         foreach ($new_array2 as $object2) {
-            echo '<tr><td>'.($count++);
-            echo '</td><td>'.$object2->id;
-            echo '</td><td>'.$object2->firstname;
-            echo '</td><td>'.$object2->lastname;
-            echo '</td><td>'.$object2->value;
-            echo '</td></tr>';
+			$table->data[] = array($count++, $object2->id, $object2->firstname,
+									$object2->lastname, $object2->value);
         }
-        echo "</table>";
-    } else {
-        $form->display();
-    }
+		if($count > 1)
+			echo html_writer::table($table);
+		else
+            echo get_string('absents','feedbackccna');
+	}
 }
-
 echo $OUTPUT->footer();
-
-

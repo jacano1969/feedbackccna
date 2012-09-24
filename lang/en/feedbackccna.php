@@ -76,6 +76,14 @@ $string['name_2'] = 'Most feedback';
 $string['desc_2'] = 'The students who gave the most feedback';
 $string['name_3'] = 'Best attendance';
 $string['desc_3'] = 'Classified by number of classes attended';
+$string['absents'] = 'Nu există studenți înrolați în cursurile selectate!';
+$string['pozitie'] = "Poziție";
+$string['id_student'] = "ID student";
+$string['nume'] = "Nume";
+$string['prenume'] = "Prenume";
+$string['points'] = "Punctaj";
+$string['feedcount'] = "Nr. feedback-uri";
+$string['attendance'] = "Nr. prezențe";
 
 ?>
 

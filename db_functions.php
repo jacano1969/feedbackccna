@@ -463,7 +463,7 @@ function user_given_feedback_count($course_id, $student_id) {
     global $DB;
 
     list($usql, $params) = $DB->get_in_or_equal($course_id);
-    $sql = "SELECT COUNT(*)
+    $sql = "SELECT COUNT(*) rez
         FROM {feedbackccna_module} m
         INNER JOIN {feedbackccna_answer} a
         ON m.id = a.module_id
