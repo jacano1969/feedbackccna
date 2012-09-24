@@ -76,6 +76,8 @@ $string['name_2'] = 'Most feedback';
 $string['desc_2'] = 'The students who gave the most feedback';
 $string['name_3'] = 'Best attendance';
 $string['desc_3'] = 'Classified by number of classes attended';
+$string['name_4'] = 'Best team';
+$string['desc_4'] = 'Classified by feedback received';
 
 ?>
 

@@ -572,7 +572,29 @@ function get_user_ids_in_courses_by_role($course_array, $role) {
         AND ro_as.userid = us.id
         WHERE con.contextlevel = 50
         AND ro_as.roleid = ".$role.$string);
+}
 
+function average_team_rating($course_array) {
+
+    global $DB;
+
+    $string = implode($course_array, ', ');
+
+    if (strlen($string) == 0) {
+
+        return;
+
+    }
+
+    return $DB->get_records_sql(
+        "SELECT AVG(a.answer) value, c.id, c.fullname
+        FROM {feedbackccna_answer} a
+        INNER JOIN {feedbackccna_module} m
+        ON a.module_id = m.id
+        INNER JOIN {course} c
+        ON m.course_id = c.id
+        WHERE m.which_way = '".STUDENT_FOR_TEACHER."'
+        AND m.course_id IN (".$string.")");
 }
 
 //  functie care returneaza nr de prezente ale unui student
