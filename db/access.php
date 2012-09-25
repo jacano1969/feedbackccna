@@ -55,6 +55,15 @@ $capabilities = array(
             'teacher' => CAP_ALLOW,
             'manager' => CAP_ALLOW
         )
+    ),
+
+    'mod/feedbackccna:admin' => array(
+
+        'captype' => 'write',
+        'contextlevel' => CONTEXT_SYSTEM,
+        'legacy' => array(
+            'manager' => CAP_ALLOW
+        )
     )
 );
 

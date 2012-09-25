@@ -549,11 +549,7 @@ function get_user_ids_in_courses_by_role($course_array, $role) {
     global $DB;
 
     $string = implode($course_array, ', ');
-    if (strlen($string)) {
-
-        $string = ' AND en.courseid IN ('.$string.')';
-
-    } else {
+    if (strlen($string) == 0) {
 
         return;
 
@@ -571,9 +567,44 @@ function get_user_ids_in_courses_by_role($course_array, $role) {
         ON ro_as.contextid = con.id
         AND ro_as.userid = us.id
         WHERE con.contextlevel = 50
-        AND ro_as.roleid = ".$role.$string);
+        AND ro_as.roleid = ".$role."
+        AND en.courseid IN (".$string.")");
 }
 
+// gets info on all the closed feedback modules, by course
+function get_closed_feed_modules($course_array, $student_id) {
+
+    global $DB;
+
+    $string = implode($course_array, ', ');
+    if (strlen($string) == 0) {
+
+        return;
+
+    }
+
+    $string2 = "";
+
+    if ($student_id > 0) {
+
+        $string2 = "AND a.student_id = ".$student_id;
+
+    }
+
+    return $DB->get_records_sql(
+        "SELECT *"/*m.feedback_id, m.denumire, m.section, c.id, c.fullname*/."
+        FROM {feedbackccna_module} m
+        INNER JOIN {course} c
+        ON m.course_id = c.id
+        INNER JOIN {feedbackccna_answer} a
+        ON a.module_id = m.id
+        WHERE m.which_way = ".STUDENT_FOR_TEACHER."
+        AND m.allow = ".FEED_CLOSED."
+        AND c.id IN (".$string.")"
+        .$string2);
+}
+
+// instructor teams' rating
 function average_team_rating($course_array) {
 
     global $DB;
