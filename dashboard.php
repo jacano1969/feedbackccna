@@ -6,6 +6,9 @@ require_once(dirname(__FILE__).'/locallib.php');
 require_once(dirname(__FILE__).'/mod_form.php');
 require_once($CFG->dirroot.'/lib/accesslib.php');
 require_once(dirname(__FILE__).'/db_functions.php');
+require_once($CFG->dirroot.'/lib/ddllib.php');
+require_once(dirname(__FILE__).'/prolib.php');
+require_once($CFG->dirroot.'/user/filters/lib.php');
 
 global $CFG;
 global $USER;
@@ -14,9 +17,10 @@ global $DB;
 $no_of_tabs = 5;
 
 $type = optional_param('type', 1, PARAM_INT);
+
 $context = get_context_instance(CONTEXT_SYSTEM);
 
-$PAGE->set_url('/mod/feedbackccna/dashboard.php?type='.$type);
+$PAGE->set_url('/mod/feedbackccna/dashboard.php?type='.$type/*, array('type' => $type)*/);
 $PAGE->set_context($context);
 $PAGE->set_title('Dashboard');
 $PAGE->set_heading('Dashboard');
@@ -166,9 +170,13 @@ function sortByVN($a, $b) {
 
 }
 
-$form->display();
+if ($type != 5) {
 
-if ($_POST && $type != 5) {
+    $form->display();
+
+}
+
+if ($_POST and ($type != 5)) {
 
     $table =  new html_table();
     $table->tablealign = "center";
@@ -298,11 +306,11 @@ if ($_POST && $type != 5) {
     $page       = optional_param('page',0,PARAM_INT);
     $perpage    = optional_param('perpage',20,PARAM_INT);
 
-    $baseurl = new moodle_url('/mod/feedbackccna/dashboard.php?type='.$type,array('perpage'=>$perpage));
+    $baseurl = new moodle_url('/mod/feedbackccna/dashboard.php', array('type' => $type, 'perpage' => $perpage));
 
     $fields =  array('realname'=>0, 'lastname'=>1, 'firstname'=>1);
 
-    $ufiltering = new user_filtering($fields);
+    $ufiltering = new user_filtering($fields, $baseurl);
     $ufiltering->display_add();
     $ufiltering->display_active();
 
@@ -327,7 +335,7 @@ if ($_POST && $type != 5) {
 
     if (!$users) {
 
-        echo get_string('nousersmatch', 'local_profile');
+        // echo get_string('nousersmatch', 'local_profile');
 
     } else {
 
