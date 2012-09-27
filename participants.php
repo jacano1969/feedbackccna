@@ -537,12 +537,14 @@
                 }
 
             $stars = '<div id="prez_stars'.$user->id.'">
-					 <input id="Prez'.$user->id.'" type="hidden" value="0" 
+					 <input id="Prez'.$user->id.'" type="hidden" 
+						value="'.$val_prez[$user->id].'" 
 					 	name="Prez'.$user->id.'" size="0" />';
 
 			for($i = 1; $i < 4; $i++) {
-				$stars .= '<input  name="ala" class="star" 
-							 type="radio" value="'.$i.'">';
+				$stars .= '<input  name="s_prez'.$user->id.'" class="star" 
+							 type="radio" value="'.$i.'"'
+							.($i == $val_prez[$user->id]?' checked="checked"':'').'>';
 			}
 			$stars .= '<script type="text/javascript">
 						$(".star").rating({
@@ -554,18 +556,20 @@
 			$stars .= '</div>';
 			$data[] = $stars;
 			
-			$stars = '<div id="prez_stars'.$user->id.'">
-                     <input id="Prez'.$user->id.'" type="hidden" value="0" 
-                        name="Prez'.$user->id.'" size="0" />';
+			$stars = '<div id="lab_stars'.$user->id.'">
+                     <input id="Lab'.$user->id.'" type="hidden" 
+						value="'.$val_lab[$user->id].'" 
+                        name="Lab'.$user->id.'" size="0" />';
 
             for($i = 1; $i < 4; $i++) {
-                $stars .= '<input  name="ala" class="star" 
-                             type="radio" value="'.$i.'">';
+                $stars .= '<input  name="s_lab'.$user->id.'" class="star" 
+                             type="radio" value="'.$i.'"'
+							.($i == $val_lab[$user->id]?' checked="checked"':'').'>';
             }
             $stars .= '<script type="text/javascript">
                         $(".star").rating({
                             callback: function(value, link) {
-                                document.getElementById("Prez'.$user->id.'").value = value;
+                                document.getElementById("Lab'.$user->id.'").value = value;
                             }
                         });
                        </script>';
