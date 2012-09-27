@@ -536,7 +536,7 @@
 
                 }
 
-            $stars = '<div id="prez_stars'.$user->id.'">
+            $stars = '<div id="prez_stars'.$user->id.'" '.$absent[$user->id].'>
 					 <input id="Prez'.$user->id.'" type="hidden" 
 						value="'.$val_prez[$user->id].'" 
 					 	name="Prez'.$user->id.'" size="0" />';
@@ -558,7 +558,7 @@
 			$stars .= '</div>';
 			$data[] = $stars;
 			
-			$stars = '<div id="lab_stars'.$user->id.'">
+			$stars = '<div id="lab_stars'.$user->id.'" ' .$absent[$user->id].'>
                      <input id="Lab'.$user->id.'" type="hidden" 
 						value="'.$val_lab[$user->id].'" 
                         name="Lab'.$user->id.'" size="0" />';
