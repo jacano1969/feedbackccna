@@ -649,3 +649,18 @@ function user_presence_count($course_id, $student_id) {
 		) R";
     return  $DB->count_records_sql($sql, $params);
 }
+
+
+function get_feedback_failed_module($course_id, $student_id) {
+    global $DB;
+
+    return $DB->get_records_sql(
+        "SELECT * FROM {feedbackccna_module} m
+        INNER JOIN  {feedbackccna_answer} a
+        ON m.id = a.module_id
+        WHERE m.course_id = ?
+        AND a.student_id = ?
+        AND m.which_way = '".STUDENT_FOR_TEACHER."'
+        AND m.allow='".FEED_CLOSED."'",
+        array($course_id, $student_id));
+}

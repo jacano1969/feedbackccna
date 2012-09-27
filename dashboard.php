@@ -20,12 +20,27 @@ $type = optional_param('type', 1, PARAM_INT);
 
 $context = get_context_instance(CONTEXT_SYSTEM);
 
-$PAGE->set_url('/mod/feedbackccna/dashboard.php?type='.$type/*, array('type' => $type)*/);
+$PAGE->set_url('/mod/feedbackccna/dashboard.php?type='.$type);
 $PAGE->set_context($context);
 $PAGE->set_title('Dashboard');
 $PAGE->set_heading('Dashboard');
 $PAGE->set_pagelayout('standard');
 $PAGE->navbar->add('Dashboard');
+
+function get_modules_inner($s_id) {
+
+// not finished / functional - 27/09/2012
+
+    $select = "string".$s_id;
+    $c_id = '<script type="text/javascript">'/*document.write(*/.'document.getElementById('.$select.').value'./*)*/'</script>';
+echo $s_id.' '.$c_id;
+    $array = get_feedback_failed_module($c_id, $s_id);
+    print_r($array);
+
+    $string = '<option value=1>HEllo</option>';
+    return $string;
+
+}
 
 echo $OUTPUT->header();
 
@@ -303,6 +318,8 @@ if ($_POST and ($type != 5)) {
 // re-enable feedback
 } elseif ($type == 5) {
 
+    // not finished / functional - 27/09/2012
+
     $page       = optional_param('page',0,PARAM_INT);
     $perpage    = optional_param('perpage',20,PARAM_INT);
 
@@ -322,12 +339,12 @@ if ($_POST and ($type != 5)) {
 
     if ($extrasql) {
 
-//        echo $OUTPUT->heading("$usersearchcount / $usercount ". get_string('users'));
+        echo $OUTPUT->heading("$usersearchcount / $usercount ". get_string('users'));
         $usercount = $usersearchcount;
 
     } else{
 
-//        echo $OUTPUT->heading("$usersearchcount ". get_string('users'));
+        echo $OUTPUT->heading("$usersearchcount ". get_string('users'));
 
     }
 
@@ -335,12 +352,12 @@ if ($_POST and ($type != 5)) {
 
     if (!$users) {
 
-        // echo get_string('nousersmatch', 'local_profile');
+         echo 'Nu exista utilizatori care sa corespunda cautarii';
 
     } else {
 
         $table = new html_table();
-        $table->head = array('Fullname', 'Classes');
+        $table->head = array('Name', 'Course', 'Modules');
         $table->width = '40%';
         $table->align = array('center', 'center');
         $table->attributes["style"] = 'margin:auto; ';
@@ -349,29 +366,36 @@ if ($_POST and ($type != 5)) {
 
             $cell1 = new html_table_cell();
             $cell2 = new html_table_cell();
+            $cell3 = new html_table_cell();
             $cell1->style = 'vertical-align:middle';
             $cell2->style = 'vertical-align:middle';
+            $cell3->style = 'vertical-align:middle';
+
             $cell1->text = '<a href="'.$CFG->wwwroot.'/local/profile/personal.php?usr='.$user->id.'">'.$user->firstname.' '.$user->lastname.'</a>';
             $courses=get_courses_where_student($user->id);
 
-            foreach($courses as $course) {
+            if ($courses) {
 
-                $nume[]='<a href="' . $CFG->wwwroot. '/course/view.php?id=' . $course->id. '">'." ".$course->fullname.'</a><br/>';
+                $cell2->text = '<select id="select'.$user->id.'">';
+
+                foreach($courses as $course) {
+
+                    $cell2->text .= '<option value="'.$course->id.'">'.$course->fullname.'</option>';
+
+                }
+
+                $cell2->text .= '</select>';
+
+                $script_select = "select".$user->id;
+                echo '<script type="text/javascript">
+                    document.getElementById("'.$script_select.'").onchange=
+                    \'document.getElementById("'."modules".$user->id.'").innerHTML="'.get_modules_inner($user->id).'"\';
+                </script>';
 
             }
 
-            if (isset($nume)) {
-
-                $cell2->text = implode("",$nume);
-                $table->data[] = array($cell1, $cell2);
-
-            } else {
-
-                $table->data[] = array($cell1);
-
-            }
-
-            $nume = NULL;
+            $cell3->text = '<select id="modules'.$user->id.'" ></select>';
+            $table->data[] = array($cell1, $cell2, $cell3);
 
         }
 
@@ -403,16 +427,6 @@ if ($_POST and ($type != 5)) {
             $table->data[] = array($count++, $object->id, $object->fullname,
                 $object->value);
  */
-    }
-
-    if($count > 1) {
-
-      //  echo html_writer::table($table);
-
-    } else {
-
-        echo 'Nu s-a dat feedback pe cursurile selectate';
-
     }
 
 }
