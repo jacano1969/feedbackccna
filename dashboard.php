@@ -14,7 +14,7 @@ global $CFG;
 global $USER;
 global $DB;
 
-$no_of_tabs = 5;
+$no_of_tabs = 4;
 
 $type = optional_param('type', 1, PARAM_INT);
 
@@ -26,13 +26,13 @@ $PAGE->set_title('Dashboard');
 $PAGE->set_heading('Dashboard');
 $PAGE->set_pagelayout('standard');
 $PAGE->navbar->add('Dashboard');
-
+/*
 function get_modules_inner($s_id) {
 
 // not finished / functional - 27/09/2012
 
     $select = "string".$s_id;
-    $c_id = '<script type="text/javascript">'/*document.write(*/.'document.getElementById('.$select.').value'./*)*/'</script>';
+    $c_id = '<script type="text/javascript">document.getElementById('.$select.').value</script>';
 echo $s_id.' '.$c_id;
     $array = get_feedback_failed_module($c_id, $s_id);
     print_r($array);
@@ -41,7 +41,7 @@ echo $s_id.' '.$c_id;
     return $string;
 
 }
-
+*/
 echo $OUTPUT->header();
 
 build_tabs_local('dash_'.$type, $no_of_tabs);
@@ -316,7 +316,7 @@ if ($_POST and ($type != 5)) {
     }
 
 // re-enable feedback
-} elseif ($type == 5) {
+}/* elseif ($type == 5) {
 
     // not finished / functional - 27/09/2012
 
@@ -423,13 +423,13 @@ if ($_POST and ($type != 5)) {
     $count = 1;
 
     foreach ($new_array2 as $object) {
-/*
+
             $table->data[] = array($count++, $object->id, $object->fullname,
                 $object->value);
- */
+ 
     }
 
 }
-
+*/
 echo $OUTPUT->footer();
 
