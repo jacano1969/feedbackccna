@@ -135,7 +135,10 @@ class add_view_form extends moodleform {
        //
 
        // includes and s... tuff
-        $mform->addElement('html', '<script type="text/javascript" src="jquery/jquery.js" ></script><script type="text/javascript" src="jquery/jquery.rating.js"/></script><link type="text/css" rel="stylesheet" href="jquery/jquery.rating.css" />');
+        $mform->addElement('html', '
+			<script type="text/javascript" src="jquery/jquery.js" ></script>
+			<script type="text/javascript" src="jquery/jquery.rating.js"/>
+			</script><link type="text/css" rel="stylesheet" href="jquery/jquery.rating.css" />');
        //
 
         $context = get_context_instance(CONTEXT_MODULE, $cm->id);
@@ -215,7 +218,7 @@ class add_view_form extends moodleform {
                         // we'll display something, so keep an eye on the hacks
                         $nothing = 0;
 
-                        // display the header (basically, the box-thingy)
+                        // display the header (basnically, the box-thingy)
                         $mform->addElement('header', 'editorheader',
                             get_string('headerlabel_presentation',
                              'feedbackccna'));
@@ -239,7 +242,8 @@ class add_view_form extends moodleform {
                         $(".star").rating({
                             callback: function(value, link) {
                                 document.getElementById("value'.$data->id.FEED_TYPE_PRE.'").value = value;
-                            }
+                            },
+							required: "hide"
                         });
                        </script>';
                         $mform->addElement('html',$stars);
@@ -336,7 +340,8 @@ class add_view_form extends moodleform {
                         $(".star").rating({
                             callback: function(value, link) {
                                 document.getElementById("value'.$data->id.FEED_TYPE_LAB.'").value = value;
-                            }
+                            },
+							required: "hide"
                         });
                        </script>';
                         $mform->addElement('html',$stars);
