@@ -27,7 +27,7 @@
             'perpage' => $perpage,
             'mode' => $mode,
             'accesssince' => $accesssince,
-            'search' => $search,
+            'asearch' => $search,
             'roleid' => $roleid,
             'contextid' => $contextid,
             'id' => $courseid));
@@ -393,10 +393,9 @@
 
         }
 
-//
-	echo '<script type="text/javascript" src="prototype.js"></script>';
-        echo '<script type="text/javascript" src="stars.js"></script>';
-//
+		echo '<script type="text/javascript" src="jquery/jquery.js" ></script>';
+		echo '<script type="text/javascript" src="jquery/jquery.rating.js"/></script>';
+		echo '<link type="text/css" rel="stylesheet" href="jquery/jquery.rating.css" />';
         require_once(dirname(__FILE__).'/script.js');
 
         echo '<form action="t_view.php?id='.$cm->id.'" method="post" id="participantsform">';
@@ -537,37 +536,47 @@
 
                 }
 
-                $data[] .= '<input id="Prez'.$user->id.'" type="hidden" value="" name="Prez'.$user->id.'" size="0" />
-			    <div id="prez_stars'.$user->id.'" '.$absent[$user->id].'></div>
+            $stars = '<div id="prez_stars'.$user->id.'">
+					 <input id="Prez'.$user->id.'" type="hidden" value="0" 
+					 	name="Prez'.$user->id.'" size="0" />';
 
-                            <script type="text/javascript">
-                                     var s_prez'.$user->id.' = new Stars({
-                                          maxRating: 3,
-                                          imagePath: "images/",
-                                          value: '.$val_prez[$user->id].',
-                                          bindField: Prez'.$user->id.',
-                                          container: prez_stars'.$user->id.'});
-                            </script>';
+			for($i = 1; $i < 4; $i++) {
+				$stars .= '<input  name="ala" class="star" 
+							 type="radio" value="'.$i.'">';
+			}
+			$stars .= '<script type="text/javascript">
+						$(".star").rating({
+							callback: function(value, link) {
+								document.getElementById("Prez'.$user->id.'").value = value;
+							}
+						});
+					   </script>';
+			$stars .= '</div>';
+			$data[] = $stars;
+			
+			$stars = '<div id="prez_stars'.$user->id.'">
+                     <input id="Prez'.$user->id.'" type="hidden" value="0" 
+                        name="Prez'.$user->id.'" size="0" />';
 
-
-                $data[] .= '<input id="Lab'.$user->id.'" type="hidden" value="" name="Lab'.$user->id.'" size="0" />
-                            <div id="lab_stars'.$user->id.'" '.$absent[$user->id].'></div>
-
-                            <script type="text/javascript">
-                                     var s_lab'.$user->id.' = new Stars({
-                                          maxRating: 3,
-                                          imagePath: "images/",
-                                          value: '.$val_lab[$user->id].',
-                                          bindField: Lab'.$user->id.',
-                                          container: lab_stars'.$user->id.'});
-                            </script>';
-
-
-                $data[] .= '<input type="checkbox" class="usercheckbox" name="user'.$user->id.'" id = "user'.$user->id .
-                           '" onclick = unclick('.$user->id.') '.$absences[$user->id].'/>';
-
+            for($i = 1; $i < 4; $i++) {
+                $stars .= '<input  name="ala" class="star" 
+                             type="radio" value="'.$i.'">';
             }
+            $stars .= '<script type="text/javascript">
+                        $(".star").rating({
+                            callback: function(value, link) {
+                                document.getElementById("Prez'.$user->id.'").value = value;
+                            }
+                        });
+                       </script>';
+            $stars .= '</div>';
+            $data[] = $stars;
 
+			$data[] .= '<input type="checkbox" class="usercheckbox" 
+						name="user'.$user->id.'" id = "user'.$user->id .
+                        '" onclick = unclick('.$user->id.') '.$absences[$user->id].'/>';
+			}
+			
             $table->add_data($data);
             $bundle[] = $user->id;
         }
@@ -578,22 +587,14 @@
 
     if ($bulkoperations) {
 
-/* Trololololololololololo * /
-	echo '<script type="text/javascript">'.
-		"\n//<![CDATA[\n".
-		'document.getElementById("participantsform").style.display = "none";'.
-                "\n//]]>\n".'</script>';
-/* Trolololololooooooo */
-	echo '</div>';
-/* oooooooooooo */
+		echo '</div>';
         echo '<br />';
-/* ooooooooo */
         echo '<div class="buttons">';
         echo '<input type="submit" id = "formsubmit" value = "'.get_string('submit').'" /> ';
         echo '<input type = "button" id = "formreset" onclick = resetAll() value = "Reset" />';
         echo '</div>';
 
-	echo '</form>';
+		echo '</form>';
 
         $module = array('name'=>'core_user', 'fullpath'=>'/user/module.js');
         $PAGE->requires->js_init_call('M.core_user.init_participation', null, false, $module);
