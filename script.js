@@ -24,67 +24,44 @@ function unclick(id) {
 }
 
 function checkAll(name) {
-
     var str = new Array(<?php echo implode(",", $list); ?>);
-
     if (document.getElementById("all_"+name).innerHTML == "Check All") {
 
         document.getElementById("all_"+name).innerHTML = "Uncheck All";
-            new_val = 0;
-
+        new_val = 0;
     } else {
 
         document.getElementById("all_"+name).innerHTML = "Check All";
-            new_val = "afgfdsbgdfbhssfdgb";
-
+        new_val = "sgfersgrew";
     }
 
     if (name == "prez") {
-
         for (i = 0; i < str.length; i ++) {
-
             if (document.getElementById("user"+str[i]).checked == false) {
-
-				$("[class^=s_prez]").rating('select',new_val);
-
+				$(".s_prez"+str[i]).rating('select',new_val);
             }
-
         }
-
     } else {
-
         if (name == "lab") {
-
+			console.log("Lab");
             for (i = 0; i < str.length; i ++) {
-
                 if (document.getElementById("user"+str[i]).checked == false) {
-
-					$("[class^=s_lab]").rating('select',new_val);
-
+					$(".s_lab"+str[i]).rating('select',new_val);
                 }
-
             }
-
         } else {
-
             if (name == "abs") {
-
-                document.getElementById("all_prez").innerHTML = "Check All";
+                
+				document.getElementById("all_prez").innerHTML = "Check All";
                 document.getElementById("all_lab").innerHTML = "Check All";
 
                 for (i = 0; i < str.length; i ++) {
-
                     document.getElementById("user"+str[i]).checked = (new_val == 0?1 : 0);
                     unclick(str[i]);
-
                 }
-
             }
-
         }
-
     }
-
 }
 
 function resetAll() {
