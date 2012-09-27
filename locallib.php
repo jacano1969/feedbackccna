@@ -135,8 +135,7 @@ class add_view_form extends moodleform {
        //
 
        // includes and s... tuff
-        $mform->addElement('html', '<script type="text/javascript" src="prototype.js"></script>');
-        $mform->addElement('html', '<script type="text/javascript" src="stars.js"></script>');
+        $mform->addElement('html', '<script type="text/javascript" src="jquery/jquery.js" ></script><script type="text/javascript" src="jquery/jquery.rating.js"/></script><link type="text/css" rel="stylesheet" href="jquery/jquery.rating.css" />');
        //
 
         $context = get_context_instance(CONTEXT_MODULE, $cm->id);
@@ -231,22 +230,21 @@ class add_view_form extends moodleform {
                             $data->id.FEED_TYPE_PRE, 'type' => 'hidden'));
 
                         // we'll create the star object here
-                        $mform->addElement('html',
-                            '<script type = "text/javascript">
-                                var s1 = new Stars({
-                                    maxRating: 5,
-                                    imagePath: "images/",
-                                    value: '.$values[FEED_TYPE_PRE].',
-                                    container:"star'.$data->id.FEED_TYPE_PRE.'",
-                                    bindField:"value'.$data->id.FEED_TYPE_PRE.'"
-                                });
-                            </script>');
-                       //
 
+						$stars = '';
+						for($i = 1; $i < 6; $i++) {
+							$stars .= '<input name="s_prez" class="star" type="radio" value="'.$i.'">';
+						}
+						$stars .= '<script type="text/javascript">
+                        $(".star").rating({
+                            callback: function(value, link) {
+                                document.getElementById("value'.$data->id.FEED_TYPE_PRE.'").value = value;
+                            }
+                        });
+                       </script>';
+                        $mform->addElement('html',$stars);
                         // we only show one question at once. no flooding!
                         break;
-                      //
-
                 }
 
                 // if the user is a teacher
@@ -301,9 +299,7 @@ class add_view_form extends moodleform {
                         $mform->addElement('advcheckbox', 'uncheck'.$data->id.
                             FEED_TYPE_PRE, get_string('checkbox2',
                              'feedbackccna'), null, null, array(0, 1));
-
                     }
-
                 }
 
               // then, maybe it is a laboratory that we're talking about?
@@ -332,19 +328,20 @@ class add_view_form extends moodleform {
                             FEED_TYPE_LAB, null, array('id' => 'value'.
                             $data->id.FEED_TYPE_LAB, 'type' => 'hidden'));
 
-                        $mform->addElement('html',
-                            '<script type = "text/javascript">
-                                var s2 = new Stars({
-                                    maxRating: 5,
-                                    imagePath: "images/",
-                                    value: '.$values[FEED_TYPE_LAB].',
-                                    container:"star'.$data->id.FEED_TYPE_LAB.'",
-                                    bindField:"value'.$data->id.FEED_TYPE_LAB.'"
-                                });
-                            </script>');
+						$stars = '';
+                        for($i = 1; $i < 6; $i++) {
+                            $stars .= '<input name="s_lab" class="star" type="radio" value="'.$i.'">';
+                        }
+                        $stars .= '<script type="text/javascript">
+                        $(".star").rating({
+                            callback: function(value, link) {
+                                document.getElementById("value'.$data->id.FEED_TYPE_LAB.'").value = value;
+                            }
+                        });
+                       </script>';
+                        $mform->addElement('html',$stars);
 
                         break;
-
                 }
 
                 // but, if they're teachers, the same as above goes
