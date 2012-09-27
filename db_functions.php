@@ -380,7 +380,7 @@ function get_user_absent($course_id, $student_id, $f_id) {
 function get_active_feedbacks_count($course_id, $type) {
     global $DB;
 
-	list($usql, $params) = $DB->get_inor_equal($course_id);
+	list($usql, $params) = $DB->get_in_or_equal($course_id);
 	$sql = "SELECT COUNT(*) FROM {feedbackccna_module}
 			  WHERE type ='".$type."'
 				AND course_id $usql
