@@ -393,9 +393,9 @@
 
         }
 
-		echo '<script type="text/javascript" src="jquery/jquery.js" ></script>';
-		echo '<script type="text/javascript" src="jquery/jquery.rating.js"/></script>';
-		echo '<link type="text/css" rel="stylesheet" href="jquery/jquery.rating.css" />';
+		echo '<script type="text/javascript" src="jquery/jquery.js" ></script>
+			  <script type="text/javascript" src="jquery/jquery.rating.js"/></script>
+				<link type="text/css" rel="stylesheet" href="jquery/jquery.rating.css" />';
         require_once(dirname(__FILE__).'/script.js');
 
         echo '<form action="t_view.php?id='.$cm->id.'" method="post" id="participantsform">';
@@ -542,13 +542,15 @@
 					 	name="Prez'.$user->id.'" size="0" />';
 
 			for($i = 1; $i < 4; $i++) {
-				$stars .= '<input  name="s_prez'.$user->id.'" class="star" 
+				$stars .= '<input  name="stars_prez" class="star s_prez'.$user->id.'" 
 							 type="radio" value="'.$i.'"'
 							.($i == $val_prez[$user->id]?' checked="checked"':'').'>';
 			}
 			$stars .= '<script type="text/javascript">
 						$(".star").rating({
 							callback: function(value, link) {
+								if(typeof value == "undefined")
+									value = 0;
 								document.getElementById("Prez'.$user->id.'").value = value;
 							}
 						});
@@ -562,13 +564,15 @@
                         name="Lab'.$user->id.'" size="0" />';
 
             for($i = 1; $i < 4; $i++) {
-                $stars .= '<input  name="s_lab'.$user->id.'" class="star" 
+                $stars .= '<input  name="stars_lab" class="star s_lab'.$user->id.'" 
                              type="radio" value="'.$i.'"'
 							.($i == $val_lab[$user->id]?' checked="checked"':'').'>';
             }
             $stars .= '<script type="text/javascript">
                         $(".star").rating({
                             callback: function(value, link) {
+								if(typeof value == "undefined")
+									value = 0;
                                 document.getElementById("Lab'.$user->id.'").value = value;
                             }
                         });
