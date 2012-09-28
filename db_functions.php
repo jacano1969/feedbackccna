@@ -381,12 +381,12 @@ function get_active_feedbacks_count($course_id, $type) {
     global $DB;
 
 	list($usql, $params) = $DB->get_in_or_equal($course_id);
-	$sql = "SELECT COUNT(*) FROM {feedbackccna_module}
+	$sql = "SELECT COUNT(*) rez FROM {feedbackccna_module}
 			  WHERE type ='".$type."'
 				AND course_id $usql
 				AND allow != '".FEED_NOT_ALLOWED."'
 				AND which_way = '".STUDENT_FOR_TEACHER."'";
-	return $DB->get_records_sql($sql, $params);
+	return $DB->count_records_sql($sql, $params);
 }
 
 //	functie care returneaza nr de laboratoare la care a participat studentul
